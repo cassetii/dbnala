@@ -274,22 +274,6 @@
             box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
         }
 
-        .forgot-password {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .forgot-password a {
-            color: #014aad;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
         .error-message {
             background: linear-gradient(135deg, #ffebee, #ffcdd2);
             color: #c62828;
@@ -352,7 +336,7 @@
             font-size: 12px;
         }
 
-        /* Main app styles (keeping existing styles) */
+        /* Main app styles */
         .header {
             background: linear-gradient(135deg, #014aad, #89a5d0);
             color: white;
@@ -903,8 +887,8 @@
             </div>
             <div class="login-form">
                 <div class="auth-tabs">
-                    <div class="auth-tab active" onclick="switchTab('login')">Masuk</div>
-                    <div class="auth-tab" onclick="switchTab('register')">Daftar</div>
+                    <div class="auth-tab active" onclick="switchTab('login')">Demo Mode</div>
+                    <div class="auth-tab" onclick="switchTab('register')">Local Only</div>
                 </div>
 
                 <div id="authMessage"></div>
@@ -913,22 +897,22 @@
                 <form id="loginForm" style="display: block;">
                     <div class="form-group">
                         <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" required placeholder="admin@nalaaircon.com" value="admin@nalaaircon.com">
+                        <input type="email" id="loginEmail" required placeholder="demo@nalaaircon.com" value="demo@nalaaircon.com">
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Password</label>
                         <div class="password-group">
-                            <input type="password" id="loginPassword" required placeholder="admin123" value="admin123">
+                            <input type="password" id="loginPassword" required placeholder="demo123" value="demo123">
                             <span class="password-toggle" onclick="togglePassword('loginPassword')">👁️</span>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        🔐 Masuk ke Sistem
+                        🔐 Masuk Demo Mode
                     </button>
                     <div style="margin-top: 15px; padding: 12px; background: #e3f2fd; border-radius: 8px; font-size: 12px; color: #1976d2;">
-                        <strong>Demo Accounts:</strong><br>
-                        📧 admin@nalaaircon.com | 🔑 admin123<br>
-                        📧 demo@nalaaircon.com | 🔑 demo123
+                        <strong>Demo Account (Local Storage):</strong><br>
+                        📧 demo@nalaaircon.com | 🔑 demo123<br>
+                        📧 admin@nalaaircon.com | 🔑 admin123
                     </div>
                 </form>
 
@@ -957,13 +941,9 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        📝 Daftar Akun Baru
+                        📝 Daftar Local Account
                     </button>
                 </form>
-
-                <div class="forgot-password">
-                    <a href="#" onclick="resetPassword()">Lupa Password?</a>
-                </div>
             </div>
         </div>
     </div>
@@ -973,15 +953,15 @@
         <div class="container">
             <div class="header">
                 <h1>🏠 Nala Aircon</h1>
-                <p>Sistem Database Customer & Service Management - Firebase Edition</p>
+                <p>Sistem Database Customer & Service Management - Local Storage Edition</p>
                 
                 <!-- User Info Bar -->
                 <div class="user-info-bar">
                     <div class="user-info">
-                        <div class="user-avatar" id="userAvatar">A</div>
+                        <div class="user-avatar" id="userAvatar">D</div>
                         <div class="user-details">
-                            <div id="userName">Loading...</div>
-                            <div class="user-email" id="userEmail">Loading...</div>
+                            <div id="userName">Demo User</div>
+                            <div class="user-email" id="userEmail">demo@nalaaircon.com</div>
                         </div>
                     </div>
                     <button class="btn btn-logout" onclick="logout()">
@@ -992,13 +972,13 @@
                 <div class="status-bar">
                     <div class="status-indicator">
                         <div class="status-dot"></div>
-                        <span>Firebase Connected</span>
+                        <span>Local Storage Active</span>
                     </div>
                     <div class="status-indicator">
-                        🔄 Real-time Sync Active
+                        💾 Data Tersimpan Lokal
                     </div>
                     <div class="status-indicator">
-                        📍 Server: Taiwan (asia-east1)
+                        🌐 Demo Mode
                     </div>
                 </div>
             </div>
@@ -1048,8 +1028,8 @@
                         <button class="btn btn-primary" onclick="openModal()">
                             ➕ Tambah Customer Baru
                         </button>
-                        <button class="btn btn-secondary" onclick="syncData()">
-                            🔄 Sync Data
+                        <button class="btn btn-secondary" onclick="loadSampleData()">
+                            📊 Load Sample Data
                         </button>
                         <button class="btn btn-upload" onclick="openUploadModal()">
                             📁 Upload Data CSV
@@ -1066,7 +1046,7 @@
 
                 <div class="loading" id="loadingIndicator">
                     <div class="spinner"></div>
-                    <p>Loading data dari Firebase...</p>
+                    <p>Loading data...</p>
                 </div>
 
                 <div class="table-container">
@@ -1090,8 +1070,8 @@
                             <tr class="no-data">
                                 <td colspan="11">
                                     <div class="no-data">
-                                        <h3>Loading data...</h3>
-                                        <p>Mengambil data dari Firebase</p>
+                                        <h3>Belum ada data customer</h3>
+                                        <p>Klik "Tambah Customer Baru" atau "Load Sample Data" untuk memulai</p>
                                     </div>
                                 </td>
                             </tr>
@@ -1179,7 +1159,7 @@
                         Batal
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        💾 Simpan ke Firebase
+                        💾 Simpan Data
                     </button>
                 </div>
             </form>
@@ -1208,70 +1188,49 @@
                         Batal
                     </button>
                     <button type="button" class="btn btn-primary" onclick="uploadCSVData()">
-                        📁 Upload ke Firebase
+                        📁 Upload Data
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import Firebase modules (only Firestore)
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    <script>
+        // Local Storage Database System
+        let customers = [];
+        let editingIndex = -1;
+        let csvData = [];
+        let currentUser = null;
 
-        // Firebase configuration for Firestore only
-        const firebaseConfig = {
-            apiKey: "AIzaSyBSp7kuXi5hHWcISGQ2nSgL2T3nPMaFrls",
-            authDomain: "dbnala-6fcf1.firebaseapp.com",
-            projectId: "dbnala-6fcf1",
-            storageBucket: "dbnala-6fcf1.firebasestorage.app",
-            messagingSenderId: "1081263780872",
-            appId: "1:1081263780872:web:3df5c78d708e5b1ffb4dbd",
-            measurementId: "G-KLVLB8YQ34"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        // Simple local authentication system
+        // Demo users for local storage
         const DEMO_USERS = {
-            'admin@nalaaircon.com': {
-                password: 'admin123',
-                name: 'Admin Nala Aircon',
-                role: 'admin'
-            },
             'demo@nalaaircon.com': {
                 password: 'demo123',
                 name: 'Demo User',
                 role: 'user'
+            },
+            'admin@nalaaircon.com': {
+                password: 'admin123',
+                name: 'Admin Nala Aircon',
+                role: 'admin'
             }
         };
-
-        // Global variables
-        let customers = [];
-        let editingIndex = -1;
-        let editingDocId = null;
-        let csvData = [];
-        let currentUser = null;
 
         // Check authentication status on load
         function checkAuthStatus() {
             const savedUser = localStorage.getItem('nala_current_user');
             const authLoading = document.getElementById('authLoading');
-            const loginContainer = document.getElementById('loginContainer');
-            const mainApp = document.getElementById('mainApp');
-
-            authLoading.style.display = 'none';
-
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
-            } else {
-                showLoginScreen();
-            }
+            
+            setTimeout(() => {
+                authLoading.style.display = 'none';
+                
+                if (savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    showMainApp();
+                } else {
+                    showLoginScreen();
+                }
+            }, 1000);
         }
 
         function showMainApp() {
@@ -1378,17 +1337,20 @@
             try {
                 showAuthMessage('Sedang membuat akun...', 'success');
                 
-                // Check if user already exists
-                if (DEMO_USERS[email]) {
+                // Add new user to local storage
+                const existingUsers = JSON.parse(localStorage.getItem('nala_users') || '{}');
+                
+                if (existingUsers[email]) {
                     throw new Error('Email sudah terdaftar!');
                 }
                 
-                // Add new user (in real app, this would be saved to database)
-                DEMO_USERS[email] = {
+                existingUsers[email] = {
                     password: password,
                     name: name,
                     role: 'user'
                 };
+                
+                localStorage.setItem('nala_users', JSON.stringify(existingUsers));
                 
                 currentUser = {
                     uid: 'user_' + Date.now(),
@@ -1405,17 +1367,6 @@
                 showAuthMessage(error.message, 'error');
             }
         });
-
-        window.resetPassword = async function() {
-            const email = prompt('Masukkan email Anda untuk reset password:');
-            if (!email) return;
-            
-            if (DEMO_USERS[email]) {
-                showAuthMessage('Instruksi reset password telah dikirim ke email Anda! (Demo: gunakan password default)', 'success');
-            } else {
-                showAuthMessage('Email tidak terdaftar di sistem.', 'error');
-            }
-        };
 
         window.logout = async function() {
             if (confirm('Apakah Anda yakin ingin logout?')) {
@@ -1459,10 +1410,148 @@
             // Set current month as default filter
             const currentMonth = new Date().toISOString().slice(0, 7);
             document.getElementById('monthFilter').value = currentMonth;
-            loadCustomersFromFirebase();
-            setupRealtimeListener();
+            loadCustomersFromLocalStorage();
             setupUploadEvents();
         }
+
+        // Local Storage Functions
+        function loadCustomersFromLocalStorage() {
+            try {
+                const savedCustomers = localStorage.getItem('nala_customers');
+                customers = savedCustomers ? JSON.parse(savedCustomers) : [];
+                updateStats();
+                renderTable();
+                if (customers.length === 0) {
+                    showToast('Belum ada data customer. Klik "Load Sample Data" untuk contoh data.', 'success');
+                } else {
+                    showToast(`Berhasil memuat ${customers.length} data customer!`, 'success');
+                }
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+                customers = [];
+                updateStats();
+                renderTable();
+            }
+        }
+
+        function saveCustomersToLocalStorage() {
+            try {
+                localStorage.setItem('nala_customers', JSON.stringify(customers));
+                return true;
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                showToast('Error menyimpan data: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Load sample data
+        window.loadSampleData = function() {
+            const sampleData = [
+                {
+                    id: 'sample_1',
+                    name: 'Budi Santoso',
+                    address: 'Jl. Merdeka No. 123, Makassar',
+                    phone: '081234567890',
+                    acCount: 2,
+                    acBrand: 'Daikin',
+                    acUnits: [
+                        {
+                            brand: 'Daikin',
+                            type: 'Split Wall',
+                            pk: '1 PK',
+                            freon: 'R32',
+                            location: 'Ruang Tamu',
+                            condition: 'Baik'
+                        },
+                        {
+                            brand: 'Daikin',
+                            type: 'Split Wall',
+                            pk: '0.75 PK',
+                            freon: 'R32',
+                            location: 'Kamar Tidur',
+                            condition: 'Perlu Service'
+                        }
+                    ],
+                    serviceDate: '2025-07-15',
+                    technician: 'Ahmad',
+                    payment: 350000,
+                    notes: 'Service rutin, bersih filter AC',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                },
+                {
+                    id: 'sample_2',
+                    name: 'Siti Nurhaliza',
+                    address: 'Jl. Pettarani No. 456, Makassar',
+                    phone: '081298765432',
+                    acCount: 3,
+                    acBrand: 'LG',
+                    acUnits: [
+                        {
+                            brand: 'LG',
+                            type: 'Split Wall',
+                            pk: '1.5 PK',
+                            freon: 'R410A',
+                            location: 'Ruang Keluarga',
+                            condition: 'Baik'
+                        },
+                        {
+                            brand: 'LG',
+                            type: 'Split Wall',
+                            pk: '1 PK',
+                            freon: 'R410A',
+                            location: 'Kamar Utama',
+                            condition: 'Baik'
+                        },
+                        {
+                            brand: 'Samsung',
+                            type: 'Split Wall',
+                            pk: '0.75 PK',
+                            freon: 'R32',
+                            location: 'Kamar Anak',
+                            condition: 'Perlu Service'
+                        }
+                    ],
+                    serviceDate: '2025-07-20',
+                    technician: 'Budi',
+                    payment: 450000,
+                    notes: 'Ganti freon AC kamar anak, bersih evaporator semua unit',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                },
+                {
+                    id: 'sample_3',
+                    name: 'Dr. Muhammad Yusuf',
+                    address: 'Jl. Sultan Alauddin No. 789, Makassar',
+                    phone: '081356789012',
+                    acCount: 1,
+                    acBrand: 'Panasonic',
+                    acUnits: [
+                        {
+                            brand: 'Panasonic',
+                            type: 'Split Wall',
+                            pk: '2 PK',
+                            freon: 'R32',
+                            location: 'Ruang Praktek',
+                            condition: 'Baik'
+                        }
+                    ],
+                    serviceDate: '2025-07-25',
+                    technician: 'Andi',
+                    payment: 200000,
+                    notes: 'Service rutin bulanan, AC dalam kondisi sangat baik',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }
+            ];
+
+            customers = sampleData;
+            saveCustomersToLocalStorage();
+            updateStats();
+            renderTable();
+            showToast('Sample data berhasil dimuat!', 'success');
+        };
 
         // Setup upload drag and drop events
         function setupUploadEvents() {
@@ -1542,6 +1631,7 @@
 
                 // Map CSV headers to our data structure
                 const customerData = {
+                    id: 'csv_' + Date.now() + '_' + i,
                     name: row['Nama Customer'] || row['name'] || '',
                     address: row['Alamat'] || row['address'] || '',
                     phone: row['No. Telepon'] || row['phone'] || '',
@@ -1551,49 +1641,21 @@
                     technician: row['Teknisi'] || row['technician'] || '',
                     payment: parseInt(row['Payment'] || row['payment'] || '0'),
                     notes: row['Keterangan'] || row['notes'] || '',
-                    acUnits: []
+                    acUnits: [],
+                    createdAt: new Date(),
+                    updatedAt: new Date()
                 };
 
-                // Try to parse AC units if available
-                const acDetails = row['Detail AC Units'] || row['acUnits'] || '';
-                if (acDetails) {
-                    const units = acDetails.split('|').map(unit => {
-                        const parts = unit.trim().split(':');
-                        if (parts.length > 1) {
-                            const details = parts[1].trim().split(' ');
-                            return {
-                                brand: details[0] || '',
-                                type: details[1] || '',
-                                pk: details[2] || '',
-                                freon: details[3] || '',
-                                location: '',
-                                condition: ''
-                            };
-                        }
-                        return {
-                            brand: customerData.acBrand,
-                            type: 'Split Wall',
-                            pk: '1 PK',
-                            freon: 'R32',
-                            location: '',
-                            condition: ''
-                        };
+                // Create default AC units
+                for (let j = 0; j < customerData.acCount; j++) {
+                    customerData.acUnits.push({
+                        brand: customerData.acBrand || 'Daikin',
+                        type: 'Split Wall',
+                        pk: '1 PK',
+                        freon: 'R32',
+                        location: '',
+                        condition: 'Baik'
                     });
-                    customerData.acUnits = units;
-                }
-
-                // If no AC units parsed, create default ones
-                if (customerData.acUnits.length === 0) {
-                    for (let j = 0; j < customerData.acCount; j++) {
-                        customerData.acUnits.push({
-                            brand: customerData.acBrand || 'Daikin',
-                            type: 'Split Wall',
-                            pk: '1 PK',
-                            freon: 'R32',
-                            location: '',
-                            condition: 'Baik'
-                        });
-                    }
                 }
 
                 csvData.push(customerData);
@@ -1680,8 +1742,8 @@
             showToast(`Berhasil memuat ${csvData.length} data dari CSV!`, 'success');
         }
 
-        // Upload CSV data to Firebase
-        window.uploadCSVData = async function() {
+        // Upload CSV data
+        window.uploadCSVData = function() {
             if (csvData.length === 0) {
                 showToast('Tidak ada data untuk diupload!', 'error');
                 return;
@@ -1689,7 +1751,6 @@
 
             showLoading(true);
             try {
-                const batch = writeBatch(db);
                 let successCount = 0;
 
                 for (const customerData of csvData) {
@@ -1698,18 +1759,14 @@
                         continue;
                     }
 
-                    const docRef = doc(collection(db, "customers"));
-                    batch.set(docRef, {
-                        ...customerData,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        createdBy: currentUser ? currentUser.uid : 'anonymous'
-                    });
+                    customers.push(customerData);
                     successCount++;
                 }
 
-                await batch.commit();
-                showToast(`Berhasil mengupload ${successCount} customer ke Firebase!`, 'success');
+                saveCustomersToLocalStorage();
+                updateStats();
+                renderTable();
+                showToast(`Berhasil mengupload ${successCount} customer!`, 'success');
                 closeUploadModal();
                 
             } catch (error) {
@@ -1732,101 +1789,6 @@
             document.getElementById('uploadModal').style.display = 'none';
             csvData = [];
         };
-
-        // Load customers from Firebase
-        async function loadCustomersFromFirebase() {
-            showLoading(true);
-            try {
-                const q = query(collection(db, "customers"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-                customers = [];
-                querySnapshot.forEach((doc) => {
-                    customers.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                updateStats();
-                renderTable();
-                showToast('Data berhasil dimuat dari Firebase!', 'success');
-            } catch (error) {
-                console.error("Error loading customers:", error);
-                showToast('Error loading data: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Setup real-time listener
-        function setupRealtimeListener() {
-            const q = query(collection(db, "customers"), orderBy("createdAt", "desc"));
-            onSnapshot(q, (querySnapshot) => {
-                customers = [];
-                querySnapshot.forEach((doc) => {
-                    customers.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                updateStats();
-                renderTable();
-            });
-        }
-
-        // Add customer to Firebase
-        async function addCustomerToFirebase(customerData) {
-            try {
-                showLoading(true);
-                const docRef = await addDoc(collection(db, "customers"), {
-                    ...customerData,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    createdBy: currentUser ? currentUser.uid : 'anonymous'
-                });
-                showToast('Customer berhasil ditambahkan ke Firebase!', 'success');
-                return docRef.id;
-            } catch (error) {
-                console.error("Error adding customer:", error);
-                showToast('Error: ' + error.message, 'error');
-                throw error;
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Update customer in Firebase
-        async function updateCustomerInFirebase(docId, customerData) {
-            try {
-                showLoading(true);
-                await updateDoc(doc(db, "customers", docId), {
-                    ...customerData,
-                    updatedAt: new Date(),
-                    updatedBy: currentUser ? currentUser.uid : 'anonymous'
-                });
-                showToast('Customer berhasil diperbarui!', 'success');
-            } catch (error) {
-                console.error("Error updating customer:", error);
-                showToast('Error: ' + error.message, 'error');
-                throw error;
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Delete customer from Firebase
-        async function deleteCustomerFromFirebase(docId) {
-            try {
-                showLoading(true);
-                await deleteDoc(doc(db, "customers", docId));
-                showToast('Customer berhasil dihapus!', 'success');
-            } catch (error) {
-                console.error("Error deleting customer:", error);
-                showToast('Error: ' + error.message, 'error');
-                throw error;
-            } finally {
-                showLoading(false);
-            }
-        }
 
         // Generate AC Forms
         window.generateACForms = function() {
@@ -1941,7 +1903,6 @@
             if (index >= 0) {
                 modalTitle.textContent = 'Edit Data Customer';
                 const customer = customers[index];
-                editingDocId = customer.id;
                 
                 document.getElementById('customerName').value = customer.name || '';
                 document.getElementById('customerAddress').value = customer.address || '';
@@ -1974,7 +1935,6 @@
                 form.reset();
                 document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
                 document.getElementById('acFormsContainer').style.display = 'none';
-                editingDocId = null;
             }
             
             modal.style.display = 'block';
@@ -1984,11 +1944,10 @@
         window.closeModal = function() {
             document.getElementById('customerModal').style.display = 'none';
             editingIndex = -1;
-            editingDocId = null;
         };
 
         // Form submission
-        document.getElementById('customerForm').onsubmit = async function(e) {
+        document.getElementById('customerForm').onsubmit = function(e) {
             e.preventDefault();
             
             const acCount = parseInt(document.getElementById('acCount').value);
@@ -2030,29 +1989,48 @@
                 serviceDate: document.getElementById('serviceDate').value,
                 technician: document.getElementById('technician').value,
                 payment: parseInt(document.getElementById('payment').value),
-                notes: document.getElementById('notes').value
+                notes: document.getElementById('notes').value,
+                updatedAt: new Date()
             };
             
             try {
-                if (editingDocId) {
-                    await updateCustomerInFirebase(editingDocId, customerData);
+                if (editingIndex >= 0) {
+                    // Update existing customer
+                    customers[editingIndex] = {
+                        ...customers[editingIndex],
+                        ...customerData
+                    };
+                    showToast('Customer berhasil diperbarui!', 'success');
                 } else {
-                    await addCustomerToFirebase(customerData);
+                    // Add new customer
+                    customerData.id = 'customer_' + Date.now();
+                    customerData.createdAt = new Date();
+                    customers.push(customerData);
+                    showToast('Customer berhasil ditambahkan!', 'success');
                 }
+                
+                saveCustomersToLocalStorage();
+                updateStats();
+                renderTable();
                 closeModal();
             } catch (error) {
                 console.error('Error saving customer:', error);
+                showToast('Error menyimpan data: ' + error.message, 'error');
             }
         };
 
         // Delete customer
-        window.deleteCustomer = async function(index) {
+        window.deleteCustomer = function(index) {
             if (confirm('Apakah Anda yakin ingin menghapus data customer ini?')) {
-                const customer = customers[index];
                 try {
-                    await deleteCustomerFromFirebase(customer.id);
+                    customers.splice(index, 1);
+                    saveCustomersToLocalStorage();
+                    updateStats();
+                    renderTable();
+                    showToast('Customer berhasil dihapus!', 'success');
                 } catch (error) {
                     console.error('Error deleting customer:', error);
+                    showToast('Error menghapus data: ' + error.message, 'error');
                 }
             }
         };
@@ -2268,12 +2246,6 @@
             showToast('Data berhasil diekspor ke CSV!', 'success');
         };
 
-        // Sync data manually
-        window.syncData = function() {
-            showToast('Sinkronisasi data dimulai...', 'success');
-            loadCustomersFromFirebase();
-        };
-
         // Modal click outside to close
         window.onclick = function(event) {
             const customerModal = document.getElementById('customerModal');
@@ -2301,10 +2273,6 @@
                     case 'e':
                         e.preventDefault();
                         exportToCSV();
-                        break;
-                    case 'r':
-                        e.preventDefault();
-                        syncData();
                         break;
                     case 'u':
                         e.preventDefault();
