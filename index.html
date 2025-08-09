@@ -875,7 +875,7 @@
     <!-- Auth Loading -->
     <div id="authLoading" class="auth-loading">
         <div class="spinner"></div>
-        <p style="margin-top: 20px;">Memeriksa status login...</p>
+        <p style="margin-top: 20px;">Menghubungkan ke Firebase...</p>
     </div>
 
     <!-- Login Container -->
@@ -887,8 +887,8 @@
             </div>
             <div class="login-form">
                 <div class="auth-tabs">
-                    <div class="auth-tab active" onclick="switchTab('login')">Demo Mode</div>
-                    <div class="auth-tab" onclick="switchTab('register')">Local Only</div>
+                    <div class="auth-tab active" onclick="switchTab('login')">Login</div>
+                    <div class="auth-tab" onclick="switchTab('register')">Register</div>
                 </div>
 
                 <div id="authMessage"></div>
@@ -897,22 +897,28 @@
                 <form id="loginForm" style="display: block;">
                     <div class="form-group">
                         <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" required placeholder="demo@nalaaircon.com" value="demo@nalaaircon.com">
+                        <input type="email" id="loginEmail" required placeholder="admin@nalaaircon.com">
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Password</label>
                         <div class="password-group">
-                            <input type="password" id="loginPassword" required placeholder="demo123" value="demo123">
+                            <input type="password" id="loginPassword" required placeholder="Password Anda">
                             <span class="password-toggle" onclick="togglePassword('loginPassword')">👁️</span>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        🔐 Masuk Demo Mode
+                        🔐 Masuk ke Dashboard
                     </button>
                     <div style="margin-top: 15px; padding: 12px; background: #e3f2fd; border-radius: 8px; font-size: 12px; color: #1976d2;">
-                        <strong>Demo Account (Local Storage):</strong><br>
-                        📧 demo@nalaaircon.com | 🔑 demo123<br>
-                        📧 admin@nalaaircon.com | 🔑 admin123
+                        <strong>🔥 Firebase Configuration Status:</strong><br>
+                        ✅ Project ID: dbnala-6fcf1<br>
+                        ✅ Auth Domain: dbnala-6fcf1.firebaseapp.com<br>
+                        <br>
+                        <strong>📋 Setup Requirements:</strong><br>
+                        1. Enable Authentication di Firebase Console<br>
+                        2. Enable Firestore Database<br>
+                        3. Set Firestore Rules untuk izin read/write<br>
+                        4. Daftar akun baru atau login dengan akun existing
                     </div>
                 </form>
 
@@ -941,7 +947,7 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        📝 Daftar Local Account
+                        📝 Daftar Akun Baru
                     </button>
                 </form>
             </div>
@@ -953,15 +959,15 @@
         <div class="container">
             <div class="header">
                 <h1>🏠 Nala Aircon</h1>
-                <p>Sistem Database Customer & Service Management - Local Storage Edition</p>
+                <p>Sistem Database Customer & Service Management - Firebase Edition</p>
                 
                 <!-- User Info Bar -->
                 <div class="user-info-bar">
                     <div class="user-info">
-                        <div class="user-avatar" id="userAvatar">D</div>
+                        <div class="user-avatar" id="userAvatar">A</div>
                         <div class="user-details">
-                            <div id="userName">Demo User</div>
-                            <div class="user-email" id="userEmail">demo@nalaaircon.com</div>
+                            <div id="userName">Loading...</div>
+                            <div class="user-email" id="userEmail">Loading...</div>
                         </div>
                     </div>
                     <button class="btn btn-logout" onclick="logout()">
@@ -972,13 +978,13 @@
                 <div class="status-bar">
                     <div class="status-indicator">
                         <div class="status-dot"></div>
-                        <span>Local Storage Active</span>
+                        <span>Firebase Connected</span>
                     </div>
                     <div class="status-indicator">
-                        💾 Data Tersimpan Lokal
+                        🔥 Firestore Database
                     </div>
                     <div class="status-indicator">
-                        🌐 Demo Mode
+                        🔐 Authenticated User
                     </div>
                 </div>
             </div>
@@ -1046,7 +1052,7 @@
 
                 <div class="loading" id="loadingIndicator">
                     <div class="spinner"></div>
-                    <p>Loading data...</p>
+                    <p>Loading data from Firebase...</p>
                 </div>
 
                 <div class="table-container">
@@ -1070,8 +1076,8 @@
                             <tr class="no-data">
                                 <td colspan="11">
                                     <div class="no-data">
-                                        <h3>Belum ada data customer</h3>
-                                        <p>Klik "Tambah Customer Baru" atau "Load Sample Data" untuk memulai</p>
+                                        <h3>Loading data...</h3>
+                                        <p>Menghubungkan ke Firebase Database</p>
                                     </div>
                                 </td>
                             </tr>
@@ -1159,7 +1165,7 @@
                         Batal
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        💾 Simpan Data
+                        💾 Simpan ke Firebase
                     </button>
                 </div>
             </form>
@@ -1188,50 +1194,91 @@
                         Batal
                     </button>
                     <button type="button" class="btn btn-primary" onclick="uploadCSVData()">
-                        📁 Upload Data
+                        📁 Upload ke Firebase
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Local Storage Database System
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSp7kuXi5hHWcISGQ2nSgL2T3nPMaFrls",
+            authDomain: "dbnala-6fcf1.firebaseapp.com",
+            projectId: "dbnala-6fcf1",
+            storageBucket: "dbnala-6fcf1.firebasestorage.app",
+            messagingSenderId: "1081263780872",
+            appId: "1:1081263780872:web:3df5c78d708e5b1ffb4dbd",
+            measurementId: "G-KLVLB8YQ34"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Add Firebase connection status logging
+        console.log('🔥 Firebase initialized successfully!');
+        console.log('📊 Project ID:', firebaseConfig.projectId);
+        console.log('🔐 Auth Domain:', firebaseConfig.authDomain);
+
+        // Global variables
         let customers = [];
         let editingIndex = -1;
         let csvData = [];
         let currentUser = null;
 
-        // Demo users for local storage
-        const DEMO_USERS = {
-            'demo@nalaaircon.com': {
-                password: 'demo123',
-                name: 'Demo User',
-                role: 'user'
-            },
-            'admin@nalaaircon.com': {
-                password: 'admin123',
-                name: 'Admin Nala Aircon',
-                role: 'admin'
-            }
+        // Make Firebase services available globally
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.firebaseUtils = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            updateProfile,
+            collection,
+            addDoc,
+            getDocs,
+            doc,
+            updateDoc,
+            deleteDoc,
+            query,
+            orderBy,
+            where
         };
 
         // Check authentication status on load
-        function checkAuthStatus() {
-            const savedUser = localStorage.getItem('nala_current_user');
+        onAuthStateChanged(auth, (user) => {
             const authLoading = document.getElementById('authLoading');
+            
+            console.log('🔐 Auth state changed:', user ? 'User logged in' : 'No user');
+            if (user) {
+                console.log('👤 User email:', user.email);
+                console.log('👤 User ID:', user.uid);
+            }
             
             setTimeout(() => {
                 authLoading.style.display = 'none';
                 
-                if (savedUser) {
-                    currentUser = JSON.parse(savedUser);
+                if (user) {
+                    currentUser = user;
                     showMainApp();
                 } else {
                     showLoginScreen();
                 }
-            }, 1000);
-        }
+            }, 2000);
+        });
 
         function showMainApp() {
             document.body.classList.add('authenticated');
@@ -1239,7 +1286,7 @@
             document.getElementById('mainApp').style.display = 'block';
             updateUserInfo(currentUser);
             initMainApp();
-            showToast(`Selamat datang, ${currentUser.name}!`, 'success');
+            showToast(`Selamat datang, ${currentUser.displayName || currentUser.email}!`, 'success');
         }
 
         function showLoginScreen() {
@@ -1248,11 +1295,137 @@
             document.getElementById('mainApp').style.display = 'none';
         }
 
-        // Initialize on page load
-        window.onload = function() {
-            checkAuthStatus();
-        };
+        function updateUserInfo(user) {
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            const userAvatar = document.getElementById('userAvatar');
+            
+            const displayName = user.displayName || user.email.split('@')[0];
+            userName.textContent = displayName;
+            userEmail.textContent = user.email;
+            userAvatar.textContent = displayName.charAt(0).toUpperCase();
+        }
 
+        // Initialize main app after authentication
+        function initMainApp() {
+            document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            document.getElementById('monthFilter').value = currentMonth;
+            loadCustomersFromFirebase();
+            setupUploadEvents();
+        }
+
+        // Firebase Functions
+        async function loadCustomersFromFirebase() {
+            try {
+                showLoading(true);
+                console.log('📊 Loading customers from Firestore...');
+                
+                const customersRef = collection(db, 'customers');
+                const q = query(customersRef, orderBy('createdAt', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                customers = [];
+                querySnapshot.forEach((doc) => {
+                    customers.push({
+                        id: doc.id,
+                        ...doc.data(),
+                        createdAt: doc.data().createdAt?.toDate(),
+                        updatedAt: doc.data().updatedAt?.toDate()
+                    });
+                });
+                
+                console.log('✅ Successfully loaded', customers.length, 'customers');
+                updateStats();
+                renderTable();
+                showToast(`Berhasil memuat ${customers.length} data customer dari Firebase!`, 'success');
+                
+            } catch (error) {
+                console.error('❌ Error loading from Firebase:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                
+                let errorMessage = 'Error memuat data: ';
+                if (error.code === 'permission-denied') {
+                    errorMessage += 'Tidak memiliki izin akses ke database. Pastikan Firestore Rules sudah dikonfigurasi dengan benar.';
+                } else if (error.code === 'unavailable') {
+                    errorMessage += 'Database tidak tersedia. Periksa koneksi internet Anda.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showToast(errorMessage, 'error');
+                customers = [];
+                updateStats();
+                renderTable();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function saveCustomerToFirebase(customerData, isEdit = false, docId = null) {
+            try {
+                showLoading(true);
+                
+                if (isEdit && docId) {
+                    // Update existing document
+                    const customerRef = doc(db, 'customers', docId);
+                    await updateDoc(customerRef, {
+                        ...customerData,
+                        updatedAt: new Date()
+                    });
+                    showToast('Customer berhasil diperbarui!', 'success');
+                } else {
+                    // Add new document
+                    await addDoc(collection(db, 'customers'), {
+                        ...customerData,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
+                    showToast('Customer berhasil ditambahkan!', 'success');
+                }
+                
+                // Reload data
+                await loadCustomersFromFirebase();
+                
+            } catch (error) {
+                console.error('Error saving to Firebase:', error);
+                showToast('Error menyimpan data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteCustomerFromFirebase(customerId) {
+            try {
+                showLoading(true);
+                await deleteDoc(doc(db, 'customers', customerId));
+                showToast('Customer berhasil dihapus!', 'success');
+                await loadCustomersFromFirebase();
+            } catch (error) {
+                console.error('Error deleting from Firebase:', error);
+                showToast('Error menghapus data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Make functions available globally
+        window.showMainApp = showMainApp;
+        window.showLoginScreen = showLoginScreen;
+        window.updateUserInfo = updateUserInfo;
+        window.initMainApp = initMainApp;
+        window.loadCustomersFromFirebase = loadCustomersFromFirebase;
+        window.saveCustomerToFirebase = saveCustomerToFirebase;
+        window.deleteCustomerFromFirebase = deleteCustomerFromFirebase;
+        window.customers = customers;
+        window.editingIndex = editingIndex;
+        window.csvData = csvData;
+        window.currentUser = currentUser;
+
+    </script>
+
+    <script>
         // Authentication Functions
         window.switchTab = function(tab) {
             const tabs = document.querySelectorAll('.auth-tab');
@@ -1295,24 +1468,20 @@
             
             try {
                 showAuthMessage('Sedang login...', 'success');
-                
-                // Check demo users
-                if (DEMO_USERS[email] && DEMO_USERS[email].password === password) {
-                    currentUser = {
-                        uid: 'user_' + Date.now(),
-                        email: email,
-                        displayName: DEMO_USERS[email].name,
-                        role: DEMO_USERS[email].role
-                    };
-                    
-                    // Save to localStorage
-                    localStorage.setItem('nala_current_user', JSON.stringify(currentUser));
-                    showMainApp();
-                } else {
-                    throw new Error('Email atau password salah!');
-                }
+                await window.firebaseUtils.signInWithEmailAndPassword(window.firebaseAuth, email, password);
             } catch (error) {
-                showAuthMessage(error.message, 'error');
+                console.error('Login error:', error);
+                let errorMessage = 'Email atau password salah!';
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = 'Akun dengan email ini tidak ditemukan!';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'Password salah!';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Format email tidak valid!';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Terlalu banyak percobaan login. Coba lagi nanti!';
+                }
+                showAuthMessage(errorMessage, 'error');
             }
         });
 
@@ -1336,61 +1505,38 @@
             
             try {
                 showAuthMessage('Sedang membuat akun...', 'success');
+                const userCredential = await window.firebaseUtils.createUserWithEmailAndPassword(window.firebaseAuth, email, password);
                 
-                // Add new user to local storage
-                const existingUsers = JSON.parse(localStorage.getItem('nala_users') || '{}');
-                
-                if (existingUsers[email]) {
-                    throw new Error('Email sudah terdaftar!');
-                }
-                
-                existingUsers[email] = {
-                    password: password,
-                    name: name,
-                    role: 'user'
-                };
-                
-                localStorage.setItem('nala_users', JSON.stringify(existingUsers));
-                
-                currentUser = {
-                    uid: 'user_' + Date.now(),
-                    email: email,
-                    displayName: name,
-                    role: 'user'
-                };
-                
-                // Save to localStorage
-                localStorage.setItem('nala_current_user', JSON.stringify(currentUser));
-                showMainApp();
+                // Update user profile with name
+                await window.firebaseUtils.updateProfile(userCredential.user, {
+                    displayName: name
+                });
                 
             } catch (error) {
-                showAuthMessage(error.message, 'error');
+                console.error('Register error:', error);
+                let errorMessage = 'Gagal membuat akun!';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'Email sudah terdaftar!';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Format email tidak valid!';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Password terlalu lemah!';
+                }
+                showAuthMessage(errorMessage, 'error');
             }
         });
 
         window.logout = async function() {
             if (confirm('Apakah Anda yakin ingin logout?')) {
                 try {
-                    localStorage.removeItem('nala_current_user');
-                    currentUser = null;
-                    showLoginScreen();
+                    await window.firebaseUtils.signOut(window.firebaseAuth);
                     showToast('Berhasil logout!', 'success');
                 } catch (error) {
+                    console.error('Logout error:', error);
                     showToast('Error logout: ' + error.message, 'error');
                 }
             }
         };
-
-        function updateUserInfo(user) {
-            const userName = document.getElementById('userName');
-            const userEmail = document.getElementById('userEmail');
-            const userAvatar = document.getElementById('userAvatar');
-            
-            const displayName = user.displayName || user.email.split('@')[0];
-            userName.textContent = displayName;
-            userEmail.textContent = user.email;
-            userAvatar.textContent = displayName.charAt(0).toUpperCase();
-        }
 
         function showAuthMessage(message, type) {
             const authMessage = document.getElementById('authMessage');
@@ -1404,52 +1550,10 @@
             authMessage.style.display = 'none';
         }
 
-        // Initialize main app after authentication
-        function initMainApp() {
-            document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
-            // Set current month as default filter
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            document.getElementById('monthFilter').value = currentMonth;
-            loadCustomersFromLocalStorage();
-            setupUploadEvents();
-        }
-
-        // Local Storage Functions
-        function loadCustomersFromLocalStorage() {
-            try {
-                const savedCustomers = localStorage.getItem('nala_customers');
-                customers = savedCustomers ? JSON.parse(savedCustomers) : [];
-                updateStats();
-                renderTable();
-                if (customers.length === 0) {
-                    showToast('Belum ada data customer. Klik "Load Sample Data" untuk contoh data.', 'success');
-                } else {
-                    showToast(`Berhasil memuat ${customers.length} data customer!`, 'success');
-                }
-            } catch (error) {
-                console.error('Error loading from localStorage:', error);
-                customers = [];
-                updateStats();
-                renderTable();
-            }
-        }
-
-        function saveCustomersToLocalStorage() {
-            try {
-                localStorage.setItem('nala_customers', JSON.stringify(customers));
-                return true;
-            } catch (error) {
-                console.error('Error saving to localStorage:', error);
-                showToast('Error menyimpan data: ' + error.message, 'error');
-                return false;
-            }
-        }
-
         // Load sample data
-        window.loadSampleData = function() {
+        window.loadSampleData = async function() {
             const sampleData = [
                 {
-                    id: 'sample_1',
                     name: 'Budi Santoso',
                     address: 'Jl. Merdeka No. 123, Makassar',
                     phone: '081234567890',
@@ -1476,12 +1580,9 @@
                     serviceDate: '2025-07-15',
                     technician: 'Ahmad',
                     payment: 350000,
-                    notes: 'Service rutin, bersih filter AC',
-                    createdAt: new Date(),
-                    updatedAt: new Date()
+                    notes: 'Service rutin, bersih filter AC'
                 },
                 {
-                    id: 'sample_2',
                     name: 'Siti Nurhaliza',
                     address: 'Jl. Pettarani No. 456, Makassar',
                     phone: '081298765432',
@@ -1516,12 +1617,9 @@
                     serviceDate: '2025-07-20',
                     technician: 'Budi',
                     payment: 450000,
-                    notes: 'Ganti freon AC kamar anak, bersih evaporator semua unit',
-                    createdAt: new Date(),
-                    updatedAt: new Date()
+                    notes: 'Ganti freon AC kamar anak, bersih evaporator semua unit'
                 },
                 {
-                    id: 'sample_3',
                     name: 'Dr. Muhammad Yusuf',
                     address: 'Jl. Sultan Alauddin No. 789, Makassar',
                     phone: '081356789012',
@@ -1540,17 +1638,27 @@
                     serviceDate: '2025-07-25',
                     technician: 'Andi',
                     payment: 200000,
-                    notes: 'Service rutin bulanan, AC dalam kondisi sangat baik',
-                    createdAt: new Date(),
-                    updatedAt: new Date()
+                    notes: 'Service rutin bulanan, AC dalam kondisi sangat baik'
                 }
             ];
 
-            customers = sampleData;
-            saveCustomersToLocalStorage();
-            updateStats();
-            renderTable();
-            showToast('Sample data berhasil dimuat!', 'success');
+            try {
+                showLoading(true);
+                for (const customerData of sampleData) {
+                    await window.firebaseUtils.addDoc(window.firebaseUtils.collection(window.firebaseDb, 'customers'), {
+                        ...customerData,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
+                }
+                showToast('Sample data berhasil dimuat ke Firebase!', 'success');
+                await window.loadCustomersFromFirebase();
+            } catch (error) {
+                console.error('Error loading sample data:', error);
+                showToast('Error memuat sample data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
         };
 
         // Setup upload drag and drop events
@@ -1619,7 +1727,7 @@
             }
 
             const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-            csvData = [];
+            window.csvData = [];
 
             for (let i = 1; i < lines.length; i++) {
                 const values = parseCSVLine(lines[i]);
@@ -1629,9 +1737,7 @@
                     row[header] = values[index] || '';
                 });
 
-                // Map CSV headers to our data structure
                 const customerData = {
-                    id: 'csv_' + Date.now() + '_' + i,
                     name: row['Nama Customer'] || row['name'] || '',
                     address: row['Alamat'] || row['address'] || '',
                     phone: row['No. Telepon'] || row['phone'] || '',
@@ -1641,12 +1747,9 @@
                     technician: row['Teknisi'] || row['technician'] || '',
                     payment: parseInt(row['Payment'] || row['payment'] || '0'),
                     notes: row['Keterangan'] || row['notes'] || '',
-                    acUnits: [],
-                    createdAt: new Date(),
-                    updatedAt: new Date()
+                    acUnits: []
                 };
 
-                // Create default AC units
                 for (let j = 0; j < customerData.acCount; j++) {
                     customerData.acUnits.push({
                         brand: customerData.acBrand || 'Daikin',
@@ -1658,13 +1761,12 @@
                     });
                 }
 
-                csvData.push(customerData);
+                window.csvData.push(customerData);
             }
 
             showPreview();
         }
 
-        // Parse CSV line with proper comma handling
         function parseCSVLine(line) {
             const result = [];
             let current = '';
@@ -1687,12 +1789,11 @@
             return result;
         }
 
-        // Show preview of CSV data
         function showPreview() {
             const previewDiv = document.getElementById('uploadPreview');
             const previewTable = document.getElementById('previewTable');
             
-            if (csvData.length === 0) {
+            if (window.csvData.length === 0) {
                 showToast('Tidak ada data valid yang ditemukan dalam file CSV!', 'error');
                 return;
             }
@@ -1712,7 +1813,7 @@
                     <tbody>
             `;
 
-            csvData.slice(0, 5).forEach(customer => {
+            window.csvData.slice(0, 5).forEach(customer => {
                 tableHTML += `
                     <tr>
                         <td style="padding: 8px; border: 1px solid #c6d3e8;">${customer.name}</td>
@@ -1725,11 +1826,11 @@
                 `;
             });
 
-            if (csvData.length > 5) {
+            if (window.csvData.length > 5) {
                 tableHTML += `
                     <tr>
                         <td colspan="6" style="padding: 8px; text-align: center; color: #89a5d0; font-style: italic;">
-                            ... dan ${csvData.length - 5} data lainnya
+                            ... dan ${window.csvData.length - 5} data lainnya
                         </td>
                     </tr>
                 `;
@@ -1739,35 +1840,36 @@
             previewTable.innerHTML = tableHTML;
             previewDiv.style.display = 'block';
             
-            showToast(`Berhasil memuat ${csvData.length} data dari CSV!`, 'success');
+            showToast(`Berhasil memuat ${window.csvData.length} data dari CSV!`, 'success');
         }
 
-        // Upload CSV data
-        window.uploadCSVData = function() {
-            if (csvData.length === 0) {
+        // Upload CSV data to Firebase
+        window.uploadCSVData = async function() {
+            if (window.csvData.length === 0) {
                 showToast('Tidak ada data untuk diupload!', 'error');
                 return;
             }
 
-            showLoading(true);
             try {
+                showLoading(true);
                 let successCount = 0;
 
-                for (const customerData of csvData) {
-                    // Validate required fields
+                for (const customerData of window.csvData) {
                     if (!customerData.name || !customerData.phone) {
                         continue;
                     }
 
-                    customers.push(customerData);
+                    await window.firebaseUtils.addDoc(window.firebaseUtils.collection(window.firebaseDb, 'customers'), {
+                        ...customerData,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
                     successCount++;
                 }
 
-                saveCustomersToLocalStorage();
-                updateStats();
-                renderTable();
-                showToast(`Berhasil mengupload ${successCount} customer!`, 'success');
+                showToast(`Berhasil mengupload ${successCount} customer ke Firebase!`, 'success');
                 closeUploadModal();
+                await window.loadCustomersFromFirebase();
                 
             } catch (error) {
                 console.error("Error uploading CSV data:", error);
@@ -1782,12 +1884,12 @@
             document.getElementById('uploadModal').style.display = 'block';
             document.getElementById('uploadPreview').style.display = 'none';
             document.getElementById('csvFile').value = '';
-            csvData = [];
+            window.csvData = [];
         };
 
         window.closeUploadModal = function() {
             document.getElementById('uploadModal').style.display = 'none';
-            csvData = [];
+            window.csvData = [];
         };
 
         // Generate AC Forms
@@ -1898,11 +2000,11 @@
             const modalTitle = document.getElementById('modalTitle');
             const form = document.getElementById('customerForm');
             
-            editingIndex = index;
+            window.editingIndex = index;
             
             if (index >= 0) {
                 modalTitle.textContent = 'Edit Data Customer';
-                const customer = customers[index];
+                const customer = window.customers[index];
                 
                 document.getElementById('customerName').value = customer.name || '';
                 document.getElementById('customerAddress').value = customer.address || '';
@@ -1914,7 +2016,6 @@
                 document.getElementById('payment').value = customer.payment || '';
                 document.getElementById('notes').value = customer.notes || '';
                 
-                // Generate AC forms and populate data
                 generateACForms();
                 if (customer.acUnits && customer.acUnits.length > 0) {
                     setTimeout(() => {
@@ -1943,17 +2044,16 @@
         // Close modal
         window.closeModal = function() {
             document.getElementById('customerModal').style.display = 'none';
-            editingIndex = -1;
+            window.editingIndex = -1;
         };
 
         // Form submission
-        document.getElementById('customerForm').onsubmit = function(e) {
+        document.getElementById('customerForm').onsubmit = async function(e) {
             e.preventDefault();
             
             const acCount = parseInt(document.getElementById('acCount').value);
             const acUnits = [];
             
-            // Collect AC units data
             for (let i = 0; i < acCount; i++) {
                 const brandEl = document.getElementById(`acBrand_${i}`);
                 const typeEl = document.getElementById(`acType_${i}`);
@@ -1989,29 +2089,17 @@
                 serviceDate: document.getElementById('serviceDate').value,
                 technician: document.getElementById('technician').value,
                 payment: parseInt(document.getElementById('payment').value),
-                notes: document.getElementById('notes').value,
-                updatedAt: new Date()
+                notes: document.getElementById('notes').value
             };
             
             try {
-                if (editingIndex >= 0) {
-                    // Update existing customer
-                    customers[editingIndex] = {
-                        ...customers[editingIndex],
-                        ...customerData
-                    };
-                    showToast('Customer berhasil diperbarui!', 'success');
+                if (window.editingIndex >= 0) {
+                    const customerId = window.customers[window.editingIndex].id;
+                    await window.saveCustomerToFirebase(customerData, true, customerId);
                 } else {
-                    // Add new customer
-                    customerData.id = 'customer_' + Date.now();
-                    customerData.createdAt = new Date();
-                    customers.push(customerData);
-                    showToast('Customer berhasil ditambahkan!', 'success');
+                    await window.saveCustomerToFirebase(customerData, false);
                 }
                 
-                saveCustomersToLocalStorage();
-                updateStats();
-                renderTable();
                 closeModal();
             } catch (error) {
                 console.error('Error saving customer:', error);
@@ -2020,14 +2108,11 @@
         };
 
         // Delete customer
-        window.deleteCustomer = function(index) {
+        window.deleteCustomer = async function(index) {
             if (confirm('Apakah Anda yakin ingin menghapus data customer ini?')) {
                 try {
-                    customers.splice(index, 1);
-                    saveCustomersToLocalStorage();
-                    updateStats();
-                    renderTable();
-                    showToast('Customer berhasil dihapus!', 'success');
+                    const customerId = window.customers[index].id;
+                    await window.deleteCustomerFromFirebase(customerId);
                 } catch (error) {
                     console.error('Error deleting customer:', error);
                     showToast('Error menghapus data: ' + error.message, 'error');
@@ -2038,7 +2123,7 @@
         // Filter table
         window.filterTable = function() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filteredCustomers = customers.filter(customer => 
+            const filteredCustomers = window.customers.filter(customer => 
                 customer.name?.toLowerCase().includes(searchTerm) ||
                 customer.address?.toLowerCase().includes(searchTerm) ||
                 customer.phone?.includes(searchTerm) ||
@@ -2050,7 +2135,7 @@
         };
 
         // Render table
-        function renderTable(dataToRender = customers) {
+        function renderTable(dataToRender = window.customers) {
             const tbody = document.getElementById('customerTableBody');
             
             if (dataToRender.length === 0) {
@@ -2068,7 +2153,6 @@
             }
             
             tbody.innerHTML = dataToRender.map((customer, index) => {
-                // Create AC units summary
                 let acSummary = '';
                 if (customer.acUnits && customer.acUnits.length > 0) {
                     acSummary = customer.acUnits.map((unit, i) => `
@@ -2104,10 +2188,10 @@
                         `}
                     </td>
                     <td>
-                        <button class="btn btn-edit" onclick="openModal(${customers.indexOf(customer)})" style="margin-right: 5px; padding: 8px 12px; font-size: 12px;">
+                        <button class="btn btn-edit" onclick="openModal(${window.customers.indexOf(customer)})" style="margin-right: 5px; padding: 8px 12px; font-size: 12px;">
                             ✏️ Edit
                         </button>
-                        <button class="btn btn-delete" onclick="deleteCustomer(${customers.indexOf(customer)})" style="padding: 8px 12px; font-size: 12px;">
+                        <button class="btn btn-delete" onclick="deleteCustomer(${window.customers.indexOf(customer)})" style="padding: 8px 12px; font-size: 12px;">
                             🗑️ Hapus
                         </button>
                     </td>
@@ -2118,32 +2202,26 @@
         // Update statistics based on selected month filter
         window.updateStats = function() {
             const selectedMonth = document.getElementById('monthFilter').value;
-            let filteredCustomers = customers;
+            let filteredCustomers = window.customers;
 
-            // Filter customers based on selected month
             if (selectedMonth) {
-                filteredCustomers = customers.filter(customer => {
+                filteredCustomers = window.customers.filter(customer => {
                     if (!customer.serviceDate) return false;
-                    const serviceMonth = customer.serviceDate.slice(0, 7); // YYYY-MM format
+                    const serviceMonth = customer.serviceDate.slice(0, 7);
                     return serviceMonth === selectedMonth;
                 });
             }
 
-            // Update total customers (based on filter)
             document.getElementById('totalCustomers').textContent = filteredCustomers.length;
             
-            // Update total AC units (based on filter)
             const totalAC = filteredCustomers.reduce((sum, customer) => sum + (customer.acCount || 0), 0);
             document.getElementById('totalAC').textContent = totalAC;
             
-            // Update total payment (based on filter)
             const totalPayment = filteredCustomers.reduce((sum, customer) => sum + (customer.payment || 0), 0);
             document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
             
-            // Update service count for selected period
             document.getElementById('recentService').textContent = filteredCustomers.length;
             
-            // Update stat label based on filter
             const statLabel = document.querySelector('.stat-card:last-child .stat-label');
             if (selectedMonth) {
                 const monthNames = {
@@ -2202,7 +2280,7 @@
 
         // Export to CSV
         window.exportToCSV = function() {
-            if (customers.length === 0) {
+            if (window.customers.length === 0) {
                 showToast('Tidak ada data untuk diekspor!', 'error');
                 return;
             }
@@ -2210,7 +2288,7 @@
             const headers = ['No', 'Nama Customer', 'Alamat', 'No. Telepon', 'Jumlah AC', 'Detail AC Units', 'Tanggal Service', 'Teknisi', 'Payment', 'Keterangan'];
             const csvContent = [
                 headers.join(','),
-                ...customers.map((customer, index) => {
+                ...window.customers.map((customer, index) => {
                     let acDetails = '';
                     if (customer.acUnits && customer.acUnits.length > 0) {
                         acDetails = customer.acUnits.map((unit, i) => 
@@ -2237,56 +2315,4 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `nala-aircon-customers-${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('Data berhasil diekspor ke CSV!', 'success');
-        };
-
-        // Modal click outside to close
-        window.onclick = function(event) {
-            const customerModal = document.getElementById('customerModal');
-            const uploadModal = document.getElementById('uploadModal');
-            
-            if (event.target === customerModal) {
-                closeModal();
-            }
-            if (event.target === uploadModal) {
-                closeUploadModal();
-            }
-        };
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Only work when authenticated
-            if (!currentUser) return;
-            
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case 'n':
-                        e.preventDefault();
-                        openModal();
-                        break;
-                    case 'e':
-                        e.preventDefault();
-                        exportToCSV();
-                        break;
-                    case 'u':
-                        e.preventDefault();
-                        openUploadModal();
-                        break;
-                }
-            }
-            
-            if (e.key === 'Escape') {
-                closeModal();
-                closeUploadModal();
-            }
-        });
-
-    </script>
-</body>
-</html>
+            link.setAttribute('download', `nala-aircon-customers-${
