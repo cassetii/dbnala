@@ -92,31 +92,6 @@
             padding: 40px 30px;
         }
 
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            background: #f8fafc;
-            border-radius: 15px;
-            padding: 5px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: #89a5d0;
-        }
-
-        .auth-tab.active {
-            background: linear-gradient(135deg, #014aad, #89a5d0);
-            color: white;
-            box-shadow: 0 5px 15px rgba(1, 74, 173, 0.3);
-        }
-
         .form-group {
             margin-bottom: 25px;
         }
@@ -559,13 +534,6 @@
             margin-bottom: 30px;
         }
 
-        .form-group label {
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #014aad;
-            font-size: 14px;
-        }
-
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -899,7 +867,7 @@
     <!-- Auth Loading -->
     <div id="authLoading" class="auth-loading">
         <div class="spinner"></div>
-        <p style="margin-top: 20px;">Menghubungkan ke sistem...</p>
+        <p style="margin-top: 20px;">Menghubungkan ke Firebase...</p>
     </div>
 
     <!-- Login Container -->
@@ -915,8 +883,8 @@
                 <!-- Login Form -->
                 <form id="loginForm">
                     <div class="form-group">
-                        <label for="loginUsername">Username / Email</label>
-                        <input type="text" id="loginUsername" required placeholder="adminputri atau email@domain.com">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required placeholder="email@domain.com">
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Password</label>
@@ -930,12 +898,12 @@
                     </button>
                     
                     <div class="admin-info">
-                        <h4>🔑 Login Admin:</h4>
+                        <h4>🔑 Demo Login:</h4>
                         <div class="admin-credentials">
-                            Username: adminputri<br>
-                            Password: putri123!
+                            Email: admin@nalaaircon.com<br>
+                            Password: admin123
                         </div>
-                        <small>Login dengan kredensial di atas untuk akses langsung ke database.</small>
+                        <small>Gunakan kredensial di atas untuk testing.</small>
                     </div>
                 </form>
             </div>
@@ -966,13 +934,13 @@
                 <div class="status-bar">
                     <div class="status-indicator">
                         <div class="status-dot"></div>
-                        <span>Database Connected</span>
+                        <span>Firebase Connected</span>
                     </div>
                     <div class="status-indicator">
-                        💾 Local Storage
+                        🔥 Firestore Database
                     </div>
                     <div class="status-indicator">
-                        🔐 Admin Access
+                        🔐 Authenticated
                     </div>
                 </div>
             </div>
@@ -980,7 +948,7 @@
             <div class="main-content">
                 <!-- Filter Section -->
                 <div class="filter-section">
-                    <label for="monthFilter" style="font-weight: 600; color: #014aad; margin-right: 10px;">Filter Laporan Berdasarkan Bulan:</label>
+                    <label for="monthFilter" style="font-weight: 600; color: #014aad; margin-right: 10px;">Filter Berdasarkan Bulan:</label>
                     <select id="monthFilter" class="month-filter" onchange="updateStats()">
                         <option value="">Semua Bulan</option>
                         <option value="2025-01">Januari 2025</option>
@@ -1025,9 +993,6 @@
                         <button class="btn btn-secondary" onclick="loadSampleData()">
                             📊 Load Sample Data
                         </button>
-                        <button class="btn btn-upload" onclick="openUploadModal()">
-                            📁 Upload Data CSV
-                        </button>
                         <button class="btn btn-export" onclick="exportToCSV()">
                             📄 Export CSV
                         </button>
@@ -1040,7 +1005,7 @@
 
                 <div class="loading" id="loadingIndicator">
                     <div class="spinner"></div>
-                    <p>Loading data...</p>
+                    <p>Loading data dari Firebase...</p>
                 </div>
 
                 <div class="table-container">
@@ -1114,9 +1079,6 @@
                             <option value="Gree">Gree</option>
                             <option value="Midea">Midea</option>
                             <option value="Haier">Haier</option>
-                            <option value="York">York</option>
-                            <option value="Carrier">Carrier</option>
-                            <option value="Toshiba">Toshiba</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>
                     </div>
@@ -1124,7 +1086,7 @@
                 
                 <!-- Dynamic AC Forms -->
                 <div id="acFormsContainer" style="display: none;">
-                    <h3 style="margin: 25px 0; color: #014aad; border-bottom: 2px solid #c6d3e8; padding-bottom: 15px; font-weight: 700;">
+                    <h3 style="margin: 25px 0; color: #014aad; border-bottom: 2px solid #c6d3e8; padding-bottom: 15px;">
                         📝 Detail Setiap AC Unit
                     </h3>
                     <div id="acFormsList"></div>
@@ -1145,7 +1107,7 @@
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label for="notes">Keterangan / Notes</label>
-                        <textarea id="notes" placeholder="Contoh: AC bocor freon, perlu ganti compressor, customer komplain suara berisik, dll..." rows="3"></textarea>
+                        <textarea id="notes" placeholder="Contoh: AC bocor freon, perlu ganti compressor, dll..." rows="3"></textarea>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -1160,99 +1122,149 @@
         </div>
     </div>
 
-    <!-- Upload Modal -->
-    <div id="uploadModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📁 Upload Data CSV</h2>
-                <button class="close" onclick="closeUploadModal()">&times;</button>
-            </div>
-            <div class="upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()">
-                <div class="upload-icon">📄</div>
-                <h3 style="color: #014aad; margin-bottom: 10px;">Klik atau Drag & Drop File CSV</h3>
-                <p style="color: #89a5d0; margin-bottom: 15px;">Format yang didukung: .csv</p>
-                <input type="file" id="csvFile" class="file-input" accept=".csv" onchange="handleFileSelect(event)">
-                <button type="button" class="btn btn-secondary">Pilih File CSV</button>
-            </div>
-            <div id="uploadPreview" style="display: none; margin-top: 20px;">
-                <h4 style="color: #014aad; margin-bottom: 15px;">Preview Data:</h4>
-                <div id="previewTable" style="max-height: 300px; overflow: auto; border: 1px solid #c6d3e8; border-radius: 10px;"></div>
-                <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: flex-end;">
-                    <button type="button" class="btn" onclick="closeUploadModal()" style="background: #89a5d0; color: white;">
-                        Batal
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="uploadCSVData()">
-                        📁 Upload Data
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs, 
+            updateDoc, 
+            deleteDoc, 
+            doc,
+            orderBy,
+            query,
+            serverTimestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSp7kuXi5hHWcISGQ2nSgL2T3nPMaFrls",
+            authDomain: "dbnala-6fcf1.firebaseapp.com",
+            projectId: "dbnala-6fcf1",
+            storageBucket: "dbnala-6fcf1.firebasestorage.app",
+            messagingSenderId: "1081263780872",
+            appId: "1:1081263780872:web:3df5c78d708e5b1ffb4dbd",
+            measurementId: "G-KLVLB8YQ34"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Make Firebase available globally
+        window.db = db;
+        window.auth = auth;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.doc = doc;
+        window.orderBy = orderBy;
+        window.query = query;
+        window.serverTimestamp = serverTimestamp;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+
         // Global variables
         let customers = [];
-        let editingIndex = -1;
-        let csvData = [];
+        let editingId = null;
         let currentUser = null;
-        let isAuthenticated = false;
 
-        // Check authentication status on load
-        setTimeout(() => {
-            document.getElementById('authLoading').style.display = 'none';
-            showLoginScreen();
-        }, 1500);
+        // Initialize app after Firebase loads
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthState();
+        });
 
+        // Check authentication state
+        function checkAuthState() {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    showMainApp();
+                } else {
+                    setTimeout(() => {
+                        document.getElementById('authLoading').style.display = 'none';
+                        showLoginScreen();
+                    }, 1500);
+                }
+            });
+        }
+
+        // Show main app
         function showMainApp() {
+            document.getElementById('authLoading').style.display = 'none';
             document.body.classList.add('authenticated');
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             updateUserInfo(currentUser);
             initMainApp();
-            showToast(`Selamat datang, ${currentUser.displayName}!`, 'success');
+            showToast(`Selamat datang, ${currentUser.email}!`, 'success');
         }
 
+        // Show login screen
         function showLoginScreen() {
             document.body.classList.remove('authenticated');
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
         }
 
+        // Update user info
         function updateUserInfo(user) {
             const userName = document.getElementById('userName');
             const userEmail = document.getElementById('userEmail');
             const userAvatar = document.getElementById('userAvatar');
             
-            userName.textContent = user.displayName;
+            userName.textContent = user.displayName || user.email.split('@')[0];
             userEmail.textContent = user.email;
-            userAvatar.textContent = user.displayName.charAt(0).toUpperCase();
+            userAvatar.textContent = (user.displayName || user.email).charAt(0).toUpperCase();
         }
 
-        // Initialize main app after authentication
-        function initMainApp() {
+        // Initialize main app
+        async function initMainApp() {
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
             const currentMonth = new Date().toISOString().slice(0, 7);
             document.getElementById('monthFilter').value = currentMonth;
-            loadCustomersFromStorage();
-            setupUploadEvents();
+            await loadCustomersFromFirebase();
         }
 
-        // Storage Functions (replacing Firebase)
-        function loadCustomersFromStorage() {
+        // Load customers from Firebase
+        async function loadCustomersFromFirebase() {
             try {
                 showLoading(true);
-                console.log('📊 Loading customers from localStorage...');
+                console.log('📊 Loading customers from Firebase...');
                 
-                const stored = localStorage.getItem('nala_customers');
-                customers = stored ? JSON.parse(stored) : [];
+                const q = query(collection(db, "customers"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                customers = [];
+                querySnapshot.forEach((doc) => {
+                    customers.push({ id: doc.id, ...doc.data() });
+                });
                 
                 console.log('✅ Successfully loaded', customers.length, 'customers');
                 updateStats();
                 renderTable();
-                showToast(`Berhasil memuat ${customers.length} data customer!`, 'success');
+                
+                if (customers.length > 0) {
+                    showToast(`Berhasil memuat ${customers.length} data customer dari Firebase!`, 'success');
+                }
                 
             } catch (error) {
-                console.error('❌ Error loading from storage:', error);
+                console.error('❌ Error loading from Firebase:', error);
                 showToast('Error memuat data: ' + error.message, 'error');
                 customers = [];
                 updateStats();
@@ -1262,106 +1274,106 @@
             }
         }
 
-        function saveCustomerToStorage(customerData, isEdit = false, index = null) {
+        // Save customer to Firebase
+        async function saveCustomerToFirebase(customerData, isEdit = false) {
             try {
                 showLoading(true);
                 
-                if (isEdit && index !== null) {
+                if (isEdit && editingId) {
                     // Update existing
-                    customers[index] = {
+                    const customerRef = doc(db, "customers", editingId);
+                    await updateDoc(customerRef, {
                         ...customerData,
-                        id: customers[index].id,
-                        createdAt: customers[index].createdAt,
-                        updatedAt: new Date().toISOString()
-                    };
+                        updatedAt: serverTimestamp()
+                    });
                     showToast('Customer berhasil diperbarui!', 'success');
                 } else {
                     // Add new
-                    const newCustomer = {
+                    await addDoc(collection(db, "customers"), {
                         ...customerData,
-                        id: Date.now().toString(),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    };
-                    customers.unshift(newCustomer);
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    });
                     showToast('Customer berhasil ditambahkan!', 'success');
                 }
                 
-                localStorage.setItem('nala_customers', JSON.stringify(customers));
-                updateStats();
-                renderTable();
+                await loadCustomersFromFirebase();
                 
             } catch (error) {
-                console.error('Error saving to storage:', error);
+                console.error('Error saving to Firebase:', error);
                 showToast('Error menyimpan data: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
 
-        function deleteCustomerFromStorage(index) {
+        // Delete customer from Firebase
+        async function deleteCustomerFromFirebase(id) {
             try {
                 showLoading(true);
-                customers.splice(index, 1);
-                localStorage.setItem('nala_customers', JSON.stringify(customers));
+                await deleteDoc(doc(db, "customers", id));
                 showToast('Customer berhasil dihapus!', 'success');
-                updateStats();
-                renderTable();
+                await loadCustomersFromFirebase();
             } catch (error) {
-                console.error('Error deleting from storage:', error);
+                console.error('Error deleting from Firebase:', error);
                 showToast('Error menghapus data: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
 
-        // Authentication Functions
-        window.togglePassword = function(inputId) {
-            const input = document.getElementById(inputId);
-            const toggle = input.nextElementSibling;
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                toggle.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                toggle.textContent = '👁️';
-            }
-        };
-
-        // Login form handler
+        // Login handler
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('loginUsername').value.trim();
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             
             try {
                 showAuthMessage('Sedang login...', 'success');
                 
-                // Check admin credentials
-                if (username === 'adminputri' && password === 'putri123!') {
-                    currentUser = {
-                        displayName: 'Admin Putri',
-                        email: 'adminputri@nalaaircon.com',
-                        uid: 'admin_putri_001'
-                    };
-                    isAuthenticated = true;
-                    showMainApp();
-                } else {
-                    throw new Error('Username atau password salah!');
+                // Try to sign in
+                let userCredential;
+                try {
+                    userCredential = await signInWithEmailAndPassword(auth, email, password);
+                } catch (signInError) {
+                    // If sign in fails and it's the demo account, create it
+                    if (email === 'admin@nalaaircon.com' && password === 'admin123') {
+                        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        showToast('Demo account created successfully!', 'success');
+                    } else {
+                        throw signInError;
+                    }
                 }
+                
+                currentUser = userCredential.user;
+                clearAuthMessage();
                 
             } catch (error) {
                 console.error('Login error:', error);
-                showAuthMessage(error.message, 'error');
+                let errorMessage = 'Login gagal. ';
+                
+                if (error.code === 'auth/invalid-email') {
+                    errorMessage += 'Email tidak valid.';
+                } else if (error.code === 'auth/user-not-found') {
+                    errorMessage += 'User tidak ditemukan.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage += 'Password salah.';
+                } else if (error.code === 'auth/invalid-credential') {
+                    errorMessage += 'Email atau password salah.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showAuthMessage(errorMessage, 'error');
             }
         });
 
-        window.logout = function() {
+        // Logout
+        window.logout = async function() {
             if (confirm('Apakah Anda yakin ingin logout?')) {
                 try {
+                    await signOut(auth);
                     currentUser = null;
-                    isAuthenticated = false;
                     showLoginScreen();
                     showToast('Berhasil logout!', 'success');
                 } catch (error) {
@@ -1371,6 +1383,7 @@
             }
         };
 
+        // Helper functions
         function showAuthMessage(message, type) {
             const authMessage = document.getElementById('authMessage');
             authMessage.className = type === 'error' ? 'error-message' : 'success-message';
@@ -1383,514 +1396,8 @@
             authMessage.style.display = 'none';
         }
 
-        // Load sample data
-        window.loadSampleData = function() {
-            const sampleData = [
-                {
-                    name: 'Budi Santoso',
-                    address: 'Jl. Merdeka No. 123, Makassar',
-                    phone: '081234567890',
-                    acCount: 2,
-                    acBrand: 'Daikin',
-                    acUnits: [
-                        {
-                            brand: 'Daikin',
-                            type: 'Split Wall',
-                            pk: '1 PK',
-                            freon: 'R32',
-                            location: 'Ruang Tamu',
-                            condition: 'Baik'
-                        },
-                        {
-                            brand: 'Daikin',
-                            type: 'Split Wall',
-                            pk: '0.75 PK',
-                            freon: 'R32',
-                            location: 'Kamar Tidur',
-                            condition: 'Perlu Service'
-                        }
-                    ],
-                    serviceDate: '2025-07-15',
-                    technician: 'Ahmad',
-                    payment: 350000,
-                    notes: 'Service rutin, bersih filter AC'
-                },
-                {
-                    name: 'Siti Nurhaliza',
-                    address: 'Jl. Pettarani No. 456, Makassar',
-                    phone: '081298765432',
-                    acCount: 3,
-                    acBrand: 'LG',
-                    acUnits: [
-                        {
-                            brand: 'LG',
-                            type: 'Split Wall',
-                            pk: '1.5 PK',
-                            freon: 'R410A',
-                            location: 'Ruang Keluarga',
-                            condition: 'Baik'
-                        },
-                        {
-                            brand: 'LG',
-                            type: 'Split Wall',
-                            pk: '1 PK',
-                            freon: 'R410A',
-                            location: 'Kamar Utama',
-                            condition: 'Baik'
-                        },
-                        {
-                            brand: 'Samsung',
-                            type: 'Split Wall',
-                            pk: '0.75 PK',
-                            freon: 'R32',
-                            location: 'Kamar Anak',
-                            condition: 'Perlu Service'
-                        }
-                    ],
-                    serviceDate: '2025-07-20',
-                    technician: 'Budi',
-                    payment: 450000,
-                    notes: 'Ganti freon AC kamar anak, bersih evaporator semua unit'
-                },
-                {
-                    name: 'Dr. Muhammad Yusuf',
-                    address: 'Jl. Sultan Alauddin No. 789, Makassar',
-                    phone: '081356789012',
-                    acCount: 1,
-                    acBrand: 'Panasonic',
-                    acUnits: [
-                        {
-                            brand: 'Panasonic',
-                            type: 'Split Wall',
-                            pk: '2 PK',
-                            freon: 'R32',
-                            location: 'Ruang Praktek',
-                            condition: 'Baik'
-                        }
-                    ],
-                    serviceDate: '2025-07-25',
-                    technician: 'Andi',
-                    payment: 200000,
-                    notes: 'Service rutin bulanan, AC dalam kondisi sangat baik'
-                }
-            ];
-
-            try {
-                showLoading(true);
-                sampleData.forEach(customerData => {
-                    const newCustomer = {
-                        ...customerData,
-                        id: Date.now().toString() + Math.random(),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    };
-                    customers.unshift(newCustomer);
-                });
-                
-                localStorage.setItem('nala_customers', JSON.stringify(customers));
-                showToast('Sample data berhasil dimuat!', 'success');
-                updateStats();
-                renderTable();
-            } catch (error) {
-                console.error('Error loading sample data:', error);
-                showToast('Error memuat sample data: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        };
-
-        // Setup upload drag and drop events
-        function setupUploadEvents() {
-            const uploadArea = document.getElementById('uploadArea');
-            
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight(e) {
-                uploadArea.classList.add('dragover');
-            }
-
-            function unhighlight(e) {
-                uploadArea.classList.remove('dragover');
-            }
-
-            uploadArea.addEventListener('drop', handleDrop, false);
-
-            function handleDrop(e) {
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handleFileSelect({ target: { files: files } });
-                }
-            }
-        }
-
-        // Handle file selection
-        window.handleFileSelect = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!file.name.toLowerCase().endsWith('.csv')) {
-                showToast('Mohon pilih file CSV yang valid!', 'error');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const csvText = e.target.result;
-                parseCSV(csvText);
-            };
-            reader.readAsText(file);
-        };
-
-        // Parse CSV data
-        function parseCSV(csvText) {
-            const lines = csvText.split('\n').filter(line => line.trim() !== '');
-            if (lines.length < 2) {
-                showToast('File CSV harus memiliki header dan minimal 1 baris data!', 'error');
-                return;
-            }
-
-            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-            csvData = [];
-
-            for (let i = 1; i < lines.length; i++) {
-                const values = parseCSVLine(lines[i]);
-                const row = {};
-                
-                headers.forEach((header, index) => {
-                    row[header] = values[index] || '';
-                });
-
-                const customerData = {
-                    name: row['Nama Customer'] || row['name'] || '',
-                    address: row['Alamat'] || row['address'] || '',
-                    phone: row['No. Telepon'] || row['phone'] || '',
-                    acCount: parseInt(row['Jumlah AC'] || row['acCount'] || '1'),
-                    acBrand: row['Brand AC'] || row['acBrand'] || '',
-                    serviceDate: row['Tanggal Service'] || row['serviceDate'] || '',
-                    technician: row['Teknisi'] || row['technician'] || '',
-                    payment: parseInt(row['Payment'] || row['payment'] || '0'),
-                    notes: row['Keterangan'] || row['notes'] || '',
-                    acUnits: []
-                };
-
-                for (let j = 0; j < customerData.acCount; j++) {
-                    customerData.acUnits.push({
-                        brand: customerData.acBrand || 'Daikin',
-                        type: 'Split Wall',
-                        pk: '1 PK',
-                        freon: 'R32',
-                        location: '',
-                        condition: 'Baik'
-                    });
-                }
-
-                csvData.push(customerData);
-            }
-
-            showPreview();
-        }
-
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current.trim().replace(/"/g, ''));
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            
-            result.push(current.trim().replace(/"/g, ''));
-            return result;
-        }
-
-        function showPreview() {
-            const previewDiv = document.getElementById('uploadPreview');
-            const previewTable = document.getElementById('previewTable');
-            
-            if (csvData.length === 0) {
-                showToast('Tidak ada data valid yang ditemukan dalam file CSV!', 'error');
-                return;
-            }
-
-            let tableHTML = `
-                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                    <thead>
-                        <tr style="background: #014aad; color: white;">
-                            <th style="padding: 8px; border: 1px solid #c6d3e8;">Nama</th>
-                            <th style="padding: 8px; border: 1px solid #c6d3e8;">Alamat</th>
-                            <th style="padding: 8px; border: 1px solid #c6d3e8;">Telepon</th>
-                            <th style="padding: 8px; border: 1px solid #c6d3e8;">AC Count</th>
-                            <th style="padding: 8px; border: 1px solid #c6d3e8;">Service Date</th>
-                            <th style="padding: 8px; border: 1px solid #c6d3e8;">Payment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            csvData.slice(0, 5).forEach(customer => {
-                tableHTML += `
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #c6d3e8;">${customer.name}</td>
-                        <td style="padding: 8px; border: 1px solid #c6d3e8;">${customer.address}</td>
-                        <td style="padding: 8px; border: 1px solid #c6d3e8;">${customer.phone}</td>
-                        <td style="padding: 8px; border: 1px solid #c6d3e8;">${customer.acCount}</td>
-                        <td style="padding: 8px; border: 1px solid #c6d3e8;">${customer.serviceDate}</td>
-                        <td style="padding: 8px; border: 1px solid #c6d3e8;">${formatCurrency(customer.payment)}</td>
-                    </tr>
-                `;
-            });
-
-            if (csvData.length > 5) {
-                tableHTML += `
-                    <tr>
-                        <td colspan="6" style="padding: 8px; text-align: center; color: #89a5d0; font-style: italic;">
-                            ... dan ${csvData.length - 5} data lainnya
-                        </td>
-                    </tr>
-                `;
-            }
-
-            tableHTML += '</tbody></table>';
-            previewTable.innerHTML = tableHTML;
-            previewDiv.style.display = 'block';
-            
-            showToast(`Berhasil memuat ${csvData.length} data dari CSV!`, 'success');
-        }
-
-        // Upload CSV data
-        window.uploadCSVData = function() {
-            if (csvData.length === 0) {
-                showToast('Tidak ada data untuk diupload!', 'error');
-                return;
-            }
-
-            try {
-                showLoading(true);
-                let successCount = 0;
-
-                csvData.forEach(customerData => {
-                    if (!customerData.name || !customerData.phone) {
-                        return;
-                    }
-
-                    const newCustomer = {
-                        ...customerData,
-                        id: Date.now().toString() + Math.random(),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    };
-                    customers.unshift(newCustomer);
-                    successCount++;
-                });
-
-                localStorage.setItem('nala_customers', JSON.stringify(customers));
-                showToast(`Berhasil mengupload ${successCount} customer!`, 'success');
-                closeUploadModal();
-                updateStats();
-                renderTable();
-                
-            } catch (error) {
-                console.error("Error uploading CSV data:", error);
-                showToast('Error: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        };
-
-        // Modal functions
-        window.openUploadModal = function() {
-            document.getElementById('uploadModal').style.display = 'block';
-            document.getElementById('uploadPreview').style.display = 'none';
-            document.getElementById('csvFile').value = '';
-            csvData = [];
-        };
-
-        window.closeUploadModal = function() {
-            document.getElementById('uploadModal').style.display = 'none';
-            csvData = [];
-        };
-
-        // Generate AC Forms
-        window.generateACForms = function() {
-            const acCount = parseInt(document.getElementById('acCount').value) || 0;
-            const container = document.getElementById('acFormsContainer');
-            const formsList = document.getElementById('acFormsList');
-            
-            if (acCount > 0 && acCount <= 20) {
-                container.style.display = 'block';
-                formsList.innerHTML = '';
-                
-                for (let i = 0; i < acCount; i++) {
-                    const acForm = document.createElement('div');
-                    acForm.className = 'ac-unit-form';
-                    
-                    acForm.innerHTML = `
-                        <h4 style="color: #014aad; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: 700;">
-                            <span style="background: linear-gradient(135deg, #014aad, #89a5d0); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">${i + 1}</span>
-                            AC Unit ${i + 1}
-                        </h4>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Brand AC *</label>
-                                <select id="acBrand_${i}" required>
-                                    <option value="">Pilih Brand AC</option>
-                                    <option value="Daikin">Daikin</option>
-                                    <option value="LG">LG</option>
-                                    <option value="Samsung">Samsung</option>
-                                    <option value="Panasonic">Panasonic</option>
-                                    <option value="Sharp">Sharp</option>
-                                    <option value="Mitsubishi">Mitsubishi</option>
-                                    <option value="Gree">Gree</option>
-                                    <option value="Midea">Midea</option>
-                                    <option value="Haier">Haier</option>
-                                    <option value="York">York</option>
-                                    <option value="Carrier">Carrier</option>
-                                    <option value="Toshiba">Toshiba</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Type AC *</label>
-                                <select id="acType_${i}" required>
-                                    <option value="">Pilih Type AC</option>
-                                    <option value="Split Wall">Split Wall</option>
-                                    <option value="Split Floor Standing">Split Floor Standing</option>
-                                    <option value="Cassette">Cassette</option>
-                                    <option value="Ducted">Ducted</option>
-                                    <option value="VRV/VRF">VRV/VRF</option>
-                                    <option value="Window">Window</option>
-                                    <option value="Portable">Portable</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Kapasitas PK *</label>
-                                <select id="pkType_${i}" required>
-                                    <option value="">Pilih Kapasitas PK</option>
-                                    <option value="0.5 PK">0.5 PK</option>
-                                    <option value="0.75 PK">0.75 PK</option>
-                                    <option value="1 PK">1 PK</option>
-                                    <option value="1.5 PK">1.5 PK</option>
-                                    <option value="2 PK">2 PK</option>
-                                    <option value="2.5 PK">2.5 PK</option>
-                                    <option value="3 PK">3 PK</option>
-                                    <option value="4 PK">4 PK</option>
-                                    <option value="5 PK">5 PK</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Type Freon *</label>
-                                <select id="freonType_${i}" required>
-                                    <option value="">Pilih Type Freon</option>
-                                    <option value="R22">R22</option>
-                                    <option value="R32">R32</option>
-                                    <option value="R410A">R410A</option>
-                                    <option value="R134A">R134A</option>
-                                    <option value="R407C">R407C</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Lokasi Penempatan</label>
-                                <input type="text" id="acLocation_${i}" placeholder="Contoh: Ruang Tamu, Kamar Utama">
-                            </div>
-                            <div class="form-group">
-                                <label>Kondisi AC</label>
-                                <select id="acCondition_${i}">
-                                    <option value="">Pilih Kondisi</option>
-                                    <option value="Baik">Baik</option>
-                                    <option value="Perlu Service">Perlu Service</option>
-                                    <option value="Rusak Ringan">Rusak Ringan</option>
-                                    <option value="Rusak Berat">Rusak Berat</option>
-                                </select>
-                            </div>
-                        </div>
-                    `;
-                    
-                    formsList.appendChild(acForm);
-                }
-            } else {
-                container.style.display = 'none';
-            }
-        };
-
-        // Open modal
-        window.openModal = function(index = -1) {
-            const modal = document.getElementById('customerModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const form = document.getElementById('customerForm');
-            
-            editingIndex = index;
-            
-            if (index >= 0) {
-                modalTitle.textContent = 'Edit Data Customer';
-                const customer = customers[index];
-                
-                document.getElementById('customerName').value = customer.name || '';
-                document.getElementById('customerAddress').value = customer.address || '';
-                document.getElementById('customerPhone').value = customer.phone || '';
-                document.getElementById('acCount').value = customer.acCount || '';
-                document.getElementById('acBrand').value = customer.acBrand || '';
-                document.getElementById('serviceDate').value = customer.serviceDate || '';
-                document.getElementById('technician').value = customer.technician || '';
-                document.getElementById('payment').value = customer.payment || '';
-                document.getElementById('notes').value = customer.notes || '';
-                
-                generateACForms();
-                if (customer.acUnits && customer.acUnits.length > 0) {
-                    setTimeout(() => {
-                        customer.acUnits.forEach((unit, i) => {
-                            if (document.getElementById(`acBrand_${i}`)) {
-                                document.getElementById(`acBrand_${i}`).value = unit.brand || '';
-                                document.getElementById(`acType_${i}`).value = unit.type || '';
-                                document.getElementById(`pkType_${i}`).value = unit.pk || '';
-                                document.getElementById(`freonType_${i}`).value = unit.freon || '';
-                                document.getElementById(`acLocation_${i}`).value = unit.location || '';
-                                document.getElementById(`acCondition_${i}`).value = unit.condition || '';
-                            }
-                        });
-                    }, 100);
-                }
-            } else {
-                modalTitle.textContent = 'Tambah Customer Baru';
-                form.reset();
-                document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
-                document.getElementById('acFormsContainer').style.display = 'none';
-            }
-            
-            modal.style.display = 'block';
-        };
-
-        // Close modal
-        window.closeModal = function() {
-            document.getElementById('customerModal').style.display = 'none';
-            editingIndex = -1;
-        };
-
         // Form submission
-        document.getElementById('customerForm').onsubmit = function(e) {
+        document.getElementById('customerForm').onsubmit = async function(e) {
             e.preventDefault();
             
             const acCount = parseInt(document.getElementById('acCount').value);
@@ -1934,44 +1441,161 @@
                 notes: document.getElementById('notes').value
             };
             
-            try {
-                if (editingIndex >= 0) {
-                    saveCustomerToStorage(customerData, true, editingIndex);
-                } else {
-                    saveCustomerToStorage(customerData, false);
-                }
+            await saveCustomerToFirebase(customerData, editingId !== null);
+            closeModal();
+        };
+
+        // Open modal
+        window.openModal = function(customerId = null) {
+            const modal = document.getElementById('customerModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const form = document.getElementById('customerForm');
+            
+            editingId = customerId;
+            
+            if (customerId) {
+                modalTitle.textContent = 'Edit Data Customer';
+                const customer = customers.find(c => c.id === customerId);
                 
-                closeModal();
-            } catch (error) {
-                console.error('Error saving customer:', error);
-                showToast('Error menyimpan data: ' + error.message, 'error');
+                if (customer) {
+                    document.getElementById('customerName').value = customer.name || '';
+                    document.getElementById('customerAddress').value = customer.address || '';
+                    document.getElementById('customerPhone').value = customer.phone || '';
+                    document.getElementById('acCount').value = customer.acCount || '';
+                    document.getElementById('acBrand').value = customer.acBrand || '';
+                    document.getElementById('serviceDate').value = customer.serviceDate || '';
+                    document.getElementById('technician').value = customer.technician || '';
+                    document.getElementById('payment').value = customer.payment || '';
+                    document.getElementById('notes').value = customer.notes || '';
+                    
+                    generateACForms();
+                    if (customer.acUnits && customer.acUnits.length > 0) {
+                        setTimeout(() => {
+                            customer.acUnits.forEach((unit, i) => {
+                                if (document.getElementById(`acBrand_${i}`)) {
+                                    document.getElementById(`acBrand_${i}`).value = unit.brand || '';
+                                    document.getElementById(`acType_${i}`).value = unit.type || '';
+                                    document.getElementById(`pkType_${i}`).value = unit.pk || '';
+                                    document.getElementById(`freonType_${i}`).value = unit.freon || '';
+                                    document.getElementById(`acLocation_${i}`).value = unit.location || '';
+                                    document.getElementById(`acCondition_${i}`).value = unit.condition || '';
+                                }
+                            });
+                        }, 100);
+                    }
+                }
+            } else {
+                modalTitle.textContent = 'Tambah Customer Baru';
+                form.reset();
+                document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('acFormsContainer').style.display = 'none';
             }
+            
+            modal.style.display = 'block';
+        };
+
+        // Close modal
+        window.closeModal = function() {
+            document.getElementById('customerModal').style.display = 'none';
+            editingId = null;
         };
 
         // Delete customer
-        window.deleteCustomer = function(index) {
+        window.deleteCustomer = async function(id) {
             if (confirm('Apakah Anda yakin ingin menghapus data customer ini?')) {
-                try {
-                    deleteCustomerFromStorage(index);
-                } catch (error) {
-                    console.error('Error deleting customer:', error);
-                    showToast('Error menghapus data: ' + error.message, 'error');
-                }
+                await deleteCustomerFromFirebase(id);
             }
         };
 
-        // Filter table
-        window.filterTable = function() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filteredCustomers = customers.filter(customer => 
-                customer.name?.toLowerCase().includes(searchTerm) ||
-                customer.address?.toLowerCase().includes(searchTerm) ||
-                customer.phone?.includes(searchTerm) ||
-                customer.technician?.toLowerCase().includes(searchTerm) ||
-                customer.notes?.toLowerCase().includes(searchTerm)
-            );
-            
-            renderTable(filteredCustomers);
+        // Load sample data
+        window.loadSampleData = async function() {
+            const sampleData = [
+                {
+                    name: 'Budi Santoso',
+                    address: 'Jl. Merdeka No. 123, Makassar',
+                    phone: '081234567890',
+                    acCount: 2,
+                    acBrand: 'Daikin',
+                    acUnits: [
+                        {
+                            brand: 'Daikin',
+                            type: 'Split Wall',
+                            pk: '1 PK',
+                            freon: 'R32',
+                            location: 'Ruang Tamu',
+                            condition: 'Baik'
+                        },
+                        {
+                            brand: 'Daikin',
+                            type: 'Split Wall',
+                            pk: '0.75 PK',
+                            freon: 'R32',
+                            location: 'Kamar Tidur',
+                            condition: 'Perlu Service'
+                        }
+                    ],
+                    serviceDate: '2025-08-15',
+                    technician: 'Ahmad',
+                    payment: 350000,
+                    notes: 'Service rutin, bersih filter AC'
+                },
+                {
+                    name: 'Siti Nurhaliza',
+                    address: 'Jl. Pettarani No. 456, Makassar',
+                    phone: '081298765432',
+                    acCount: 3,
+                    acBrand: 'LG',
+                    acUnits: [
+                        {
+                            brand: 'LG',
+                            type: 'Split Wall',
+                            pk: '1.5 PK',
+                            freon: 'R410A',
+                            location: 'Ruang Keluarga',
+                            condition: 'Baik'
+                        },
+                        {
+                            brand: 'LG',
+                            type: 'Split Wall',
+                            pk: '1 PK',
+                            freon: 'R410A',
+                            location: 'Kamar Utama',
+                            condition: 'Baik'
+                        },
+                        {
+                            brand: 'Samsung',
+                            type: 'Split Wall',
+                            pk: '0.75 PK',
+                            freon: 'R32',
+                            location: 'Kamar Anak',
+                            condition: 'Perlu Service'
+                        }
+                    ],
+                    serviceDate: '2025-08-20',
+                    technician: 'Budi',
+                    payment: 450000,
+                    notes: 'Ganti freon AC kamar anak, bersih evaporator semua unit'
+                }
+            ];
+
+            try {
+                showLoading(true);
+                for (const customerData of sampleData) {
+                    await addDoc(collection(db, "customers"), {
+                        ...customerData,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    });
+                }
+                
+                showToast('Sample data berhasil dimuat!', 'success');
+                await loadCustomersFromFirebase();
+            } catch (error) {
+                console.error('Error loading sample data:', error);
+                showToast('Error memuat sample data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
         };
 
         // Render table
@@ -1996,18 +1620,16 @@
                 let acSummary = '';
                 if (customer.acUnits && customer.acUnits.length > 0) {
                     acSummary = customer.acUnits.map((unit, i) => `
-                        <div style="background: linear-gradient(135deg, #f8fafc, #ffffff); border-left: 4px solid #014aad; padding: 10px; margin: 3px 0; border-radius: 8px; font-size: 12px; box-shadow: 0 2px 8px rgba(1, 74, 173, 0.1);">
+                        <div style="background: linear-gradient(135deg, #f8fafc, #ffffff); border-left: 4px solid #014aad; padding: 10px; margin: 3px 0; border-radius: 8px; font-size: 12px;">
                             <strong style="color: #014aad;">AC ${i + 1}:</strong> ${unit.brand} ${unit.type} ${unit.pk}<br>
                             <span style="color: #89a5d0;">Freon: ${unit.freon}${unit.location ? ` | ${unit.location}` : ''}${unit.condition ? ` | ${unit.condition}` : ''}</span>
                         </div>
                     `).join('');
                 } else {
-                    acSummary = `<div style="background: #fff3e0; padding: 10px; border-radius: 8px; font-size: 12px; color: #f57c00; border-left: 4px solid #ff9800;">
+                    acSummary = `<div style="background: #fff3e0; padding: 10px; border-radius: 8px; font-size: 12px; color: #f57c00;">
                         Data AC unit tidak tersedia
                     </div>`;
                 }
-                
-                const actualIndex = customers.indexOf(customer);
                 
                 return `
                 <tr>
@@ -2022,7 +1644,7 @@
                     <td><strong style="color: #4caf50; font-size: 15px;">${formatCurrency(customer.payment)}</strong></td>
                     <td style="max-width: 200px;">
                         ${customer.notes ? `
-                            <div style="background: linear-gradient(135deg, #e8f5e8, #f1f8e9); border-left: 4px solid #4caf50; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 60px; overflow-y: auto; color: #2e7d32;">
+                            <div style="background: linear-gradient(135deg, #e8f5e8, #f1f8e9); border-left: 4px solid #4caf50; padding: 10px; border-radius: 8px; font-size: 12px;">
                                 ${customer.notes}
                             </div>
                         ` : `
@@ -2030,10 +1652,10 @@
                         `}
                     </td>
                     <td>
-                        <button class="btn btn-edit" onclick="openModal(${actualIndex})" style="margin-right: 5px; padding: 8px 12px; font-size: 12px;">
+                        <button class="btn btn-edit" onclick="openModal('${customer.id}')" style="margin-right: 5px; padding: 8px 12px; font-size: 12px;">
                             ✏️ Edit
                         </button>
-                        <button class="btn btn-delete" onclick="deleteCustomer(${actualIndex})" style="padding: 8px 12px; font-size: 12px;">
+                        <button class="btn btn-delete" onclick="deleteCustomer('${customer.id}')" style="padding: 8px 12px; font-size: 12px;">
                             🗑️ Hapus
                         </button>
                     </td>
@@ -2041,7 +1663,7 @@
             `}).join('');
         }
 
-        // Update statistics based on selected month filter
+        // Update stats
         window.updateStats = function() {
             const selectedMonth = document.getElementById('monthFilter').value;
             let filteredCustomers = customers;
@@ -2063,20 +1685,128 @@
             document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
             
             document.getElementById('recentService').textContent = filteredCustomers.length;
-            
-            const statLabel = document.querySelector('.stat-card:last-child .stat-label');
-            if (selectedMonth) {
-                const monthNames = {
-                    '01': 'Januari', '02': 'Februari', '03': 'Maret', '04': 'April',
-                    '05': 'Mei', '06': 'Juni', '07': 'Juli', '08': 'Agustus',
-                    '09': 'September', '10': 'Oktober', '11': 'November', '12': 'Desember'
-                };
-                const [year, month] = selectedMonth.split('-');
-                statLabel.textContent = `Service ${monthNames[month]} ${year}`;
-            } else {
-                statLabel.textContent = 'Service Semua Periode';
-            }
         }
+
+        // Filter table
+        window.filterTable = function() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredCustomers = customers.filter(customer => 
+                customer.name?.toLowerCase().includes(searchTerm) ||
+                customer.address?.toLowerCase().includes(searchTerm) ||
+                customer.phone?.includes(searchTerm) ||
+                customer.technician?.toLowerCase().includes(searchTerm) ||
+                customer.notes?.toLowerCase().includes(searchTerm)
+            );
+            
+            renderTable(filteredCustomers);
+        };
+
+        // Generate AC Forms
+        window.generateACForms = function() {
+            const acCount = parseInt(document.getElementById('acCount').value) || 0;
+            const container = document.getElementById('acFormsContainer');
+            const formsList = document.getElementById('acFormsList');
+            
+            if (acCount > 0 && acCount <= 20) {
+                container.style.display = 'block';
+                formsList.innerHTML = '';
+                
+                for (let i = 0; i < acCount; i++) {
+                    const acForm = document.createElement('div');
+                    acForm.className = 'ac-unit-form';
+                    
+                    acForm.innerHTML = `
+                        <h4 style="color: #014aad; margin-bottom: 15px;">
+                            <span style="background: linear-gradient(135deg, #014aad, #89a5d0); color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">${i + 1}</span>
+                            AC Unit ${i + 1}
+                        </h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Brand AC *</label>
+                                <select id="acBrand_${i}" required>
+                                    <option value="">Pilih Brand AC</option>
+                                    <option value="Daikin">Daikin</option>
+                                    <option value="LG">LG</option>
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="Panasonic">Panasonic</option>
+                                    <option value="Sharp">Sharp</option>
+                                    <option value="Mitsubishi">Mitsubishi</option>
+                                    <option value="Gree">Gree</option>
+                                    <option value="Midea">Midea</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Type AC *</label>
+                                <select id="acType_${i}" required>
+                                    <option value="">Pilih Type AC</option>
+                                    <option value="Split Wall">Split Wall</option>
+                                    <option value="Split Floor Standing">Split Floor Standing</option>
+                                    <option value="Cassette">Cassette</option>
+                                    <option value="Ducted">Ducted</option>
+                                    <option value="Window">Window</option>
+                                    <option value="Portable">Portable</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kapasitas PK *</label>
+                                <select id="pkType_${i}" required>
+                                    <option value="">Pilih Kapasitas PK</option>
+                                    <option value="0.5 PK">0.5 PK</option>
+                                    <option value="0.75 PK">0.75 PK</option>
+                                    <option value="1 PK">1 PK</option>
+                                    <option value="1.5 PK">1.5 PK</option>
+                                    <option value="2 PK">2 PK</option>
+                                    <option value="2.5 PK">2.5 PK</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Type Freon *</label>
+                                <select id="freonType_${i}" required>
+                                    <option value="">Pilih Type Freon</option>
+                                    <option value="R22">R22</option>
+                                    <option value="R32">R32</option>
+                                    <option value="R410A">R410A</option>
+                                    <option value="R134A">R134A</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Lokasi Penempatan</label>
+                                <input type="text" id="acLocation_${i}" placeholder="Contoh: Ruang Tamu">
+                            </div>
+                            <div class="form-group">
+                                <label>Kondisi AC</label>
+                                <select id="acCondition_${i}">
+                                    <option value="">Pilih Kondisi</option>
+                                    <option value="Baik">Baik</option>
+                                    <option value="Perlu Service">Perlu Service</option>
+                                    <option value="Rusak Ringan">Rusak Ringan</option>
+                                    <option value="Rusak Berat">Rusak Berat</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    
+                    formsList.appendChild(acForm);
+                }
+            } else {
+                container.style.display = 'none';
+            }
+        };
+
+        // Toggle password visibility
+        window.togglePassword = function(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        };
 
         // Utility functions
         function formatDate(dateString) {
