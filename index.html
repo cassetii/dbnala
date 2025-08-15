@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nala Aircon - Database Customer</title>
+    <title>Nala Aircon - Professional Service Management</title>
     
     <style>
         * {
@@ -13,241 +13,259 @@
         }
 
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --secondary: #64748b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --light: #f8fafc;
-            --dark: #1e293b;
-            --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+            --primary-dark: #0d1f23;
+            --secondary-dark: #132e35;
+            --medium-dark: #2d4a53;
+            --medium: #69818d;
+            --light: #afb3b7;
+            --medium-alt: #5a636a;
+            
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            
+            --bg-gradient: linear-gradient(135deg, #0d1f23 0%, #132e35 100%);
+            --card-gradient: linear-gradient(145deg, #132e35, #2d4a53);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+            
+            --radius: 12px;
+            --radius-lg: 16px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--primary-dark);
             min-height: 100vh;
-            color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--medium-alt);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--medium);
+        }
+
+        /* Container */
+        .app-container {
+            min-height: 100vh;
+            background: var(--bg-gradient);
         }
 
         /* Header */
         .header {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
+            background: rgba(13, 31, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
             box-shadow: var(--shadow-lg);
-            animation: slideDown 0.5s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            background: var(--card-gradient);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(175, 179, 183, 0.2);
         }
 
-        .logo h1 {
+        .logo-text h1 {
             font-size: 24px;
-            color: var(--dark);
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 2px;
         }
 
-        .logo p {
+        .logo-text p {
             font-size: 12px;
-            color: var(--secondary);
+            color: var(--medium);
         }
 
-        .status {
+        .header-actions {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--light);
-            border-radius: 20px;
-            font-size: 14px;
+            gap: 12px;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* Stats Cards */
-        .stats-grid {
+        /* Stats Section */
+        .stats-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
+            background: var(--card-gradient);
+            border: 1px solid rgba(175, 179, 183, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 24px;
             box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeIn 0.5s ease forwards;
-            opacity: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
         }
 
         .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
         }
 
         .stat-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--light);
-            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            background: rgba(175, 179, 183, 0.1);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
-            font-size: 20px;
+            font-size: 24px;
+            margin-bottom: 15px;
         }
 
-        .stat-card:nth-child(1) .stat-icon { background: #dbeafe; color: #2563eb; }
-        .stat-card:nth-child(2) .stat-icon { background: #dcfce7; color: #10b981; }
-        .stat-card:nth-child(3) .stat-icon { background: #fef3c7; color: #f59e0b; }
-        .stat-card:nth-child(4) .stat-icon { background: #f3e8ff; color: #9333ea; }
-
         .stat-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 4px;
+            color: #fff;
+            margin-bottom: 5px;
         }
 
         .stat-label {
             font-size: 14px;
-            color: var(--secondary);
+            color: var(--medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Action Bar */
         .action-bar {
-            background: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
+            background: var(--secondary-dark);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 30px;
             box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
         }
 
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
+        /* Buttons */
         .btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius);
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
             color: white;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--light);
-            color: var(--dark);
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-
         .btn-success {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--accent-green), #059669);
             color: white;
         }
 
         .btn-warning {
-            background: var(--warning);
+            background: linear-gradient(135deg, var(--accent-yellow), #d97706);
             color: white;
         }
 
         .btn-danger {
-            background: var(--danger);
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
             color: white;
-            padding: 8px 16px;
+        }
+
+        .btn-secondary {
+            background: var(--medium-dark);
+            color: var(--light);
+            border: 1px solid rgba(175, 179, 183, 0.2);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
         }
 
         /* Search Box */
@@ -258,17 +276,23 @@
 
         .search-box input {
             width: 100%;
-            padding: 10px 40px 10px 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            padding: 10px 40px 10px 15px;
+            background: var(--primary-dark);
+            border: 1px solid rgba(175, 179, 183, 0.2);
+            border-radius: var(--radius);
+            color: var(--light);
             font-size: 14px;
             transition: all 0.3s ease;
         }
 
         .search-box input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .search-box input::placeholder {
+            color: var(--medium);
         }
 
         .search-icon {
@@ -276,56 +300,345 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--secondary);
+            color: var(--medium);
         }
 
-        /* Table */
-        .table-container {
-            background: white;
-            border-radius: 12px;
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: var(--primary-dark);
+            padding: 3px;
+            border-radius: var(--radius);
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            color: var(--medium);
+            cursor: pointer;
+            border-radius: calc(var(--radius) - 3px);
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--medium-dark);
+            color: white;
+        }
+
+        /* Customer Cards */
+        .customers-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .customer-card {
+            background: var(--secondary-dark);
+            border: 1px solid rgba(175, 179, 183, 0.1);
+            border-radius: var(--radius-lg);
             overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .customer-card:hover {
             box-shadow: var(--shadow-lg);
-            overflow-x: auto;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .customer-header {
+            background: var(--card-gradient);
+            padding: 20px;
+            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+            cursor: pointer;
+            user-select: none;
         }
 
-        th {
-            background: var(--light);
-            padding: 12px;
-            text-align: left;
+        .customer-header:hover {
+            background: var(--medium-dark);
+        }
+
+        .customer-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .customer-identity {
+            flex: 1;
+        }
+
+        .customer-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .customer-id {
+            font-size: 11px;
+            color: var(--medium);
+            background: rgba(175, 179, 183, 0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .customer-contact {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--light);
+        }
+
+        .customer-contact span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .customer-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .customer-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 15px 0 0;
+        }
+
+        .customer-stat {
+            text-align: center;
+            padding: 10px;
+            background: rgba(13, 31, 35, 0.5);
+            border-radius: var(--radius);
+        }
+
+        .customer-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .customer-stat-label {
+            font-size: 11px;
+            color: var(--medium);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .customer-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Customer Details */
+        .customer-details {
+            display: none;
+            background: var(--primary-dark);
+            border-top: 1px solid rgba(175, 179, 183, 0.1);
+        }
+
+        .customer-card.expanded .customer-details {
+            display: block;
+        }
+
+        .details-tabs {
+            display: flex;
+            background: var(--secondary-dark);
+            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: var(--medium);
+            cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            color: var(--dark);
-            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        td {
-            padding: 12px;
-            font-size: 14px;
-            border-bottom: 1px solid #f8fafc;
+        .tab-btn:hover {
+            color: var(--light);
+            background: rgba(175, 179, 183, 0.05);
         }
 
-        tr:hover {
-            background: #f8fafc;
+        .tab-btn.active {
+            color: white;
         }
 
-        .ac-unit-badge {
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-blue);
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* AC Units Section */
+        .ac-units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ac-unit-card {
+            background: var(--secondary-dark);
+            border: 1px solid rgba(175, 179, 183, 0.1);
+            border-radius: var(--radius);
+            padding: 15px;
+        }
+
+        .ac-unit-number {
             display: inline-block;
-            padding: 4px 12px;
-            background: var(--light);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary);
+            width: 28px;
+            height: 28px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .payment-amount {
-            color: var(--success);
+        .ac-unit-details {
+            font-size: 13px;
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        .ac-unit-details strong {
+            color: white;
+        }
+
+        /* Service History */
+        .service-history {
+            margin-top: 20px;
+        }
+
+        .service-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .service-history-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .service-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .service-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--medium-dark);
+        }
+
+        .service-item {
+            position: relative;
+            background: var(--secondary-dark);
+            border: 1px solid rgba(175, 179, 183, 0.1);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .service-item:hover {
+            background: var(--medium-dark);
+            transform: translateX(5px);
+        }
+
+        .service-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            border: 2px solid var(--primary-dark);
+        }
+
+        .service-date {
+            font-size: 12px;
+            color: var(--medium);
+            margin-bottom: 5px;
+        }
+
+        .service-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .service-info-item {
+            font-size: 13px;
+        }
+
+        .service-info-item label {
+            color: var(--medium);
+            margin-right: 5px;
+        }
+
+        .service-info-item span {
+            color: white;
             font-weight: 600;
+        }
+
+        .service-notes {
+            font-size: 13px;
+            color: var(--light);
+            padding: 10px;
+            background: rgba(13, 31, 35, 0.5);
+            border-radius: calc(var(--radius) - 4px);
+            margin-top: 10px;
+        }
+
+        .service-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            justify-content: flex-end;
         }
 
         /* Modal */
@@ -336,9 +649,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
@@ -346,12 +664,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 16px;
+            background: var(--secondary-dark);
+            border-radius: var(--radius-lg);
             width: 90%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: var(--shadow-xl);
             animation: slideUp 0.3s ease;
         }
 
@@ -367,25 +686,28 @@
         }
 
         .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--card-gradient);
+            padding: 20px;
+            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .modal-header h2 {
+        .modal-title {
             font-size: 20px;
-            color: var(--dark);
+            font-weight: 700;
+            color: white;
         }
 
         .modal-close {
             width: 32px;
             height: 32px;
             border: none;
-            background: var(--light);
-            border-radius: 8px;
+            background: rgba(175, 179, 183, 0.1);
+            border-radius: var(--radius);
             cursor: pointer;
+            color: var(--light);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -393,33 +715,36 @@
         }
 
         .modal-close:hover {
-            background: var(--danger);
+            background: var(--accent-red);
             color: white;
         }
 
         .modal-body {
-            padding: 24px;
+            padding: 20px;
         }
 
+        /* Form */
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-size: 14px;
-            font-weight: 500;
-            color: var(--dark);
+            font-weight: 600;
+            color: var(--light);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            padding: 10px 15px;
+            background: var(--primary-dark);
+            border: 1px solid rgba(175, 179, 183, 0.2);
+            border-radius: var(--radius);
+            color: white;
             font-size: 14px;
             transition: all 0.3s ease;
         }
@@ -428,8 +753,8 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .form-group textarea {
@@ -440,187 +765,116 @@
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 15px;
         }
 
         .form-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: flex-end;
-            padding-top: 16px;
-            border-top: 1px solid #e2e8f0;
-            margin-top: 24px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(175, 179, 183, 0.1);
         }
 
-        /* AC Unit Form */
-        .ac-unit-form {
-            background: var(--light);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .ac-unit-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .ac-unit-number {
-            width: 24px;
-            height: 24px;
-            background: var(--primary);
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 20px;
+            background: var(--secondary-dark);
+            border-radius: var(--radius);
             color: white;
-            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: var(--shadow-xl);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 12px;
+            gap: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--accent-green);
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--accent-red);
+        }
+
+        .toast.warning {
+            border-left-color: var(--accent-yellow);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--medium);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 30px;
         }
 
         /* Loading */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(13, 31, 35, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        .loading.show {
-            display: block;
+        .loading-overlay.show {
+            opacity: 1;
+            pointer-events: all;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--light);
-            border-top-color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--medium-dark);
+            border-top-color: var(--accent-blue);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 2000;
-            transform: translateY(100px);
-            transition: transform 0.3s ease;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-        }
-
-        .toast.success { background: var(--success); }
-        .toast.error { background: var(--danger); }
-        .toast.warning { background: var(--warning); }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--secondary);
-        }
-
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 8px;
-        }
-
-        .empty-text {
-            font-size: 14px;
-        }
-
-        /* Filter Section */
-        .filter-section {
-            background: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .filter-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .filter-select {
-            padding: 8px 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Firebase Status */
-        .firebase-status {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            padding: 8px 16px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            z-index: 100;
-        }
-
-        .firebase-status.connected {
-            border-left: 4px solid var(--success);
-        }
-
-        .firebase-status.error {
-            border-left: 4px solid var(--danger);
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 12px;
-            }
-
             .header-content {
                 flex-direction: column;
-                align-items: flex-start;
+                gap: 15px;
             }
 
             .search-box {
@@ -629,226 +883,176 @@
 
             .action-bar {
                 flex-direction: column;
-                align-items: stretch;
             }
 
             .action-buttons {
                 width: 100%;
+                justify-content: center;
             }
 
-            .btn {
-                flex: 1;
+            .customer-main-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .customer-actions {
+                width: 100%;
+                justify-content: flex-start;
             }
 
             .form-row {
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: 20px;
-            }
-
-            .stats-grid {
+            .service-info {
                 grid-template-columns: 1fr;
             }
 
-            .firebase-status {
-                bottom: 12px;
-                left: 12px;
-                right: 12px;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 8px;
+            .ac-units-grid {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Print Styles */
+        /* Print */
         @media print {
             body {
                 background: white;
+                color: black;
             }
 
+            .header,
             .action-bar,
-            .firebase-status,
-            .btn-danger,
-            .btn-edit {
+            .btn,
+            .modal {
                 display: none !important;
             }
 
-            .container {
-                max-width: 100%;
-                padding: 0;
+            .customer-card {
+                page-break-inside: avoid;
+                border: 1px solid #ddd;
+                margin-bottom: 20px;
             }
 
-            .table-container {
-                box-shadow: none;
+            .customer-details {
+                display: block !important;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app-container">
         <!-- Header -->
-        <div class="header">
+        <header class="header">
             <div class="header-content">
                 <div class="logo">
                     <div class="logo-icon">❄️</div>
-                    <div>
+                    <div class="logo-text">
                         <h1>Nala Aircon</h1>
-                        <p>Database Customer & Service Management</p>
+                        <p>Professional Service Management System</p>
                     </div>
                 </div>
-                <div class="status">
-                    <div class="status-dot"></div>
-                    <span id="connectionStatus">Online</span>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="exportData()">
+                        📥 Export Data
+                    </button>
+                    <button class="btn btn-warning" onclick="window.print()">
+                        🖨️ Print
+                    </button>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-value" id="totalCustomers">0</div>
-                <div class="stat-label">Total Customer</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🏠</div>
-                <div class="stat-value" id="totalAC">0</div>
-                <div class="stat-label">Total AC Unit</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-value" id="totalPayment">Rp 0</div>
-                <div class="stat-label">Total Payment</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🔧</div>
-                <div class="stat-value" id="recentService">0</div>
-                <div class="stat-label">Service Bulan Ini</div>
-            </div>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Statistics -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="totalCustomers">0</div>
+                    <div class="stat-label">Total Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❄️</div>
+                    <div class="stat-value" id="totalAC">0</div>
+                    <div class="stat-label">Total AC Units</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔧</div>
+                    <div class="stat-value" id="totalServices">0</div>
+                    <div class="stat-label">Total Services</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="totalRevenue">Rp 0</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </section>
 
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <span class="filter-label">Filter Periode:</span>
-            <select id="monthFilter" class="filter-select" onchange="updateStats()">
-                <option value="">Semua Periode</option>
-                <option value="2025-01">Januari 2025</option>
-                <option value="2025-02">Februari 2025</option>
-                <option value="2025-03">Maret 2025</option>
-                <option value="2025-04">April 2025</option>
-                <option value="2025-05">Mei 2025</option>
-                <option value="2025-06">Juni 2025</option>
-                <option value="2025-07">Juli 2025</option>
-                <option value="2025-08">Agustus 2025</option>
-                <option value="2025-09">September 2025</option>
-                <option value="2025-10">Oktober 2025</option>
-                <option value="2025-11">November 2025</option>
-                <option value="2025-12">Desember 2025</option>
-            </select>
-        </div>
-
-        <!-- Action Bar -->
-        <div class="action-bar">
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="openModal()">
-                    <span>➕</span> Tambah Customer
-                </button>
-                <button class="btn btn-secondary" onclick="loadSampleData()">
-                    <span>📊</span> Sample Data
-                </button>
-                <button class="btn btn-success" onclick="exportToCSV()">
-                    <span>📥</span> Export CSV
-                </button>
-                <button class="btn btn-warning" onclick="window.print()">
-                    <span>🖨️</span> Print
-                </button>
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openCustomerModal()">
+                        ➕ Add Customer
+                    </button>
+                    <button class="btn btn-success" onclick="loadSampleData()">
+                        📊 Sample Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleView()">
+                        👁️ Toggle View
+                    </button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="searchCustomers()">
+                    <span class="search-icon">🔍</span>
+                </div>
             </div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Cari customer..." onkeyup="filterTable()">
-                <span class="search-icon">🔍</span>
+
+            <!-- Customers Container -->
+            <div class="customers-container" id="customersContainer">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <div class="empty-title">No Customers Yet</div>
+                    <div class="empty-text">Start by adding your first customer or load sample data</div>
+                    <button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>
+                </div>
             </div>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div class="loading" id="loadingIndicator">
-            <div class="spinner"></div>
-            <p>Loading data...</p>
-        </div>
-
-        <!-- Table -->
-        <div class="table-container">
-            <table id="customerTable">
-                <thead>
-                    <tr>
-                        <th width="40">No</th>
-                        <th>Nama Customer</th>
-                        <th>Alamat</th>
-                        <th>Telepon</th>
-                        <th width="80">AC Unit</th>
-                        <th>Teknisi</th>
-                        <th>Tanggal Service</th>
-                        <th>Payment</th>
-                        <th>Keterangan</th>
-                        <th width="120">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="customerTableBody">
-                    <tr>
-                        <td colspan="10">
-                            <div class="empty-state">
-                                <div class="empty-icon">📦</div>
-                                <div class="empty-title">Belum ada data</div>
-                                <div class="empty-text">Klik tombol "Tambah Customer" untuk menambah data baru</div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        </main>
     </div>
 
     <!-- Customer Modal -->
     <div id="customerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Tambah Customer Baru</h2>
-                <button class="modal-close" onclick="closeModal()">✕</button>
+                <h2 class="modal-title" id="modalTitle">Add New Customer</h2>
+                <button class="modal-close" onclick="closeModal('customerModal')">✕</button>
             </div>
             <div class="modal-body">
                 <form id="customerForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Nama Customer *</label>
-                            <input type="text" id="customerName" required>
+                            <label>Customer Name *</label>
+                            <input type="text" id="customerName" required placeholder="Enter customer name">
                         </div>
                         <div class="form-group">
-                            <label>No. Telepon *</label>
-                            <input type="tel" id="customerPhone" required>
+                            <label>Phone Number *</label>
+                            <input type="tel" id="customerPhone" required placeholder="Enter phone number">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>Alamat *</label>
-                        <textarea id="customerAddress" required></textarea>
+                        <label>Address *</label>
+                        <textarea id="customerAddress" required placeholder="Enter complete address"></textarea>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Jumlah AC *</label>
-                            <input type="number" id="acCount" min="1" max="10" value="1" required onchange="generateACForms()">
+                            <label>Number of AC Units *</label>
+                            <input type="number" id="acCount" min="1" max="20" value="1" required onchange="generateACForms()">
                         </div>
                         <div class="form-group">
-                            <label>Brand AC</label>
+                            <label>Primary AC Brand</label>
                             <select id="acBrand">
-                                <option value="">Pilih Brand</option>
+                                <option value="">Select Brand</option>
                                 <option value="Daikin">Daikin</option>
                                 <option value="LG">LG</option>
                                 <option value="Samsung">Samsung</option>
@@ -857,383 +1061,237 @@
                                 <option value="Mitsubishi">Mitsubishi</option>
                                 <option value="Gree">Gree</option>
                                 <option value="Midea">Midea</option>
-                                <option value="Others">Lainnya</option>
                             </select>
                         </div>
                     </div>
 
                     <div id="acFormsContainer"></div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Tanggal Service *</label>
-                            <input type="date" id="serviceDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Teknisi *</label>
-                            <input type="text" id="technician" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Payment (Rp) *</label>
-                        <input type="number" id="payment" min="0" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Keterangan</label>
-                        <textarea id="notes" placeholder="Catatan service..."></textarea>
-                    </div>
-                    
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('customerModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Customer</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Firebase Status -->
-    <div class="firebase-status" id="firebaseStatus">
-        <span>🔥</span>
-        <span id="firebaseStatusText">Connecting...</span>
+    <!-- Service Modal -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Service Record</h2>
+                <button class="modal-close" onclick="closeModal('serviceModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm">
+                    <input type="hidden" id="serviceCustomerId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Service Date *</label>
+                            <input type="date" id="serviceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Technician *</label>
+                            <select id="serviceTechnician" required>
+                                <option value="">Select Technician</option>
+                                <option value="Ahmad">Ahmad</option>
+                                <option value="Budi">Budi</option>
+                                <option value="Dedi">Dedi</option>
+                                <option value="Eko">Eko</option>
+                                <option value="Team">Team</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Service Type *</label>
+                            <select id="serviceType" required>
+                                <option value="">Select Type</option>
+                                <option value="Routine">Routine Service</option>
+                                <option value="Repair">Repair</option>
+                                <option value="Installation">Installation</option>
+                                <option value="Cleaning">Deep Cleaning</option>
+                                <option value="Freon">Freon Refill</option>
+                                <option value="Parts">Parts Replacement</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment (Rp) *</label>
+                            <input type="number" id="servicePayment" min="0" required placeholder="Enter amount">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Service Notes</label>
+                        <textarea id="serviceNotes" placeholder="Enter service details, parts replaced, issues found, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('serviceModal')">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc, 
-            getDocs, 
-            doc, 
-            updateDoc, 
-            deleteDoc,
-            query,
-            orderBy
-        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBSp7kuXi5hHWcISGQ2nSgL2T3nPMaFrls",
-            authDomain: "dbnala-6fcf1.firebaseapp.com",
-            projectId: "dbnala-6fcf1",
-            storageBucket: "dbnala-6fcf1.firebasestorage.app",
-            messagingSenderId: "1081263780872",
-            appId: "1:1081263780872:web:3df5c78d708e5b1ffb4dbd",
-            measurementId: "G-KLVLB8YQ34"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Make Firebase functions available globally
-        window.db = db;
-        window.collection = collection;
-        window.addDoc = addDoc;
-        window.getDocs = getDocs;
-        window.doc = doc;
-        window.updateDoc = updateDoc;
-        window.deleteDoc = deleteDoc;
-        window.query = query;
-        window.orderBy = orderBy;
-
-        // Initialize app
-        window.initializeApp();
-    </script>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
 
     <script>
-        // Global variables
+        // ========== DATA MANAGEMENT ==========
         let customers = [];
-        let editingId = null;
+        let editingCustomerId = null;
+        let editingServiceId = null;
+        let currentView = 'expanded'; // 'expanded' or 'compact'
 
         // Initialize App
-        window.initializeApp = async function() {
-            console.log('🚀 Initializing Nala Aircon Database...');
+        function initApp() {
+            console.log('🚀 Initializing Nala Aircon Professional System...');
+            loadData();
+            generateACForms();
             
-            // Set current date
+            // Set today's date for service form
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('monthFilter').value = new Date().toISOString().slice(0, 7);
-            
-            // Check Firebase connection and load data
-            await checkFirebaseConnection();
-            await loadCustomers();
-        };
-
-        // Check Firebase Connection
-        async function checkFirebaseConnection() {
-            const statusEl = document.getElementById('firebaseStatus');
-            const statusText = document.getElementById('firebaseStatusText');
-            
-            try {
-                // Test connection by trying to access collection
-                const testQuery = window.query(window.collection(window.db, 'customers'));
-                await window.getDocs(testQuery);
-                
-                statusEl.classList.add('connected');
-                statusEl.classList.remove('error');
-                statusText.textContent = 'Firebase Connected';
-                document.getElementById('connectionStatus').textContent = 'Online';
-                console.log('✅ Firebase connected successfully');
-                
-            } catch (error) {
-                statusEl.classList.add('error');
-                statusEl.classList.remove('connected');
-                statusText.textContent = 'Connection Error';
-                document.getElementById('connectionStatus').textContent = 'Offline';
-                console.error('❌ Firebase connection error:', error);
-                
-                showToast('Error koneksi Firebase: ' + error.message, 'error');
-                
-                // Use local storage as fallback
-                console.log('📦 Using local storage as fallback...');
-                loadFromLocalStorage();
-            }
         }
 
-        // Load Customers from Firestore
-        async function loadCustomers() {
+        // Load data from localStorage
+        function loadData() {
             try {
-                showLoading(true);
-                console.log('📥 Loading customers from Firestore...');
-                
-                const q = window.query(
-                    window.collection(window.db, 'customers'),
-                    window.orderBy('serviceDate', 'desc')
-                );
-                const querySnapshot = await window.getDocs(q);
-                
+                const stored = localStorage.getItem('nala_professional_data');
+                if (stored) {
+                    customers = JSON.parse(stored);
+                    console.log(`✅ Loaded ${customers.length} customers`);
+                } else {
+                    customers = [];
+                }
+                updateStats();
+                renderCustomers();
+            } catch (error) {
+                console.error('Error loading data:', error);
                 customers = [];
-                querySnapshot.forEach((doc) => {
-                    customers.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                
-                console.log(`✅ Loaded ${customers.length} customers`);
-                
-                // Save to local storage as backup
-                localStorage.setItem('nala_customers_backup', JSON.stringify(customers));
-                
-                updateStats();
-                renderTable();
-                
-            } catch (error) {
-                console.error('❌ Error loading data:', error);
-                showToast('Error loading data: ' + error.message, 'error');
-                loadFromLocalStorage();
-            } finally {
-                showLoading(false);
             }
         }
 
-        // Fallback: Load from Local Storage
-        function loadFromLocalStorage() {
-            const stored = localStorage.getItem('nala_customers_backup');
-            if (stored) {
-                customers = JSON.parse(stored);
-                console.log(`📦 Loaded ${customers.length} customers from local storage`);
-                updateStats();
-                renderTable();
-            }
-        }
-
-        // Save Customer
-        async function saveCustomer(customerData, isEdit = false) {
+        // Save data to localStorage
+        function saveData() {
             try {
-                showLoading(true);
-                
-                if (isEdit && editingId) {
-                    // Update existing
-                    const customerRef = window.doc(window.db, 'customers', editingId);
-                    await window.updateDoc(customerRef, {
-                        ...customerData,
-                        updatedAt: new Date().toISOString()
-                    });
-                    showToast('Customer berhasil diperbarui!', 'success');
-                } else {
-                    // Add new
-                    await window.addDoc(window.collection(window.db, 'customers'), {
-                        ...customerData,
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    });
-                    showToast('Customer berhasil ditambahkan!', 'success');
-                }
-                
-                await loadCustomers();
-                closeModal();
-                
+                localStorage.setItem('nala_professional_data', JSON.stringify(customers));
+                console.log('💾 Data saved');
             } catch (error) {
-                console.error('Error saving:', error);
-                
-                // Fallback to local storage
-                if (isEdit && editingId) {
-                    const index = customers.findIndex(c => c.id === editingId);
-                    if (index !== -1) {
-                        customers[index] = { ...customers[index], ...customerData };
-                    }
-                } else {
-                    customers.unshift({
-                        id: 'local_' + Date.now(),
-                        ...customerData,
-                        createdAt: new Date().toISOString()
-                    });
-                }
-                
-                localStorage.setItem('nala_customers_backup', JSON.stringify(customers));
-                updateStats();
-                renderTable();
-                closeModal();
-                showToast('Data disimpan lokal (offline mode)', 'warning');
-            } finally {
-                showLoading(false);
+                console.error('Error saving data:', error);
+                showToast('Error saving data', 'error');
             }
         }
 
-        // Delete Customer
-        window.deleteCustomer = async function(id) {
-            if (!confirm('Yakin ingin menghapus customer ini?')) return;
-            
-            try {
-                showLoading(true);
-                
-                if (id.startsWith('local_')) {
-                    // Local deletion
-                    customers = customers.filter(c => c.id !== id);
-                    localStorage.setItem('nala_customers_backup', JSON.stringify(customers));
-                } else {
-                    // Firebase deletion
-                    await window.deleteDoc(window.doc(window.db, 'customers', id));
-                }
-                
-                showToast('Customer berhasil dihapus!', 'success');
-                await loadCustomers();
-                
-            } catch (error) {
-                console.error('Error deleting:', error);
-                showToast('Error: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        };
-
-        // Open Modal
-        window.openModal = function(id = null) {
+        // ========== CUSTOMER MANAGEMENT ==========
+        
+        // Open customer modal
+        window.openCustomerModal = function(customerId = null) {
             const modal = document.getElementById('customerModal');
             const form = document.getElementById('customerForm');
             const title = document.getElementById('modalTitle');
             
-            editingId = id;
+            editingCustomerId = customerId;
             
-            if (id) {
+            if (customerId) {
                 title.textContent = 'Edit Customer';
-                const customer = customers.find(c => c.id === id);
+                const customer = customers.find(c => c.id === customerId);
                 if (customer) {
-                    document.getElementById('customerName').value = customer.name || '';
-                    document.getElementById('customerPhone').value = customer.phone || '';
-                    document.getElementById('customerAddress').value = customer.address || '';
-                    document.getElementById('acCount').value = customer.acCount || 1;
-                    document.getElementById('acBrand').value = customer.acBrand || '';
-                    document.getElementById('serviceDate').value = customer.serviceDate || '';
-                    document.getElementById('technician').value = customer.technician || '';
-                    document.getElementById('payment').value = customer.payment || '';
-                    document.getElementById('notes').value = customer.notes || '';
+                    document.getElementById('customerName').value = customer.name;
+                    document.getElementById('customerPhone').value = customer.phone;
+                    document.getElementById('customerAddress').value = customer.address;
+                    document.getElementById('acCount').value = customer.acUnits.length;
+                    document.getElementById('acBrand').value = customer.acUnits[0]?.brand || '';
                     
                     generateACForms();
-                    if (customer.acUnits) {
+                    // Fill AC units data
+                    setTimeout(() => {
                         customer.acUnits.forEach((unit, i) => {
                             if (document.getElementById(`ac_brand_${i}`)) {
                                 document.getElementById(`ac_brand_${i}`).value = unit.brand || '';
                                 document.getElementById(`ac_type_${i}`).value = unit.type || '';
-                                document.getElementById(`ac_pk_${i}`).value = unit.pk || '';
+                                document.getElementById(`ac_capacity_${i}`).value = unit.capacity || '';
+                                document.getElementById(`ac_location_${i}`).value = unit.location || '';
                             }
                         });
-                    }
+                    }, 100);
                 }
             } else {
-                title.textContent = 'Tambah Customer Baru';
+                title.textContent = 'Add New Customer';
                 form.reset();
-                document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
                 generateACForms();
             }
             
             modal.style.display = 'block';
         };
 
-        // Close Modal
-        window.closeModal = function() {
-            document.getElementById('customerModal').style.display = 'none';
-            editingId = null;
-        };
-
-        // Generate AC Forms
+        // Generate AC unit forms
         window.generateACForms = function() {
             const count = parseInt(document.getElementById('acCount').value) || 1;
             const container = document.getElementById('acFormsContainer');
-            container.innerHTML = '';
+            const brand = document.getElementById('acBrand').value;
             
-            if (count > 0 && count <= 10) {
-                const title = document.createElement('h3');
-                title.style.cssText = 'margin: 16px 0 12px; font-size: 16px; color: var(--dark);';
-                title.textContent = 'Detail AC Units';
-                container.appendChild(title);
-                
-                for (let i = 0; i < count; i++) {
-                    const acForm = document.createElement('div');
-                    acForm.className = 'ac-unit-form';
-                    acForm.innerHTML = `
-                        <div class="ac-unit-header">
-                            <span class="ac-unit-number">${i + 1}</span>
-                            <span>AC Unit ${i + 1}</span>
+            container.innerHTML = '<h3 style="margin: 20px 0 15px; color: var(--light);">AC Unit Details</h3>';
+            
+            for (let i = 0; i < count; i++) {
+                const unitForm = document.createElement('div');
+                unitForm.style.cssText = 'background: var(--primary-dark); padding: 15px; border-radius: var(--radius); margin-bottom: 15px;';
+                unitForm.innerHTML = `
+                    <h4 style="color: var(--accent-blue); margin-bottom: 15px;">Unit ${i + 1}</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Brand</label>
+                            <select id="ac_brand_${i}">
+                                <option value="">Select Brand</option>
+                                <option value="Daikin" ${brand === 'Daikin' ? 'selected' : ''}>Daikin</option>
+                                <option value="LG" ${brand === 'LG' ? 'selected' : ''}>LG</option>
+                                <option value="Samsung" ${brand === 'Samsung' ? 'selected' : ''}>Samsung</option>
+                                <option value="Panasonic" ${brand === 'Panasonic' ? 'selected' : ''}>Panasonic</option>
+                                <option value="Sharp" ${brand === 'Sharp' ? 'selected' : ''}>Sharp</option>
+                                <option value="Mitsubishi" ${brand === 'Mitsubishi' ? 'selected' : ''}>Mitsubishi</option>
+                            </select>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Brand</label>
-                                <select id="ac_brand_${i}">
-                                    <option value="">Pilih Brand</option>
-                                    <option value="Daikin">Daikin</option>
-                                    <option value="LG">LG</option>
-                                    <option value="Samsung">Samsung</option>
-                                    <option value="Panasonic">Panasonic</option>
-                                    <option value="Sharp">Sharp</option>
-                                    <option value="Mitsubishi">Mitsubishi</option>
-                                    <option value="Others">Lainnya</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Type</label>
-                                <select id="ac_type_${i}">
-                                    <option value="Split Wall">Split Wall</option>
-                                    <option value="Cassette">Cassette</option>
-                                    <option value="Standing">Standing</option>
-                                    <option value="Window">Window</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Kapasitas</label>
-                                <select id="ac_pk_${i}">
-                                    <option value="0.5 PK">0.5 PK</option>
-                                    <option value="0.75 PK">0.75 PK</option>
-                                    <option value="1 PK">1 PK</option>
-                                    <option value="1.5 PK">1.5 PK</option>
-                                    <option value="2 PK">2 PK</option>
-                                    <option value="2.5 PK">2.5 PK</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="ac_type_${i}">
+                                <option value="Split Wall">Split Wall</option>
+                                <option value="Split Duct">Split Duct</option>
+                                <option value="Cassette">Cassette</option>
+                                <option value="Standing">Standing</option>
+                                <option value="Window">Window</option>
+                            </select>
                         </div>
-                    `;
-                    container.appendChild(acForm);
-                }
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Capacity</label>
+                            <select id="ac_capacity_${i}">
+                                <option value="0.5 PK">0.5 PK</option>
+                                <option value="0.75 PK">0.75 PK</option>
+                                <option value="1 PK" selected>1 PK</option>
+                                <option value="1.5 PK">1.5 PK</option>
+                                <option value="2 PK">2 PK</option>
+                                <option value="2.5 PK">2.5 PK</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="ac_location_${i}" placeholder="e.g., Living Room">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(unitForm);
             }
         };
 
-        // Form Submit
-        document.getElementById('customerForm').onsubmit = async function(e) {
+        // Save customer
+        document.getElementById('customerForm').onsubmit = function(e) {
             e.preventDefault();
             
             const acCount = parseInt(document.getElementById('acCount').value);
@@ -1243,7 +1301,8 @@
                 acUnits.push({
                     brand: document.getElementById(`ac_brand_${i}`)?.value || '',
                     type: document.getElementById(`ac_type_${i}`)?.value || 'Split Wall',
-                    pk: document.getElementById(`ac_pk_${i}`)?.value || '1 PK'
+                    capacity: document.getElementById(`ac_capacity_${i}`)?.value || '1 PK',
+                    location: document.getElementById(`ac_location_${i}`)?.value || ''
                 });
             }
             
@@ -1251,193 +1310,346 @@
                 name: document.getElementById('customerName').value,
                 phone: document.getElementById('customerPhone').value,
                 address: document.getElementById('customerAddress').value,
-                acCount: acCount,
-                acBrand: document.getElementById('acBrand').value,
                 acUnits: acUnits,
-                serviceDate: document.getElementById('serviceDate').value,
-                technician: document.getElementById('technician').value,
-                payment: parseInt(document.getElementById('payment').value),
-                notes: document.getElementById('notes').value
+                services: []
             };
             
-            await saveCustomer(customerData, editingId !== null);
+            if (editingCustomerId) {
+                const index = customers.findIndex(c => c.id === editingCustomerId);
+                if (index !== -1) {
+                    customers[index] = {
+                        ...customers[index],
+                        ...customerData,
+                        updatedAt: new Date().toISOString()
+                    };
+                    showToast('Customer updated successfully', 'success');
+                }
+            } else {
+                const newCustomer = {
+                    id: 'CUS' + Date.now(),
+                    ...customerData,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                customers.unshift(newCustomer);
+                showToast('Customer added successfully', 'success');
+            }
+            
+            saveData();
+            updateStats();
+            renderCustomers();
+            closeModal('customerModal');
         };
 
-        // Render Table
-        function renderTable(data = customers) {
-            const tbody = document.getElementById('customerTableBody');
+        // Delete customer
+        window.deleteCustomer = function(customerId) {
+            if (confirm('Are you sure you want to delete this customer? All service history will be lost.')) {
+                customers = customers.filter(c => c.id !== customerId);
+                saveData();
+                updateStats();
+                renderCustomers();
+                showToast('Customer deleted', 'success');
+            }
+        };
+
+        // ========== SERVICE MANAGEMENT ==========
+        
+        // Open service modal
+        window.openServiceModal = function(customerId) {
+            document.getElementById('serviceCustomerId').value = customerId;
+            document.getElementById('serviceForm').reset();
+            document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('serviceModal').style.display = 'block';
+        };
+
+        // Save service
+        document.getElementById('serviceForm').onsubmit = function(e) {
+            e.preventDefault();
             
-            if (data.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10">
-                            <div class="empty-state">
-                                <div class="empty-icon">📦</div>
-                                <div class="empty-title">Belum ada data</div>
-                                <div class="empty-text">Klik tombol "Tambah Customer" untuk menambah data baru</div>
-                            </div>
-                        </td>
-                    </tr>
+            const customerId = document.getElementById('serviceCustomerId').value;
+            const customer = customers.find(c => c.id === customerId);
+            
+            if (customer) {
+                const service = {
+                    id: 'SRV' + Date.now(),
+                    date: document.getElementById('serviceDate').value,
+                    technician: document.getElementById('serviceTechnician').value,
+                    type: document.getElementById('serviceType').value,
+                    payment: parseInt(document.getElementById('servicePayment').value) || 0,
+                    notes: document.getElementById('serviceNotes').value,
+                    createdAt: new Date().toISOString()
+                };
+                
+                if (!customer.services) customer.services = [];
+                customer.services.unshift(service);
+                
+                saveData();
+                updateStats();
+                renderCustomers();
+                closeModal('serviceModal');
+                showToast('Service record added', 'success');
+            }
+        };
+
+        // Delete service
+        window.deleteService = function(customerId, serviceId) {
+            if (confirm('Delete this service record?')) {
+                const customer = customers.find(c => c.id === customerId);
+                if (customer && customer.services) {
+                    customer.services = customer.services.filter(s => s.id !== serviceId);
+                    saveData();
+                    updateStats();
+                    renderCustomers();
+                    showToast('Service deleted', 'success');
+                }
+            }
+        };
+
+        // ========== UI RENDERING ==========
+        
+        // Render customers
+        function renderCustomers(searchTerm = '') {
+            const container = document.getElementById('customersContainer');
+            let filtered = customers;
+            
+            if (searchTerm) {
+                filtered = customers.filter(c => 
+                    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    c.phone.includes(searchTerm) ||
+                    c.address.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-title">${searchTerm ? 'No Results Found' : 'No Customers Yet'}</div>
+                        <div class="empty-text">${searchTerm ? 'Try different search terms' : 'Start by adding your first customer'}</div>
+                        ${!searchTerm ? '<button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>' : ''}
+                    </div>
                 `;
                 return;
             }
             
-            tbody.innerHTML = data.map((customer, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td><strong>${customer.name}</strong></td>
-                    <td>${customer.address}</td>
-                    <td>${customer.phone}</td>
-                    <td><span class="ac-unit-badge">${customer.acCount} Unit</span></td>
-                    <td>${customer.technician}</td>
-                    <td>${formatDate(customer.serviceDate)}</td>
-                    <td class="payment-amount">${formatCurrency(customer.payment)}</td>
-                    <td>${customer.notes || '-'}</td>
-                    <td>
-                        <button class="btn btn-secondary btn-edit" onclick="openModal('${customer.id}')" style="padding: 6px 12px; font-size: 12px;">✏️</button>
-                        <button class="btn btn-danger" onclick="deleteCustomer('${customer.id}')">🗑️</button>
-                    </td>
-                </tr>
-            `).join('');
+            container.innerHTML = filtered.map(customer => {
+                const totalServices = customer.services?.length || 0;
+                const totalPayments = customer.services?.reduce((sum, s) => sum + (s.payment || 0), 0) || 0;
+                const lastService = customer.services?.[0];
+                
+                return `
+                    <div class="customer-card" id="customer-${customer.id}">
+                        <div class="customer-header" onclick="toggleCustomerCard('${customer.id}')">
+                            <div class="customer-main-info">
+                                <div class="customer-identity">
+                                    <div class="customer-name">
+                                        ${customer.name}
+                                        <span class="customer-id">#${customer.id}</span>
+                                    </div>
+                                    <div class="customer-contact">
+                                        <span>📱 ${customer.phone}</span>
+                                        <span>📍 ${customer.address}</span>
+                                    </div>
+                                </div>
+                                <div class="customer-actions">
+                                    <button class="btn btn-sm btn-success" onclick="event.stopPropagation(); openServiceModal('${customer.id}')">
+                                        + Service
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); openCustomerModal('${customer.id}')">
+                                        ✏️ Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteCustomer('${customer.id}')">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="customer-stats">
+                                <div class="customer-stat">
+                                    <div class="customer-stat-value">${customer.acUnits.length}</div>
+                                    <div class="customer-stat-label">AC Units</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="customer-stat-value">${totalServices}</div>
+                                    <div class="customer-stat-label">Services</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="customer-stat-value">${formatCurrency(totalPayments)}</div>
+                                    <div class="customer-stat-label">Total Spent</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="customer-stat-value">${lastService ? formatDate(lastService.date) : 'Never'}</div>
+                                    <div class="customer-stat-label">Last Service</div>
+                                </div>
+                            </div>
+                            <span class="expand-icon" style="position: absolute; right: 20px; top: 20px; color: var(--medium);">▼</span>
+                        </div>
+                        
+                        <div class="customer-details">
+                            <div class="details-tabs">
+                                <button class="tab-btn active" onclick="switchTab('${customer.id}', 'units')">AC Units</button>
+                                <button class="tab-btn" onclick="switchTab('${customer.id}', 'history')">Service History</button>
+                            </div>
+                            
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab-units-${customer.id}">
+                                    <div class="ac-units-grid">
+                                        ${customer.acUnits.map((unit, i) => `
+                                            <div class="ac-unit-card">
+                                                <div class="ac-unit-number">${i + 1}</div>
+                                                <div class="ac-unit-details">
+                                                    <strong>${unit.brand || 'Unknown'}</strong><br>
+                                                    Type: ${unit.type}<br>
+                                                    Capacity: ${unit.capacity}<br>
+                                                    ${unit.location ? `Location: ${unit.location}` : ''}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-pane" id="tab-history-${customer.id}">
+                                    <div class="service-history">
+                                        <div class="service-history-header">
+                                            <h3 class="service-history-title">Service History</h3>
+                                            <button class="btn btn-sm btn-success" onclick="openServiceModal('${customer.id}')">
+                                                + Add Service
+                                            </button>
+                                        </div>
+                                        
+                                        ${customer.services && customer.services.length > 0 ? `
+                                            <div class="service-timeline">
+                                                ${customer.services.map(service => `
+                                                    <div class="service-item">
+                                                        <div class="service-date">${formatDate(service.date)}</div>
+                                                        <div class="service-info">
+                                                            <div class="service-info-item">
+                                                                <label>Type:</label>
+                                                                <span>${service.type}</span>
+                                                            </div>
+                                                            <div class="service-info-item">
+                                                                <label>Technician:</label>
+                                                                <span>${service.technician}</span>
+                                                            </div>
+                                                            <div class="service-info-item">
+                                                                <label>Payment:</label>
+                                                                <span>${formatCurrency(service.payment)}</span>
+                                                            </div>
+                                                        </div>
+                                                        ${service.notes ? `
+                                                            <div class="service-notes">
+                                                                ${service.notes}
+                                                            </div>
+                                                        ` : ''}
+                                                        <div class="service-actions">
+                                                            <button class="btn btn-sm btn-danger" onclick="deleteService('${customer.id}', '${service.id}')">
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        ` : `
+                                            <div style="text-align: center; padding: 40px; color: var(--medium);">
+                                                No service history yet
+                                            </div>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        // Update Stats
-        window.updateStats = function() {
-            const selectedMonth = document.getElementById('monthFilter').value;
-            let filtered = customers;
-            
-            if (selectedMonth) {
-                filtered = customers.filter(c => 
-                    c.serviceDate && c.serviceDate.startsWith(selectedMonth)
-                );
-            }
-            
-            document.getElementById('totalCustomers').textContent = filtered.length;
-            document.getElementById('totalAC').textContent = filtered.reduce((sum, c) => sum + (c.acCount || 0), 0);
-            document.getElementById('totalPayment').textContent = formatCurrency(
-                filtered.reduce((sum, c) => sum + (c.payment || 0), 0)
-            );
-            document.getElementById('recentService').textContent = filtered.length;
-            
-            renderTable(filtered);
+        // Toggle customer card
+        window.toggleCustomerCard = function(customerId) {
+            const card = document.getElementById(`customer-${customerId}`);
+            card.classList.toggle('expanded');
         };
 
-        // Filter Table
-        window.filterTable = function() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = customers.filter(c => 
-                c.name?.toLowerCase().includes(searchTerm) ||
-                c.address?.toLowerCase().includes(searchTerm) ||
-                c.phone?.includes(searchTerm) ||
-                c.technician?.toLowerCase().includes(searchTerm)
-            );
-            renderTable(filtered);
+        // Switch tab
+        window.switchTab = function(customerId, tab) {
+            const card = document.getElementById(`customer-${customerId}`);
+            
+            // Update tab buttons
+            card.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab panes
+            card.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`tab-${tab}-${customerId}`).classList.add('active');
         };
 
-        // Load Sample Data
-        window.loadSampleData = async function() {
-            const samples = [
-                {
-                    name: 'Budi Santoso',
-                    phone: '081234567890',
-                    address: 'Jl. Merdeka No. 123, Jakarta',
-                    acCount: 2,
-                    acBrand: 'Daikin',
-                    acUnits: [
-                        { brand: 'Daikin', type: 'Split Wall', pk: '1 PK' },
-                        { brand: 'Daikin', type: 'Split Wall', pk: '0.75 PK' }
-                    ],
-                    serviceDate: new Date().toISOString().split('T')[0],
-                    technician: 'Ahmad',
-                    payment: 350000,
-                    notes: 'Service rutin, bersih filter'
-                },
-                {
-                    name: 'Siti Nurhaliza',
-                    phone: '087654321098',
-                    address: 'Jl. Sudirman No. 456, Jakarta',
-                    acCount: 1,
-                    acBrand: 'LG',
-                    acUnits: [
-                        { brand: 'LG', type: 'Split Wall', pk: '1.5 PK' }
-                    ],
-                    serviceDate: new Date().toISOString().split('T')[0],
-                    technician: 'Budi',
-                    payment: 250000,
-                    notes: 'Ganti freon'
+        // Update statistics
+        function updateStats() {
+            const totalAC = customers.reduce((sum, c) => sum + c.acUnits.length, 0);
+            const totalServices = customers.reduce((sum, c) => sum + (c.services?.length || 0), 0);
+            const totalRevenue = customers.reduce((sum, c) => 
+                sum + (c.services?.reduce((s, srv) => s + (srv.payment || 0), 0) || 0), 0
+            );
+            
+            document.getElementById('totalCustomers').textContent = customers.length;
+            document.getElementById('totalAC').textContent = totalAC;
+            document.getElementById('totalServices').textContent = totalServices;
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        
+        // Search customers
+        window.searchCustomers = function() {
+            const searchTerm = document.getElementById('searchInput').value;
+            renderCustomers(searchTerm);
+        };
+
+        // Toggle view
+        window.toggleView = function() {
+            currentView = currentView === 'expanded' ? 'compact' : 'expanded';
+            const cards = document.querySelectorAll('.customer-card');
+            cards.forEach(card => {
+                if (currentView === 'expanded') {
+                    card.classList.add('expanded');
+                } else {
+                    card.classList.remove('expanded');
                 }
-            ];
-            
-            for (const sample of samples) {
-                await saveCustomer(sample);
-            }
-            
-            showToast('Sample data berhasil ditambahkan!', 'success');
+            });
         };
 
-        // Export to CSV
-        window.exportToCSV = function() {
-            if (customers.length === 0) {
-                showToast('Tidak ada data untuk diekspor!', 'warning');
-                return;
-            }
-            
-            const headers = ['No', 'Nama', 'Alamat', 'Telepon', 'Jumlah AC', 'Teknisi', 'Tanggal Service', 'Payment', 'Keterangan'];
-            const rows = customers.map((c, i) => [
-                i + 1,
-                c.name,
-                c.address,
-                c.phone,
-                c.acCount,
-                c.technician,
-                c.serviceDate,
-                c.payment,
-                c.notes || ''
-            ]);
-            
-            let csv = headers.join(',') + '\n';
-            rows.forEach(row => {
-                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `nala-aircon-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            
-            showToast('Data berhasil diekspor!', 'success');
+        // Close modal
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            editingCustomerId = null;
+            editingServiceId = null;
         };
 
-        // Utility Functions
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-        }
-
+        // Format currency
         function formatCurrency(amount) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(amount || 0);
+            if (amount >= 1000000) {
+                return 'Rp ' + (amount / 1000000).toFixed(1) + 'M';
+            } else if (amount >= 1000) {
+                return 'Rp ' + (amount / 1000).toFixed(0) + 'K';
+            }
+            return 'Rp ' + amount;
         }
 
-        function showLoading(show) {
-            const loading = document.getElementById('loadingIndicator');
-            loading.classList.toggle('show', show);
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
         }
 
+        // Show toast
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.textContent = message;
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
+            toast.innerHTML = `<span>${icon}</span> ${message}`;
             document.body.appendChild(toast);
             
             setTimeout(() => toast.classList.add('show'), 100);
@@ -1447,16 +1659,141 @@
             }, 3000);
         }
 
-        // Initialize on load
-        generateACForms();
+        // Export data
+        window.exportData = function() {
+            const dataStr = JSON.stringify(customers, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nala-aircon-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Data exported successfully', 'success');
+        };
+
+        // Load sample data
+        window.loadSampleData = function() {
+            if (customers.length > 0 && !confirm('This will add sample data. Continue?')) return;
+            
+            const sampleData = [
+                {
+                    id: 'CUS1234567890',
+                    name: 'PT. Maju Bersama',
+                    phone: '021-5551234',
+                    address: 'Gedung Menara Bisnis Lt. 15, Jl. TB Simatupang, Jakarta',
+                    acUnits: [
+                        { brand: 'Daikin', type: 'Cassette', capacity: '2 PK', location: 'Meeting Room' },
+                        { brand: 'Daikin', type: 'Split Wall', capacity: '1.5 PK', location: 'Director Room' },
+                        { brand: 'Mitsubishi', type: 'Standing', capacity: '3 PK', location: 'Lobby' }
+                    ],
+                    services: [
+                        {
+                            id: 'SRV001',
+                            date: '2025-01-15',
+                            technician: 'Team',
+                            type: 'Routine',
+                            payment: 850000,
+                            notes: 'Monthly routine service for all units. Cleaned filters, checked freon pressure.',
+                            createdAt: '2025-01-15T08:00:00Z'
+                        },
+                        {
+                            id: 'SRV002',
+                            date: '2024-12-15',
+                            technician: 'Ahmad',
+                            type: 'Repair',
+                            payment: 1500000,
+                            notes: 'Replaced compressor for lobby AC unit. Warranty included.',
+                            createdAt: '2024-12-15T10:00:00Z'
+                        }
+                    ],
+                    createdAt: '2024-06-01T08:00:00Z',
+                    updatedAt: '2025-01-15T08:00:00Z'
+                },
+                {
+                    id: 'CUS2345678901',
+                    name: 'Ibu Siti Nurhaliza',
+                    phone: '081234567890',
+                    address: 'Perumahan Green Valley Blok A-15, Tangerang',
+                    acUnits: [
+                        { brand: 'LG', type: 'Split Wall', capacity: '1 PK', location: 'Master Bedroom' },
+                        { brand: 'LG', type: 'Split Wall', capacity: '0.75 PK', location: 'Kids Room' }
+                    ],
+                    services: [
+                        {
+                            id: 'SRV003',
+                            date: '2025-01-10',
+                            technician: 'Budi',
+                            type: 'Cleaning',
+                            payment: 350000,
+                            notes: 'Deep cleaning service for both units. Very dusty condition.',
+                            createdAt: '2025-01-10T14:00:00Z'
+                        }
+                    ],
+                    createdAt: '2024-08-20T09:00:00Z',
+                    updatedAt: '2025-01-10T14:00:00Z'
+                },
+                {
+                    id: 'CUS3456789012',
+                    name: 'Bapak Ahmad Fauzi',
+                    phone: '087654321098',
+                    address: 'Jl. Kemang Raya No. 88, Jakarta Selatan',
+                    acUnits: [
+                        { brand: 'Panasonic', type: 'Split Wall', capacity: '2 PK', location: 'Living Room' },
+                        { brand: 'Panasonic', type: 'Split Wall', capacity: '1 PK', location: 'Bedroom 1' },
+                        { brand: 'Panasonic', type: 'Split Wall', capacity: '1 PK', location: 'Bedroom 2' },
+                        { brand: 'Sharp', type: 'Split Wall', capacity: '0.5 PK', location: 'Study Room' }
+                    ],
+                    services: [
+                        {
+                            id: 'SRV004',
+                            date: '2025-01-08',
+                            technician: 'Dedi',
+                            type: 'Freon',
+                            payment: 650000,
+                            notes: 'Refilled R32 freon for living room and bedroom 1 units.',
+                            createdAt: '2025-01-08T11:00:00Z'
+                        },
+                        {
+                            id: 'SRV005',
+                            date: '2024-11-20',
+                            technician: 'Eko',
+                            type: 'Parts',
+                            payment: 450000,
+                            notes: 'Replaced capacitor and fan motor for study room unit.',
+                            createdAt: '2024-11-20T15:00:00Z'
+                        },
+                        {
+                            id: 'SRV006',
+                            date: '2024-09-10',
+                            technician: 'Ahmad',
+                            type: 'Installation',
+                            payment: 500000,
+                            notes: 'New installation of Sharp 0.5 PK in study room.',
+                            createdAt: '2024-09-10T09:00:00Z'
+                        }
+                    ],
+                    createdAt: '2024-09-10T09:00:00Z',
+                    updatedAt: '2025-01-08T11:00:00Z'
+                }
+            ];
+            
+            customers.push(...sampleData);
+            saveData();
+            updateStats();
+            renderCustomers();
+            showToast('Sample data loaded successfully', 'success');
+        };
 
         // Click outside modal to close
         window.onclick = function(event) {
-            const modal = document.getElementById('customerModal');
-            if (event.target === modal) {
-                closeModal();
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
             }
         };
+
+        // Initialize app on load
+        initApp();
     </script>
 </body>
 </html>
