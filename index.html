@@ -938,6 +938,13 @@
             }
         }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-storage.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -952,12 +959,8 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-primary" onclick="exportData()">
-                        📥 Export Data
-                    </button>
-                    <button class="btn btn-warning" onclick="window.print()">
-                        🖨️ Print
-                    </button>
+                    <button class="btn btn-primary" onclick="exportData()">📥 Export Data</button>
+                    <button class="btn btn-warning" onclick="window.print()">🖨️ Print</button>
                 </div>
             </div>
         </header>
@@ -991,15 +994,9 @@
             <!-- Action Bar -->
             <div class="action-bar">
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="openCustomerModal()">
-                        ➕ Add Customer
-                    </button>
-                    <button class="btn btn-success" onclick="loadSampleData()">
-                        📊 Sample Data
-                    </button>
-                    <button class="btn btn-secondary" onclick="toggleView()">
-                        👁️ Toggle View
-                    </button>
+                    <button class="btn btn-primary" onclick="openCustomerModal()">➕ Add Customer</button>
+                    <button class="btn btn-success" onclick="loadSampleData()">📊 Sample Data</button>
+                    <button class="btn btn-secondary" onclick="toggleView()">👁️ Toggle View</button>
                 </div>
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="searchCustomers()">
@@ -1717,72 +1714,6 @@
                     ],
                     createdAt: '2024-06-01T08:00:00Z',
                     updatedAt: '2025-01-15T08:00:00Z'
-                },
-                {
-                    id: 'CUS2345678901',
-                    name: 'Ibu Siti Nurhaliza',
-                    phone: '081234567890',
-                    address: 'Perumahan Green Valley Blok A-15, Tangerang',
-                    acUnits: [
-                        { brand: 'LG', type: 'Split Wall', capacity: '1 PK', location: 'Master Bedroom' },
-                        { brand: 'LG', type: 'Split Wall', capacity: '0.75 PK', location: 'Kids Room' }
-                    ],
-                    services: [
-                        {
-                            id: 'SRV003',
-                            date: '2025-01-10',
-                            technician: 'Budi',
-                            type: 'Cleaning',
-                            payment: 350000,
-                            notes: 'Deep cleaning service for both units. Very dusty condition.',
-                            createdAt: '2025-01-10T14:00:00Z'
-                        }
-                    ],
-                    createdAt: '2024-08-20T09:00:00Z',
-                    updatedAt: '2025-01-10T14:00:00Z'
-                },
-                {
-                    id: 'CUS3456789012',
-                    name: 'Bapak Ahmad Fauzi',
-                    phone: '087654321098',
-                    address: 'Jl. Kemang Raya No. 88, Jakarta Selatan',
-                    acUnits: [
-                        { brand: 'Panasonic', type: 'Split Wall', capacity: '2 PK', location: 'Living Room' },
-                        { brand: 'Panasonic', type: 'Split Wall', capacity: '1 PK', location: 'Bedroom 1' },
-                        { brand: 'Panasonic', type: 'Split Wall', capacity: '1 PK', location: 'Bedroom 2' },
-                        { brand: 'Sharp', type: 'Split Wall', capacity: '0.5 PK', location: 'Study Room' }
-                    ],
-                    services: [
-                        {
-                            id: 'SRV004',
-                            date: '2025-01-08',
-                            technician: 'Dedi',
-                            type: 'Freon',
-                            payment: 650000,
-                            notes: 'Refilled R32 freon for living room and bedroom 1 units.',
-                            createdAt: '2025-01-08T11:00:00Z'
-                        },
-                        {
-                            id: 'SRV005',
-                            date: '2024-11-20',
-                            technician: 'Eko',
-                            type: 'Parts',
-                            payment: 450000,
-                            notes: 'Replaced capacitor and fan motor for study room unit.',
-                            createdAt: '2024-11-20T15:00:00Z'
-                        },
-                        {
-                            id: 'SRV006',
-                            date: '2024-09-10',
-                            technician: 'Ahmad',
-                            type: 'Installation',
-                            payment: 500000,
-                            notes: 'New installation of Sharp 0.5 PK in study room.',
-                            createdAt: '2024-09-10T09:00:00Z'
-                        }
-                    ],
-                    createdAt: '2024-09-10T09:00:00Z',
-                    updatedAt: '2025-01-08T11:00:00Z'
                 }
             ];
             
