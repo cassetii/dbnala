@@ -124,6 +124,27 @@
             gap: 12px;
         }
 
+        /* Firebase Status */
+        .firebase-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--radius);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .firebase-status.connected {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .firebase-status.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
         /* Main Content */
         .main-content {
             max-width: 1400px;
@@ -266,6 +287,12 @@
         .btn-sm {
             padding: 6px 12px;
             font-size: 12px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* Search Box */
@@ -938,13 +965,6 @@
             }
         }
     </style>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-storage.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -959,6 +979,9 @@
                     </div>
                 </div>
                 <div class="header-actions">
+                    <div class="firebase-status" id="firebaseStatus">
+                        <span>🔴</span> Firebase Disconnected
+                    </div>
                     <button class="btn btn-primary" onclick="exportData()">📥 Export Data</button>
                     <button class="btn btn-warning" onclick="window.print()">🖨️ Print</button>
                 </div>
@@ -994,9 +1017,10 @@
             <!-- Action Bar -->
             <div class="action-bar">
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="openCustomerModal()">➕ Add Customer</button>
-                    <button class="btn btn-success" onclick="loadSampleData()">📊 Sample Data</button>
+                    <button class="btn btn-primary" onclick="openCustomerModal()" id="addCustomerBtn">➕ Add Customer</button>
+                    <button class="btn btn-success" onclick="loadSampleData()" id="sampleDataBtn">📊 Sample Data</button>
                     <button class="btn btn-secondary" onclick="toggleView()">👁️ Toggle View</button>
+                    <button class="btn btn-warning" onclick="syncWithFirebase()" id="syncBtn">🔄 Sync</button>
                 </div>
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="searchCustomers()">
@@ -1147,56 +1171,352 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- Firebase Configuration Modal -->
+    <div id="configModal" class="modal" style="display: block;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title">🔧 Firebase Configuration</h2>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--light);">
+                    Masukkan konfigurasi Firebase Anda untuk mulai menggunakan aplikasi.
+                </p>
+                
+                <div class="form-group">
+                    <label>API Key *</label>
+                    <input type="text" id="configApiKey" placeholder="AIzaSyC..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Auth Domain *</label>
+                    <input type="text" id="configAuthDomain" placeholder="your-project.firebaseapp.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Project ID *</label>
+                    <input type="text" id="configProjectId" placeholder="your-project-id" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Storage Bucket</label>
+                    <input type="text" id="configStorageBucket" placeholder="your-project.appspot.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Messaging Sender ID</label>
+                    <input type="text" id="configMessagingSenderId" placeholder="123456789">
+                </div>
+                
+                <div class="form-group">
+                    <label>App ID *</label>
+                    <input type="text" id="configAppId" placeholder="1:123:web:abc123" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="initializeFirebase()">Connect to Firebase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK v9 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // ========== FIREBASE CONFIGURATION ==========
+        let app = null;
+        let db = null;
+        let isFirebaseInitialized = false;
+
+        // Initialize Firebase
+        window.initializeFirebase = function() {
+            const apiKey = document.getElementById('configApiKey').value;
+            const authDomain = document.getElementById('configAuthDomain').value;
+            const projectId = document.getElementById('configProjectId').value;
+            const storageBucket = document.getElementById('configStorageBucket').value;
+            const messagingSenderId = document.getElementById('configMessagingSenderId').value;
+            const appId = document.getElementById('configAppId').value;
+
+            if (!apiKey || !authDomain || !projectId || !appId) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const firebaseConfig = {
+                apiKey: apiKey,
+                authDomain: authDomain,
+                projectId: projectId,
+                storageBucket: storageBucket,
+                messagingSenderId: messagingSenderId,
+                appId: appId
+            };
+
+            try {
+                showLoading(true);
+                
+                // Initialize Firebase
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                
+                // Save config to localStorage
+                localStorage.setItem('nala_firebase_config', JSON.stringify(firebaseConfig));
+                
+                isFirebaseInitialized = true;
+                updateFirebaseStatus(true);
+                
+                // Close config modal
+                document.getElementById('configModal').style.display = 'none';
+                
+                // Enable buttons
+                enableButtons();
+                
+                // Load data from Firebase
+                loadDataFromFirebase();
+                
+                showToast('🎉 Connected to Firebase successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                showToast('Failed to connect to Firebase: ' + error.message, 'error');
+                isFirebaseInitialized = false;
+                updateFirebaseStatus(false);
+            } finally {
+                showLoading(false);
+            }
+        };
+
+        // Check for existing config
+        function checkExistingConfig() {
+            const savedConfig = localStorage.getItem('nala_firebase_config');
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    
+                    // Fill form with saved config
+                    document.getElementById('configApiKey').value = config.apiKey || '';
+                    document.getElementById('configAuthDomain').value = config.authDomain || '';
+                    document.getElementById('configProjectId').value = config.projectId || '';
+                    document.getElementById('configStorageBucket').value = config.storageBucket || '';
+                    document.getElementById('configMessagingSenderId').value = config.messagingSenderId || '';
+                    document.getElementById('configAppId').value = config.appId || '';
+                    
+                    // Auto-initialize if config is complete
+                    if (config.apiKey && config.authDomain && config.projectId && config.appId) {
+                        setTimeout(() => {
+                            initializeFirebase();
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error('Error loading saved config:', error);
+                }
+            }
+        }
+
+        // ========== FIREBASE FUNCTIONS ==========
+        
+        // Save customer to Firebase
+        async function saveCustomerToFirebase(customerData) {
+            if (!isFirebaseInitialized) {
+                throw new Error('Firebase not initialized');
+            }
+
+            try {
+                const docRef = await addDoc(collection(db, 'customers'), {
+                    ...customerData,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                return docRef.id;
+            } catch (error) {
+                console.error('Error saving customer to Firebase:', error);
+                throw error;
+            }
+        }
+
+        // Update customer in Firebase
+        async function updateCustomerInFirebase(customerId, customerData) {
+            if (!isFirebaseInitialized) {
+                throw new Error('Firebase not initialized');
+            }
+
+            try {
+                const customerRef = doc(db, 'customers', customerId);
+                await updateDoc(customerRef, {
+                    ...customerData,
+                    updatedAt: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error updating customer in Firebase:', error);
+                throw error;
+            }
+        }
+
+        // Delete customer from Firebase
+        async function deleteCustomerFromFirebase(customerId) {
+            if (!isFirebaseInitialized) {
+                throw new Error('Firebase not initialized');
+            }
+
+            try {
+                await deleteDoc(doc(db, 'customers', customerId));
+            } catch (error) {
+                console.error('Error deleting customer from Firebase:', error);
+                throw error;
+            }
+        }
+
+        // Load data from Firebase
+        async function loadDataFromFirebase() {
+            if (!isFirebaseInitialized) {
+                return;
+            }
+
+            try {
+                showLoading(true);
+                const q = query(collection(db, 'customers'), orderBy('updatedAt', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                customers = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    customers.push({
+                        id: doc.id,
+                        ...data,
+                        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+                        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt
+                    });
+                });
+
+                updateStats();
+                renderCustomers();
+                showToast('Data loaded from Firebase', 'success');
+                
+            } catch (error) {
+                console.error('Error loading data from Firebase:', error);
+                showToast('Error loading data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Real-time listener
+        function setupFirebaseListener() {
+            if (!isFirebaseInitialized) return;
+
+            const q = query(collection(db, 'customers'), orderBy('updatedAt', 'desc'));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                customers = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    customers.push({
+                        id: doc.id,
+                        ...data,
+                        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+                        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt
+                    });
+                });
+                
+                updateStats();
+                renderCustomers();
+            }, (error) => {
+                console.error('Firebase listener error:', error);
+                showToast('Connection lost. Retrying...', 'error');
+            });
+
+            return unsubscribe;
+        }
+
+        // Sync with Firebase
+        window.syncWithFirebase = async function() {
+            if (!isFirebaseInitialized) {
+                showToast('Firebase not connected', 'error');
+                return;
+            }
+            
+            try {
+                await loadDataFromFirebase();
+                showToast('Synced with Firebase', 'success');
+            } catch (error) {
+                showToast('Sync failed: ' + error.message, 'error');
+            }
+        };
+
+        // ========== EXPOSE FIREBASE FUNCTIONS TO GLOBAL SCOPE ==========
+        window.firebaseHelpers = {
+            saveCustomerToFirebase,
+            updateCustomerInFirebase,
+            deleteCustomerFromFirebase,
+            loadDataFromFirebase,
+            setupFirebaseListener
+        };
+
+        // Initialize on load
+        checkExistingConfig();
+        
+        // Set up real-time listener when Firebase is ready
+        window.addEventListener('firebaseReady', () => {
+            setupFirebaseListener();
+        });
+    </script>
+
     <script>
         // ========== DATA MANAGEMENT ==========
         let customers = [];
         let editingCustomerId = null;
         let editingServiceId = null;
-        let currentView = 'expanded'; // 'expanded' or 'compact'
+        let currentView = 'expanded';
+        let isFirebaseReady = false;
 
         // Initialize App
         function initApp() {
             console.log('🚀 Initializing Nala Aircon Professional System...');
-            loadData();
             generateACForms();
             
             // Set today's date for service form
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
+            
+            // Disable buttons until Firebase is ready
+            disableButtons();
         }
 
-        // Load data from localStorage
-        function loadData() {
-            try {
-                const stored = localStorage.getItem('nala_professional_data');
-                if (stored) {
-                    customers = JSON.parse(stored);
-                    console.log(`✅ Loaded ${customers.length} customers`);
-                } else {
-                    customers = [];
-                }
-                updateStats();
-                renderCustomers();
-            } catch (error) {
-                console.error('Error loading data:', error);
-                customers = [];
+        // Update Firebase status
+        function updateFirebaseStatus(connected) {
+            const statusEl = document.getElementById('firebaseStatus');
+            if (connected) {
+                statusEl.innerHTML = '<span>🟢</span> Firebase Connected';
+                statusEl.className = 'firebase-status connected';
+                isFirebaseReady = true;
+                window.dispatchEvent(new Event('firebaseReady'));
+            } else {
+                statusEl.innerHTML = '<span>🔴</span> Firebase Disconnected';
+                statusEl.className = 'firebase-status disconnected';
+                isFirebaseReady = false;
             }
         }
 
-        // Save data to localStorage
-        function saveData() {
-            try {
-                localStorage.setItem('nala_professional_data', JSON.stringify(customers));
-                console.log('💾 Data saved');
-            } catch (error) {
-                console.error('Error saving data:', error);
-                showToast('Error saving data', 'error');
-            }
+        // Enable/disable buttons
+        function enableButtons() {
+            document.getElementById('addCustomerBtn').disabled = false;
+            document.getElementById('sampleDataBtn').disabled = false;
+            document.getElementById('syncBtn').disabled = false;
+        }
+
+        function disableButtons() {
+            document.getElementById('addCustomerBtn').disabled = true;
+            document.getElementById('sampleDataBtn').disabled = true;
+            document.getElementById('syncBtn').disabled = true;
         }
 
         // ========== CUSTOMER MANAGEMENT ==========
         
         // Open customer modal
         window.openCustomerModal = function(customerId = null) {
+            if (!isFirebaseReady) {
+                showToast('Please connect to Firebase first', 'error');
+                return;
+            }
+
             const modal = document.getElementById('customerModal');
             const form = document.getElementById('customerForm');
             const title = document.getElementById('modalTitle');
@@ -1296,64 +1616,73 @@
         };
 
         // Save customer
-        document.getElementById('customerForm').onsubmit = function(e) {
+        document.getElementById('customerForm').onsubmit = async function(e) {
             e.preventDefault();
             
-            const acCount = parseInt(document.getElementById('acCount').value);
-            const acUnits = [];
-            
-            for (let i = 0; i < acCount; i++) {
-                acUnits.push({
-                    brand: document.getElementById(`ac_brand_${i}`)?.value || '',
-                    type: document.getElementById(`ac_type_${i}`)?.value || 'Split Wall',
-                    capacity: document.getElementById(`ac_capacity_${i}`)?.value || '1 PK',
-                    location: document.getElementById(`ac_location_${i}`)?.value || ''
-                });
+            if (!isFirebaseReady) {
+                showToast('Firebase not connected', 'error');
+                return;
             }
-            
-            const customerData = {
-                name: document.getElementById('customerName').value,
-                phone: document.getElementById('customerPhone').value,
-                address: document.getElementById('customerAddress').value,
-                acUnits: acUnits,
-                services: []
-            };
-            
-            if (editingCustomerId) {
-                const index = customers.findIndex(c => c.id === editingCustomerId);
-                if (index !== -1) {
-                    customers[index] = {
-                        ...customers[index],
-                        ...customerData,
-                        updatedAt: new Date().toISOString()
-                    };
-                    showToast('Customer updated successfully', 'success');
+
+            try {
+                showLoading(true);
+
+                const acCount = parseInt(document.getElementById('acCount').value);
+                const acUnits = [];
+                
+                for (let i = 0; i < acCount; i++) {
+                    acUnits.push({
+                        brand: document.getElementById(`ac_brand_${i}`)?.value || '',
+                        type: document.getElementById(`ac_type_${i}`)?.value || 'Split Wall',
+                        capacity: document.getElementById(`ac_capacity_${i}`)?.value || '1 PK',
+                        location: document.getElementById(`ac_location_${i}`)?.value || ''
+                    });
                 }
-            } else {
-                const newCustomer = {
-                    id: 'CUS' + Date.now(),
-                    ...customerData,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
+                
+                const customerData = {
+                    name: document.getElementById('customerName').value,
+                    phone: document.getElementById('customerPhone').value,
+                    address: document.getElementById('customerAddress').value,
+                    acUnits: acUnits,
+                    services: editingCustomerId ? customers.find(c => c.id === editingCustomerId)?.services || [] : []
                 };
-                customers.unshift(newCustomer);
-                showToast('Customer added successfully', 'success');
+                
+                if (editingCustomerId) {
+                    await window.firebaseHelpers.updateCustomerInFirebase(editingCustomerId, customerData);
+                    showToast('Customer updated successfully', 'success');
+                } else {
+                    await window.firebaseHelpers.saveCustomerToFirebase(customerData);
+                    showToast('Customer added successfully', 'success');
+                }
+                
+                closeModal('customerModal');
+                
+            } catch (error) {
+                console.error('Error saving customer:', error);
+                showToast('Error saving customer: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
             }
-            
-            saveData();
-            updateStats();
-            renderCustomers();
-            closeModal('customerModal');
         };
 
         // Delete customer
-        window.deleteCustomer = function(customerId) {
+        window.deleteCustomer = async function(customerId) {
+            if (!isFirebaseReady) {
+                showToast('Firebase not connected', 'error');
+                return;
+            }
+
             if (confirm('Are you sure you want to delete this customer? All service history will be lost.')) {
-                customers = customers.filter(c => c.id !== customerId);
-                saveData();
-                updateStats();
-                renderCustomers();
-                showToast('Customer deleted', 'success');
+                try {
+                    showLoading(true);
+                    await window.firebaseHelpers.deleteCustomerFromFirebase(customerId);
+                    showToast('Customer deleted', 'success');
+                } catch (error) {
+                    console.error('Error deleting customer:', error);
+                    showToast('Error deleting customer: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
             }
         };
 
@@ -1361,6 +1690,11 @@
         
         // Open service modal
         window.openServiceModal = function(customerId) {
+            if (!isFirebaseReady) {
+                showToast('Please connect to Firebase first', 'error');
+                return;
+            }
+
             document.getElementById('serviceCustomerId').value = customerId;
             document.getElementById('serviceForm').reset();
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
@@ -1368,44 +1702,85 @@
         };
 
         // Save service
-        document.getElementById('serviceForm').onsubmit = function(e) {
+        document.getElementById('serviceForm').onsubmit = async function(e) {
             e.preventDefault();
             
-            const customerId = document.getElementById('serviceCustomerId').value;
-            const customer = customers.find(c => c.id === customerId);
-            
-            if (customer) {
-                const service = {
-                    id: 'SRV' + Date.now(),
-                    date: document.getElementById('serviceDate').value,
-                    technician: document.getElementById('serviceTechnician').value,
-                    type: document.getElementById('serviceType').value,
-                    payment: parseInt(document.getElementById('servicePayment').value) || 0,
-                    notes: document.getElementById('serviceNotes').value,
-                    createdAt: new Date().toISOString()
-                };
+            if (!isFirebaseReady) {
+                showToast('Firebase not connected', 'error');
+                return;
+            }
+
+            try {
+                showLoading(true);
+
+                const customerId = document.getElementById('serviceCustomerId').value;
+                const customer = customers.find(c => c.id === customerId);
                 
-                if (!customer.services) customer.services = [];
-                customer.services.unshift(service);
+                if (customer) {
+                    const service = {
+                        id: 'SRV' + Date.now(),
+                        date: document.getElementById('serviceDate').value,
+                        technician: document.getElementById('serviceTechnician').value,
+                        type: document.getElementById('serviceType').value,
+                        payment: parseInt(document.getElementById('servicePayment').value) || 0,
+                        notes: document.getElementById('serviceNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    if (!customer.services) customer.services = [];
+                    customer.services.unshift(service);
+                    
+                    await window.firebaseHelpers.updateCustomerInFirebase(customerId, {
+                        name: customer.name,
+                        phone: customer.phone,
+                        address: customer.address,
+                        acUnits: customer.acUnits,
+                        services: customer.services
+                    });
+                    
+                    closeModal('serviceModal');
+                    showToast('Service record added', 'success');
+                }
                 
-                saveData();
-                updateStats();
-                renderCustomers();
-                closeModal('serviceModal');
-                showToast('Service record added', 'success');
+            } catch (error) {
+                console.error('Error saving service:', error);
+                showToast('Error saving service: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
             }
         };
 
         // Delete service
-        window.deleteService = function(customerId, serviceId) {
+        window.deleteService = async function(customerId, serviceId) {
+            if (!isFirebaseReady) {
+                showToast('Firebase not connected', 'error');
+                return;
+            }
+
             if (confirm('Delete this service record?')) {
-                const customer = customers.find(c => c.id === customerId);
-                if (customer && customer.services) {
-                    customer.services = customer.services.filter(s => s.id !== serviceId);
-                    saveData();
-                    updateStats();
-                    renderCustomers();
-                    showToast('Service deleted', 'success');
+                try {
+                    showLoading(true);
+
+                    const customer = customers.find(c => c.id === customerId);
+                    if (customer && customer.services) {
+                        customer.services = customer.services.filter(s => s.id !== serviceId);
+                        
+                        await window.firebaseHelpers.updateCustomerInFirebase(customerId, {
+                            name: customer.name,
+                            phone: customer.phone,
+                            address: customer.address,
+                            acUnits: customer.acUnits,
+                            services: customer.services
+                        });
+                        
+                        showToast('Service deleted', 'success');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error deleting service:', error);
+                    showToast('Error deleting service: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
                 }
             }
         };
@@ -1449,7 +1824,7 @@
                                 <div class="customer-identity">
                                     <div class="customer-name">
                                         ${customer.name}
-                                        <span class="customer-id">#${customer.id}</span>
+                                        <span class="customer-id">#${customer.id.substring(0, 8)}</span>
                                     </div>
                                     <div class="customer-contact">
                                         <span>📱 ${customer.phone}</span>
@@ -1632,6 +2007,16 @@
             editingServiceId = null;
         };
 
+        // Show/hide loading
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
         // Format currency
         function formatCurrency(amount) {
             if (amount >= 1000000) {
@@ -1678,50 +2063,55 @@
         };
 
         // Load sample data
-        window.loadSampleData = function() {
+        window.loadSampleData = async function() {
+            if (!isFirebaseReady) {
+                showToast('Please connect to Firebase first', 'error');
+                return;
+            }
+
             if (customers.length > 0 && !confirm('This will add sample data. Continue?')) return;
             
-            const sampleData = [
-                {
-                    id: 'CUS1234567890',
-                    name: 'PT. Maju Bersama',
-                    phone: '021-5551234',
-                    address: 'Gedung Menara Bisnis Lt. 15, Jl. TB Simatupang, Jakarta',
-                    acUnits: [
-                        { brand: 'Daikin', type: 'Cassette', capacity: '2 PK', location: 'Meeting Room' },
-                        { brand: 'Daikin', type: 'Split Wall', capacity: '1.5 PK', location: 'Director Room' },
-                        { brand: 'Mitsubishi', type: 'Standing', capacity: '3 PK', location: 'Lobby' }
-                    ],
-                    services: [
-                        {
-                            id: 'SRV001',
-                            date: '2025-01-15',
-                            technician: 'Team',
-                            type: 'Routine',
-                            payment: 850000,
-                            notes: 'Monthly routine service for all units. Cleaned filters, checked freon pressure.',
-                            createdAt: '2025-01-15T08:00:00Z'
-                        },
-                        {
-                            id: 'SRV002',
-                            date: '2024-12-15',
-                            technician: 'Ahmad',
-                            type: 'Repair',
-                            payment: 1500000,
-                            notes: 'Replaced compressor for lobby AC unit. Warranty included.',
-                            createdAt: '2024-12-15T10:00:00Z'
-                        }
-                    ],
-                    createdAt: '2024-06-01T08:00:00Z',
-                    updatedAt: '2025-01-15T08:00:00Z'
-                }
-            ];
+            const sampleData = {
+                name: 'PT. Maju Bersama',
+                phone: '021-5551234',
+                address: 'Gedung Menara Bisnis Lt. 15, Jl. TB Simatupang, Jakarta',
+                acUnits: [
+                    { brand: 'Daikin', type: 'Cassette', capacity: '2 PK', location: 'Meeting Room' },
+                    { brand: 'Daikin', type: 'Split Wall', capacity: '1.5 PK', location: 'Director Room' },
+                    { brand: 'Mitsubishi', type: 'Standing', capacity: '3 PK', location: 'Lobby' }
+                ],
+                services: [
+                    {
+                        id: 'SRV001',
+                        date: '2025-01-15',
+                        technician: 'Fahrur',
+                        type: 'Cuci AC',
+                        payment: 850000,
+                        notes: 'Monthly routine service for all units. Cleaned filters, checked freon pressure.',
+                        createdAt: '2025-01-15T08:00:00Z'
+                    },
+                    {
+                        id: 'SRV002',
+                        date: '2024-12-15',
+                        technician: 'Agus',
+                        type: 'Troubleshooting',
+                        payment: 1500000,
+                        notes: 'Replaced compressor for lobby AC unit. Warranty included.',
+                        createdAt: '2024-12-15T10:00:00Z'
+                    }
+                ]
+            };
             
-            customers.push(...sampleData);
-            saveData();
-            updateStats();
-            renderCustomers();
-            showToast('Sample data loaded successfully', 'success');
+            try {
+                showLoading(true);
+                await window.firebaseHelpers.saveCustomerToFirebase(sampleData);
+                showToast('Sample data loaded successfully', 'success');
+            } catch (error) {
+                console.error('Error loading sample data:', error);
+                showToast('Error loading sample data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
         };
 
         // Click outside modal to close
