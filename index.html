@@ -330,6 +330,13 @@
             color: var(--medium);
         }
 
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            align-items: end;
+            gap: 10px;
+        }
+
         /* View Toggle */
         .view-toggle {
             display: flex;
@@ -938,6 +945,12 @@
             .ac-units-grid {
                 grid-template-columns: 1fr;
             }
+
+            .filter-section {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
 
         /* Print */
@@ -1021,10 +1034,20 @@
                     <button class="btn btn-success" onclick="loadSampleData()" id="sampleDataBtn">📊 Sample Data</button>
                     <button class="btn btn-secondary" onclick="toggleView()">👁️ Toggle View</button>
                     <button class="btn btn-warning" onclick="syncWithFirebase()" id="syncBtn">🔄 Sync</button>
+                    <button class="btn btn-primary" onclick="downloadTemplate()" id="templateBtn">📋 Download Template</button>
+                    <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none" onchange="importFromExcel()">
+                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()" id="importBtn">📤 Import Excel</button>
                 </div>
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="searchCustomers()">
                     <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-section">
+                    <div class="form-group" style="margin: 0; min-width: 180px;">
+                        <label style="font-size: 12px; margin-bottom: 5px;">Filter by Month:</label>
+                        <input type="month" id="monthFilter" onchange="filterByMonth()" style="padding: 8px 12px; font-size: 13px;">
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="clearFilter()" id="clearFilterBtn">Clear Filter</button>
                 </div>
             </div>
 
@@ -1467,6 +1490,7 @@
         let editingServiceId = null;
         let currentView = 'expanded';
         let isFirebaseReady = false;
+        let monthFilter = null;
 
         // Initialize App
         function initApp() {
@@ -1500,12 +1524,16 @@
             document.getElementById('addCustomerBtn').disabled = false;
             document.getElementById('sampleDataBtn').disabled = false;
             document.getElementById('syncBtn').disabled = false;
+            document.getElementById('templateBtn').disabled = false;
+            document.getElementById('importBtn').disabled = false;
         }
 
         function disableButtons() {
             document.getElementById('addCustomerBtn').disabled = true;
             document.getElementById('sampleDataBtn').disabled = true;
             document.getElementById('syncBtn').disabled = true;
+            document.getElementById('templateBtn').disabled = true;
+            document.getElementById('importBtn').disabled = true;
         }
 
         // ========== CUSTOMER MANAGEMENT ==========
@@ -1787,26 +1815,79 @@
 
         // ========== UI RENDERING ==========
         
+        // Get filtered customers based on month filter
+        function getFilteredCustomers() {
+            if (!monthFilter) return customers;
+            
+            const [filterYear, filterMonth] = monthFilter.split('-');
+            
+            return customers.filter(customer => {
+                if (!customer.services || customer.services.length === 0) {
+                    return false; // Don't show customers with no services when filtering by month
+                }
+                
+                return customer.services.some(service => {
+                    const serviceDate = new Date(service.date);
+                    const serviceYear = serviceDate.getFullYear().toString();
+                    const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
+                    
+                    return serviceYear === filterYear && serviceMonth === filterMonth;
+                });
+            });
+        }
+
         // Render customers
         function renderCustomers(searchTerm = '') {
             const container = document.getElementById('customersContainer');
-            let filtered = customers;
+            let filtered = getFilteredCustomers();
             
             if (searchTerm) {
-                filtered = customers.filter(c => 
+                filtered = filtered.filter(c => 
                     c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     c.phone.includes(searchTerm) ||
                     c.address.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
             
+            // Filter services by month if month filter is active
+            if (monthFilter) {
+                const [filterYear, filterMonth] = monthFilter.split('-');
+                filtered = filtered.map(customer => {
+                    const filteredServices = customer.services.filter(service => {
+                        const serviceDate = new Date(service.date);
+                        const serviceYear = serviceDate.getFullYear().toString();
+                        const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
+                        
+                        return serviceYear === filterYear && serviceMonth === filterMonth;
+                    });
+                    
+                    return {
+                        ...customer,
+                        services: filteredServices
+                    };
+                });
+            }
+            
             if (filtered.length === 0) {
+                const emptyMessage = monthFilter 
+                    ? 'No customers with services in selected month'
+                    : searchTerm 
+                        ? 'No Results Found' 
+                        : 'No Customers Yet';
+                        
+                const emptyDescription = monthFilter
+                    ? 'Try selecting a different month or clear the filter'
+                    : searchTerm 
+                        ? 'Try different search terms' 
+                        : 'Start by adding your first customer';
+                        
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📦</div>
-                        <div class="empty-title">${searchTerm ? 'No Results Found' : 'No Customers Yet'}</div>
-                        <div class="empty-text">${searchTerm ? 'Try different search terms' : 'Start by adding your first customer'}</div>
-                        ${!searchTerm ? '<button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>' : ''}
+                        <div class="empty-title">${emptyMessage}</div>
+                        <div class="empty-text">${emptyDescription}</div>
+                        ${!searchTerm && !monthFilter ? '<button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>' : ''}
+                        ${monthFilter ? '<button class="btn btn-secondary" onclick="clearFilter()">Clear Filter</button>' : ''}
                     </div>
                 `;
                 return;
@@ -1825,6 +1906,7 @@
                                     <div class="customer-name">
                                         ${customer.name}
                                         <span class="customer-id">#${customer.id.substring(0, 8)}</span>
+                                        ${monthFilter ? '<span style="background: var(--accent-blue); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">FILTERED</span>' : ''}
                                     </div>
                                     <div class="customer-contact">
                                         <span>📱 ${customer.phone}</span>
@@ -1850,11 +1932,11 @@
                                 </div>
                                 <div class="customer-stat">
                                     <div class="customer-stat-value">${totalServices}</div>
-                                    <div class="customer-stat-label">Services</div>
+                                    <div class="customer-stat-label">${monthFilter ? 'Monthly Services' : 'Services'}</div>
                                 </div>
                                 <div class="customer-stat">
                                     <div class="customer-stat-value">${formatCurrency(totalPayments)}</div>
-                                    <div class="customer-stat-label">Total Spent</div>
+                                    <div class="customer-stat-label">${monthFilter ? 'Monthly Revenue' : 'Total Spent'}</div>
                                 </div>
                                 <div class="customer-stat">
                                     <div class="customer-stat-value">${lastService ? formatDate(lastService.date) : 'Never'}</div>
@@ -1867,7 +1949,7 @@
                         <div class="customer-details">
                             <div class="details-tabs">
                                 <button class="tab-btn active" onclick="switchTab('${customer.id}', 'units')">AC Units</button>
-                                <button class="tab-btn" onclick="switchTab('${customer.id}', 'history')">Service History</button>
+                                <button class="tab-btn" onclick="switchTab('${customer.id}', 'history')">${monthFilter ? 'Monthly History' : 'Service History'}</button>
                             </div>
                             
                             <div class="tab-content">
@@ -1890,7 +1972,7 @@
                                 <div class="tab-pane" id="tab-history-${customer.id}">
                                     <div class="service-history">
                                         <div class="service-history-header">
-                                            <h3 class="service-history-title">Service History</h3>
+                                            <h3 class="service-history-title">${monthFilter ? 'Monthly Service History' : 'Service History'}</h3>
                                             <button class="btn btn-sm btn-success" onclick="openServiceModal('${customer.id}')">
                                                 + Add Service
                                             </button>
@@ -1930,7 +2012,7 @@
                                             </div>
                                         ` : `
                                             <div style="text-align: center; padding: 40px; color: var(--medium);">
-                                                No service history yet
+                                                ${monthFilter ? 'No services found for selected month' : 'No service history yet'}
                                             </div>
                                         `}
                                     </div>
@@ -1967,16 +2049,68 @@
 
         // Update statistics
         function updateStats() {
-            const totalAC = customers.reduce((sum, c) => sum + c.acUnits.length, 0);
-            const totalServices = customers.reduce((sum, c) => sum + (c.services?.length || 0), 0);
-            const totalRevenue = customers.reduce((sum, c) => 
+            let statsCustomers = customers;
+            
+            // Apply month filter to statistics if active
+            if (monthFilter) {
+                const [filterYear, filterMonth] = monthFilter.split('-');
+                
+                // Only include customers who have services in the filtered month
+                statsCustomers = customers.filter(customer => {
+                    if (!customer.services || customer.services.length === 0) {
+                        return false;
+                    }
+                    
+                    return customer.services.some(service => {
+                        const serviceDate = new Date(service.date);
+                        const serviceYear = serviceDate.getFullYear().toString();
+                        const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
+                        
+                        return serviceYear === filterYear && serviceMonth === filterMonth;
+                    });
+                });
+                
+                // Filter services for each customer to only include those in the selected month
+                statsCustomers = statsCustomers.map(customer => ({
+                    ...customer,
+                    services: customer.services.filter(service => {
+                        const serviceDate = new Date(service.date);
+                        const serviceYear = serviceDate.getFullYear().toString();
+                        const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
+                        
+                        return serviceYear === filterYear && serviceMonth === filterMonth;
+                    })
+                }));
+            }
+            
+            const totalAC = statsCustomers.reduce((sum, c) => sum + c.acUnits.length, 0);
+            const totalServices = statsCustomers.reduce((sum, c) => sum + (c.services?.length || 0), 0);
+            const totalRevenue = statsCustomers.reduce((sum, c) => 
                 sum + (c.services?.reduce((s, srv) => s + (srv.payment || 0), 0) || 0), 0
             );
             
-            document.getElementById('totalCustomers').textContent = customers.length;
+            document.getElementById('totalCustomers').textContent = statsCustomers.length;
             document.getElementById('totalAC').textContent = totalAC;
             document.getElementById('totalServices').textContent = totalServices;
             document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            
+            // Update stat labels based on filter status
+            const customerLabel = document.querySelector('#totalCustomers').parentElement.querySelector('.stat-label');
+            const serviceLabel = document.querySelector('#totalServices').parentElement.querySelector('.stat-label');
+            const revenueLabel = document.querySelector('#totalRevenue').parentElement.querySelector('.stat-label');
+            
+            if (monthFilter) {
+                const [year, month] = monthFilter.split('-');
+                const monthName = new Date(year, month - 1, 1).toLocaleString('id-ID', { month: 'short' });
+                
+                customerLabel.textContent = `Customers (${monthName} ${year})`;
+                serviceLabel.textContent = `Services (${monthName} ${year})`;
+                revenueLabel.textContent = `Revenue (${monthName} ${year})`;
+            } else {
+                customerLabel.textContent = 'Total Customers';
+                serviceLabel.textContent = 'Total Services';
+                revenueLabel.textContent = 'Total Revenue';
+            }
         }
 
         // ========== UTILITY FUNCTIONS ==========
@@ -1985,6 +2119,33 @@
         window.searchCustomers = function() {
             const searchTerm = document.getElementById('searchInput').value;
             renderCustomers(searchTerm);
+        };
+
+        // Filter by month
+        window.filterByMonth = function() {
+            const monthValue = document.getElementById('monthFilter').value;
+            monthFilter = monthValue ? monthValue : null;
+            
+            const searchTerm = document.getElementById('searchInput').value;
+            renderCustomers(searchTerm);
+            updateStats();
+            
+            if (monthFilter) {
+                const [year, month] = monthFilter.split('-');
+                const monthName = new Date(year, month - 1, 1).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+                showToast(`Filter applied for ${monthName}`, 'success');
+            }
+        };
+
+        // Clear filter
+        window.clearFilter = function() {
+            monthFilter = null;
+            document.getElementById('monthFilter').value = '';
+            
+            const searchTerm = document.getElementById('searchInput').value;
+            renderCustomers(searchTerm);
+            updateStats();
+            showToast('Filter cleared', 'success');
         };
 
         // Toggle view
@@ -2061,6 +2222,216 @@
             URL.revokeObjectURL(url);
             showToast('Data exported successfully', 'success');
         };
+
+        // Download Excel template
+        window.downloadTemplate = function() {
+            // Create template data structure
+            const templateData = [
+                [
+                    'Customer Name*', 'Phone Number*', 'Address*',
+                    'AC Unit 1 Brand', 'AC Unit 1 Type', 'AC Unit 1 Capacity', 'AC Unit 1 Location',
+                    'AC Unit 2 Brand', 'AC Unit 2 Type', 'AC Unit 2 Capacity', 'AC Unit 2 Location',
+                    'AC Unit 3 Brand', 'AC Unit 3 Type', 'AC Unit 3 Capacity', 'AC Unit 3 Location',
+                    'Service Date', 'Service Technician', 'Service Type', 'Service Payment', 'Service Notes'
+                ],
+                [
+                    'PT. Contoh Perusahaan', '021-12345678', 'Jl. Contoh No. 123, Jakarta',
+                    'Daikin', 'Split Wall', '1 PK', 'Office Room',
+                    'LG', 'Cassette', '2 PK', 'Meeting Room',
+                    '', '', '', '',
+                    '2025-01-15', 'Fahrur', 'Cuci AC', '500000', 'Routine cleaning service'
+                ],
+                [
+                    'Toko ABC', '021-87654321', 'Jl. Perdagangan No. 45, Jakarta',
+                    'Samsung', 'Standing', '3 PK', 'Shop Floor',
+                    '', '', '', '',
+                    '', '', '', '',
+                    '2025-01-20', 'Agus', 'Pengecekan', '200000', 'Monthly inspection'
+                ]
+            ];
+
+            // Convert to CSV format
+            const csvContent = templateData.map(row => 
+                row.map(cell => {
+                    // Escape quotes and wrap in quotes if contains comma or quotes
+                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
+                        return '"' + cell.replace(/"/g, '""') + '"';
+                    }
+                    return cell;
+                }).join(',')
+            ).join('\n');
+
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nala-aircon-import-template.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Template downloaded successfully', 'success');
+        };
+
+        // Import from Excel/CSV
+        window.importFromExcel = async function() {
+            if (!isFirebaseReady) {
+                showToast('Please connect to Firebase first', 'error');
+                return;
+            }
+
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return;
+
+            if (!file.name.endsWith('.csv') && !file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+                showToast('Please select a CSV or Excel file', 'error');
+                return;
+            }
+
+            try {
+                showLoading(true);
+                
+                let data;
+                if (file.name.endsWith('.csv')) {
+                    // Handle CSV file
+                    const text = await file.text();
+                    data = parseCSV(text);
+                } else {
+                    // Handle Excel file - would need SheetJS library
+                    showToast('Excel import requires SheetJS library. Please use CSV format.', 'warning');
+                    return;
+                }
+
+                if (!data || data.length < 2) {
+                    showToast('File appears to be empty or invalid', 'error');
+                    return;
+                }
+
+                // Parse and validate data
+                const headers = data[0];
+                const rows = data.slice(1);
+                
+                let importedCount = 0;
+                let errorCount = 0;
+
+                for (const row of rows) {
+                    try {
+                        if (!row[0] || !row[1] || !row[2]) {
+                            errorCount++;
+                            continue; // Skip rows without required fields
+                        }
+
+                        // Parse AC units
+                        const acUnits = [];
+                        for (let i = 0; i < 3; i++) {
+                            const brandIdx = 3 + (i * 4);
+                            const typeIdx = brandIdx + 1;
+                            const capacityIdx = brandIdx + 2;
+                            const locationIdx = brandIdx + 3;
+                            
+                            if (row[brandIdx] && row[brandIdx].trim()) {
+                                acUnits.push({
+                                    brand: row[brandIdx].trim(),
+                                    type: row[typeIdx] ? row[typeIdx].trim() : 'Split Wall',
+                                    capacity: row[capacityIdx] ? row[capacityIdx].trim() : '1 PK',
+                                    location: row[locationIdx] ? row[locationIdx].trim() : ''
+                                });
+                            }
+                        }
+
+                        if (acUnits.length === 0) {
+                            // Add default AC unit if none specified
+                            acUnits.push({
+                                brand: '',
+                                type: 'Split Wall',
+                                capacity: '1 PK',
+                                location: ''
+                            });
+                        }
+
+                        // Parse service (if provided)
+                        const services = [];
+                        if (row[15] && row[16] && row[17]) { // Service date, technician, type
+                            services.push({
+                                id: 'SRV' + Date.now() + Math.random().toString(36).substr(2, 5),
+                                date: row[15].trim(),
+                                technician: row[16].trim(),
+                                type: row[17].trim(),
+                                payment: parseInt(row[18]) || 0,
+                                notes: row[19] ? row[19].trim() : '',
+                                createdAt: new Date().toISOString()
+                            });
+                        }
+
+                        const customerData = {
+                            name: row[0].trim(),
+                            phone: row[1].trim(),
+                            address: row[2].trim(),
+                            acUnits: acUnits,
+                            services: services
+                        };
+
+                        await window.firebaseHelpers.saveCustomerToFirebase(customerData);
+                        importedCount++;
+                        
+                    } catch (error) {
+                        console.error('Error importing row:', error);
+                        errorCount++;
+                    }
+                }
+
+                document.getElementById('importFile').value = '';
+                
+                if (importedCount > 0) {
+                    showToast(`Successfully imported ${importedCount} customers${errorCount > 0 ? ` (${errorCount} errors)` : ''}`, 'success');
+                } else {
+                    showToast('No valid data found to import', 'warning');
+                }
+
+            } catch (error) {
+                console.error('Import error:', error);
+                showToast('Import failed: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        };
+
+        // Parse CSV data
+        function parseCSV(text) {
+            const rows = [];
+            const lines = text.split('\n');
+            
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                
+                const row = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    const next = line[i + 1];
+                    
+                    if (char === '"') {
+                        if (inQuotes && next === '"') {
+                            current += '"';
+                            i++; // Skip next quote
+                        } else {
+                            inQuotes = !inQuotes;
+                        }
+                    } else if (char === ',' && !inQuotes) {
+                        row.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                row.push(current);
+                rows.push(row);
+            }
+            
+            return rows;
+        }
 
         // Load sample data
         window.loadSampleData = async function() {
