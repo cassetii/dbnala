@@ -145,6 +145,11 @@
             color: var(--accent-red);
         }
 
+        .firebase-status.connecting {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-yellow);
+        }
+
         /* Main Content */
         .main-content {
             max-width: 1400px;
@@ -993,7 +998,7 @@
                 </div>
                 <div class="header-actions">
                     <div class="firebase-status" id="firebaseStatus">
-                        <span>🔴</span> Firebase Disconnected
+                        <span>🟡</span> Initializing Firebase...
                     </div>
                     <button class="btn btn-primary" onclick="exportData()">📥 Export Data</button>
                     <button class="btn btn-warning" onclick="window.print()">🖨️ Print</button>
@@ -1194,145 +1199,77 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Firebase Configuration Modal -->
-    <div id="configModal" class="modal" style="display: block;">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2 class="modal-title">🔧 Firebase Configuration</h2>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom: 20px; color: var(--light);">
-                    Masukkan konfigurasi Firebase Anda untuk mulai menggunakan aplikasi.
-                </p>
-                
-                <div class="form-group">
-                    <label>API Key *</label>
-                    <input type="text" id="configApiKey" placeholder="AIzaSyC..." required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Auth Domain *</label>
-                    <input type="text" id="configAuthDomain" placeholder="your-project.firebaseapp.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Project ID *</label>
-                    <input type="text" id="configProjectId" placeholder="your-project-id" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Storage Bucket</label>
-                    <input type="text" id="configStorageBucket" placeholder="your-project.appspot.com">
-                </div>
-                
-                <div class="form-group">
-                    <label>Messaging Sender ID</label>
-                    <input type="text" id="configMessagingSenderId" placeholder="123456789">
-                </div>
-                
-                <div class="form-group">
-                    <label>App ID *</label>
-                    <input type="text" id="configAppId" placeholder="1:123:web:abc123" required>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="initializeFirebase()">Connect to Firebase</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Firebase SDK v9 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
 
         // ========== FIREBASE CONFIGURATION ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyBI5T3ZVyHXSRFikTjSlnW9P04cO1UDAwg",
+            authDomain: "databasebesar.firebaseapp.com",
+            projectId: "databasebesar",
+            storageBucket: "databasebesar.firebasestorage.app",
+            messagingSenderId: "253231829334",
+            appId: "1:253231829334:web:e46fd18ef04b83d6c546f7",
+            measurementId: "G-7387ZN5BJG"
+        };
+
         let app = null;
         let db = null;
+        let analytics = null;
         let isFirebaseInitialized = false;
 
-        // Initialize Firebase
-        window.initializeFirebase = function() {
-            const apiKey = document.getElementById('configApiKey').value;
-            const authDomain = document.getElementById('configAuthDomain').value;
-            const projectId = document.getElementById('configProjectId').value;
-            const storageBucket = document.getElementById('configStorageBucket').value;
-            const messagingSenderId = document.getElementById('configMessagingSenderId').value;
-            const appId = document.getElementById('configAppId').value;
-
-            if (!apiKey || !authDomain || !projectId || !appId) {
-                showToast('Please fill in all required fields', 'error');
-                return;
-            }
-
-            const firebaseConfig = {
-                apiKey: apiKey,
-                authDomain: authDomain,
-                projectId: projectId,
-                storageBucket: storageBucket,
-                messagingSenderId: messagingSenderId,
-                appId: appId
-            };
-
+        // Initialize Firebase automatically
+        async function autoInitializeFirebase() {
             try {
-                showLoading(true);
+                updateFirebaseStatus('connecting');
                 
                 // Initialize Firebase
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
-                
-                // Save config to localStorage
-                localStorage.setItem('nala_firebase_config', JSON.stringify(firebaseConfig));
+                analytics = getAnalytics(app);
                 
                 isFirebaseInitialized = true;
-                updateFirebaseStatus(true);
-                
-                // Close config modal
-                document.getElementById('configModal').style.display = 'none';
+                updateFirebaseStatus('connected');
                 
                 // Enable buttons
                 enableButtons();
                 
                 // Load data from Firebase
-                loadDataFromFirebase();
+                await loadDataFromFirebase();
                 
-                showToast('🎉 Connected to Firebase successfully!', 'success');
+                // Set up real-time listener
+                setupFirebaseListener();
+                
+                console.log('🔥 Firebase initialized successfully!');
+                showToast('Connected to Firebase successfully!', 'success');
                 
             } catch (error) {
                 console.error('Firebase initialization error:', error);
+                updateFirebaseStatus('error');
                 showToast('Failed to connect to Firebase: ' + error.message, 'error');
                 isFirebaseInitialized = false;
-                updateFirebaseStatus(false);
-            } finally {
-                showLoading(false);
             }
-        };
+        }
 
-        // Check for existing config
-        function checkExistingConfig() {
-            const savedConfig = localStorage.getItem('nala_firebase_config');
-            if (savedConfig) {
-                try {
-                    const config = JSON.parse(savedConfig);
-                    
-                    // Fill form with saved config
-                    document.getElementById('configApiKey').value = config.apiKey || '';
-                    document.getElementById('configAuthDomain').value = config.authDomain || '';
-                    document.getElementById('configProjectId').value = config.projectId || '';
-                    document.getElementById('configStorageBucket').value = config.storageBucket || '';
-                    document.getElementById('configMessagingSenderId').value = config.messagingSenderId || '';
-                    document.getElementById('configAppId').value = config.appId || '';
-                    
-                    // Auto-initialize if config is complete
-                    if (config.apiKey && config.authDomain && config.projectId && config.appId) {
-                        setTimeout(() => {
-                            initializeFirebase();
-                        }, 500);
-                    }
-                } catch (error) {
-                    console.error('Error loading saved config:', error);
-                }
+        // Update Firebase status
+        function updateFirebaseStatus(status) {
+            const statusEl = document.getElementById('firebaseStatus');
+            if (status === 'connected') {
+                statusEl.innerHTML = '<span>🟢</span> Firebase Connected';
+                statusEl.className = 'firebase-status connected';
+                window.isFirebaseReady = true;
+                window.dispatchEvent(new Event('firebaseReady'));
+            } else if (status === 'connecting') {
+                statusEl.innerHTML = '<span>🟡</span> Connecting to Firebase...';
+                statusEl.className = 'firebase-status connecting';
+                window.isFirebaseReady = false;
+            } else {
+                statusEl.innerHTML = '<span>🔴</span> Firebase Error';
+                statusEl.className = 'firebase-status disconnected';
+                window.isFirebaseReady = false;
             }
         }
 
@@ -1400,10 +1337,10 @@
                 const q = query(collection(db, 'customers'), orderBy('updatedAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 
-                customers = [];
+                window.customers = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    customers.push({
+                    window.customers.push({
                         id: doc.id,
                         ...data,
                         createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
@@ -1413,7 +1350,6 @@
 
                 updateStats();
                 renderCustomers();
-                showToast('Data loaded from Firebase', 'success');
                 
             } catch (error) {
                 console.error('Error loading data from Firebase:', error);
@@ -1429,10 +1365,10 @@
 
             const q = query(collection(db, 'customers'), orderBy('updatedAt', 'desc'));
             const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                customers = [];
+                window.customers = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    customers.push({
+                    window.customers.push({
                         id: doc.id,
                         ...data,
                         createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
@@ -1474,13 +1410,8 @@
             setupFirebaseListener
         };
 
-        // Initialize on load
-        checkExistingConfig();
-        
-        // Set up real-time listener when Firebase is ready
-        window.addEventListener('firebaseReady', () => {
-            setupFirebaseListener();
-        });
+        // Auto-initialize Firebase on load
+        autoInitializeFirebase();
     </script>
 
     <script>
@@ -1489,7 +1420,6 @@
         let editingCustomerId = null;
         let editingServiceId = null;
         let currentView = 'expanded';
-        let isFirebaseReady = false;
         let monthFilter = null;
 
         // Initialize App
@@ -1500,23 +1430,8 @@
             // Set today's date for service form
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
             
-            // Disable buttons until Firebase is ready
+            // Initially disable buttons until Firebase is ready
             disableButtons();
-        }
-
-        // Update Firebase status
-        function updateFirebaseStatus(connected) {
-            const statusEl = document.getElementById('firebaseStatus');
-            if (connected) {
-                statusEl.innerHTML = '<span>🟢</span> Firebase Connected';
-                statusEl.className = 'firebase-status connected';
-                isFirebaseReady = true;
-                window.dispatchEvent(new Event('firebaseReady'));
-            } else {
-                statusEl.innerHTML = '<span>🔴</span> Firebase Disconnected';
-                statusEl.className = 'firebase-status disconnected';
-                isFirebaseReady = false;
-            }
         }
 
         // Enable/disable buttons
@@ -1540,8 +1455,8 @@
         
         // Open customer modal
         window.openCustomerModal = function(customerId = null) {
-            if (!isFirebaseReady) {
-                showToast('Please connect to Firebase first', 'error');
+            if (!window.isFirebaseReady) {
+                showToast('Please wait for Firebase to connect', 'error');
                 return;
             }
 
@@ -1647,7 +1562,7 @@
         document.getElementById('customerForm').onsubmit = async function(e) {
             e.preventDefault();
             
-            if (!isFirebaseReady) {
+            if (!window.isFirebaseReady) {
                 showToast('Firebase not connected', 'error');
                 return;
             }
@@ -1695,7 +1610,7 @@
 
         // Delete customer
         window.deleteCustomer = async function(customerId) {
-            if (!isFirebaseReady) {
+            if (!window.isFirebaseReady) {
                 showToast('Firebase not connected', 'error');
                 return;
             }
@@ -1718,8 +1633,8 @@
         
         // Open service modal
         window.openServiceModal = function(customerId) {
-            if (!isFirebaseReady) {
-                showToast('Please connect to Firebase first', 'error');
+            if (!window.isFirebaseReady) {
+                showToast('Please wait for Firebase to connect', 'error');
                 return;
             }
 
@@ -1733,7 +1648,7 @@
         document.getElementById('serviceForm').onsubmit = async function(e) {
             e.preventDefault();
             
-            if (!isFirebaseReady) {
+            if (!window.isFirebaseReady) {
                 showToast('Firebase not connected', 'error');
                 return;
             }
@@ -1780,7 +1695,7 @@
 
         // Delete service
         window.deleteService = async function(customerId, serviceId) {
-            if (!isFirebaseReady) {
+            if (!window.isFirebaseReady) {
                 showToast('Firebase not connected', 'error');
                 return;
             }
@@ -1823,7 +1738,7 @@
             
             return customers.filter(customer => {
                 if (!customer.services || customer.services.length === 0) {
-                    return false; // Don't show customers with no services when filtering by month
+                    return false;
                 }
                 
                 return customer.services.some(service => {
@@ -2274,8 +2189,8 @@
 
         // Import from Excel/CSV
         window.importFromExcel = async function() {
-            if (!isFirebaseReady) {
-                showToast('Please connect to Firebase first', 'error');
+            if (!window.isFirebaseReady) {
+                showToast('Please wait for Firebase to connect', 'error');
                 return;
             }
 
@@ -2435,8 +2350,8 @@
 
         // Load sample data
         window.loadSampleData = async function() {
-            if (!isFirebaseReady) {
-                showToast('Please connect to Firebase first', 'error');
+            if (!window.isFirebaseReady) {
+                showToast('Please wait for Firebase to connect', 'error');
                 return;
             }
 
