@@ -1202,7 +1202,7 @@
     <!-- Firebase SDK v9 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
 
         // ========== FIREBASE CONFIGURATION ==========
@@ -1220,11 +1220,13 @@
         let db = null;
         let analytics = null;
         let isFirebaseInitialized = false;
+        let unsubscribe = null;
 
         // Initialize Firebase automatically
         async function autoInitializeFirebase() {
             try {
                 updateFirebaseStatus('connecting');
+                console.log('🔥 Initializing Firebase...');
                 
                 // Initialize Firebase
                 app = initializeApp(firebaseConfig);
@@ -1237,14 +1239,14 @@
                 // Enable buttons
                 enableButtons();
                 
+                console.log('🔥 Firebase initialized successfully!');
+                showToast('Connected to Firebase successfully!', 'success');
+                
                 // Load data from Firebase
                 await loadDataFromFirebase();
                 
                 // Set up real-time listener
                 setupFirebaseListener();
-                
-                console.log('🔥 Firebase initialized successfully!');
-                showToast('Connected to Firebase successfully!', 'success');
                 
             } catch (error) {
                 console.error('Firebase initialization error:', error);
@@ -1282,14 +1284,16 @@
             }
 
             try {
+                console.log('💾 Saving customer to Firebase:', customerData);
                 const docRef = await addDoc(collection(db, 'customers'), {
                     ...customerData,
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
                 });
+                console.log('✅ Customer saved with ID:', docRef.id);
                 return docRef.id;
             } catch (error) {
-                console.error('Error saving customer to Firebase:', error);
+                console.error('❌ Error saving customer to Firebase:', error);
                 throw error;
             }
         }
@@ -1301,13 +1305,15 @@
             }
 
             try {
+                console.log('📝 Updating customer in Firebase:', customerId, customerData);
                 const customerRef = doc(db, 'customers', customerId);
                 await updateDoc(customerRef, {
                     ...customerData,
                     updatedAt: serverTimestamp()
                 });
+                console.log('✅ Customer updated successfully');
             } catch (error) {
-                console.error('Error updating customer in Firebase:', error);
+                console.error('❌ Error updating customer in Firebase:', error);
                 throw error;
             }
         }
@@ -1319,68 +1325,114 @@
             }
 
             try {
+                console.log('🗑️ Deleting customer from Firebase:', customerId);
                 await deleteDoc(doc(db, 'customers', customerId));
+                console.log('✅ Customer deleted successfully');
             } catch (error) {
-                console.error('Error deleting customer from Firebase:', error);
+                console.error('❌ Error deleting customer from Firebase:', error);
                 throw error;
             }
         }
 
-        // Load data from Firebase
+        // Load data from Firebase (without orderBy to avoid issues)
         async function loadDataFromFirebase() {
             if (!isFirebaseInitialized) {
+                console.log('⚠️ Firebase not initialized, skipping data load');
                 return;
             }
 
             try {
+                console.log('📥 Loading data from Firebase...');
                 showLoading(true);
-                const q = query(collection(db, 'customers'), orderBy('updatedAt', 'desc'));
-                const querySnapshot = await getDocs(q);
                 
-                window.customers = [];
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    window.customers.push({
-                        id: doc.id,
+                // Simple query without orderBy to avoid issues
+                const querySnapshot = await getDocs(collection(db, 'customers'));
+                
+                const loadedCustomers = [];
+                querySnapshot.forEach((docSnapshot) => {
+                    const data = docSnapshot.data();
+                    console.log('📄 Loaded document:', docSnapshot.id, data);
+                    
+                    // Convert Timestamps to strings if they exist
+                    const customer = {
+                        id: docSnapshot.id,
                         ...data,
-                        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
-                        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt
-                    });
+                        createdAt: data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate().toISOString() : data.createdAt) : new Date().toISOString(),
+                        updatedAt: data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt) : new Date().toISOString()
+                    };
+                    loadedCustomers.push(customer);
                 });
+
+                // Sort by updatedAt in JavaScript instead of Firestore
+                loadedCustomers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+                // Update global customers array
+                window.customers = loadedCustomers;
+                
+                console.log('✅ Data loaded successfully. Total customers:', loadedCustomers.length);
+                console.log('📊 Customers data:', window.customers);
 
                 updateStats();
                 renderCustomers();
                 
             } catch (error) {
-                console.error('Error loading data from Firebase:', error);
+                console.error('❌ Error loading data from Firebase:', error);
                 showToast('Error loading data: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
 
-        // Real-time listener
+        // Real-time listener (simplified)
         function setupFirebaseListener() {
-            if (!isFirebaseInitialized) return;
+            if (!isFirebaseInitialized) {
+                console.log('⚠️ Firebase not initialized, skipping listener setup');
+                return;
+            }
 
-            const q = query(collection(db, 'customers'), orderBy('updatedAt', 'desc'));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                window.customers = [];
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    window.customers.push({
-                        id: doc.id,
+            console.log('👂 Setting up Firebase real-time listener...');
+            
+            // Clean up existing listener
+            if (unsubscribe) {
+                unsubscribe();
+            }
+            
+            // Simple listener without orderBy
+            unsubscribe = onSnapshot(collection(db, 'customers'), (querySnapshot) => {
+                console.log('🔄 Real-time update received');
+                
+                const updatedCustomers = [];
+                querySnapshot.forEach((docSnapshot) => {
+                    const data = docSnapshot.data();
+                    const customer = {
+                        id: docSnapshot.id,
                         ...data,
-                        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
-                        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt
-                    });
+                        createdAt: data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate().toISOString() : data.createdAt) : new Date().toISOString(),
+                        updatedAt: data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt) : new Date().toISOString()
+                    };
+                    updatedCustomers.push(customer);
                 });
+                
+                // Sort by updatedAt in JavaScript
+                updatedCustomers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                
+                window.customers = updatedCustomers;
+                
+                console.log('🔄 Data updated via listener. Total customers:', updatedCustomers.length);
                 
                 updateStats();
                 renderCustomers();
+                
             }, (error) => {
-                console.error('Firebase listener error:', error);
+                console.error('❌ Firebase listener error:', error);
                 showToast('Connection lost. Retrying...', 'error');
+                
+                // Try to reconnect after a delay
+                setTimeout(() => {
+                    if (isFirebaseInitialized) {
+                        setupFirebaseListener();
+                    }
+                }, 5000);
             });
 
             return unsubscribe;
@@ -1422,6 +1474,9 @@
         let currentView = 'expanded';
         let monthFilter = null;
 
+        // Ensure global customers array is initialized
+        window.customers = [];
+
         // Initialize App
         function initApp() {
             console.log('🚀 Initializing Nala Aircon Professional System...');
@@ -1432,23 +1487,32 @@
             
             // Initially disable buttons until Firebase is ready
             disableButtons();
+            
+            // Wait for Firebase to be ready
+            if (window.isFirebaseReady) {
+                enableButtons();
+            } else {
+                window.addEventListener('firebaseReady', () => {
+                    enableButtons();
+                });
+            }
         }
 
         // Enable/disable buttons
         function enableButtons() {
-            document.getElementById('addCustomerBtn').disabled = false;
-            document.getElementById('sampleDataBtn').disabled = false;
-            document.getElementById('syncBtn').disabled = false;
-            document.getElementById('templateBtn').disabled = false;
-            document.getElementById('importBtn').disabled = false;
+            const buttons = ['addCustomerBtn', 'sampleDataBtn', 'syncBtn', 'templateBtn', 'importBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) btn.disabled = false;
+            });
         }
 
         function disableButtons() {
-            document.getElementById('addCustomerBtn').disabled = true;
-            document.getElementById('sampleDataBtn').disabled = true;
-            document.getElementById('syncBtn').disabled = true;
-            document.getElementById('templateBtn').disabled = true;
-            document.getElementById('importBtn').disabled = true;
+            const buttons = ['addCustomerBtn', 'sampleDataBtn', 'syncBtn', 'templateBtn', 'importBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) btn.disabled = true;
+            });
         }
 
         // ========== CUSTOMER MANAGEMENT ==========
@@ -1468,30 +1532,33 @@
             
             if (customerId) {
                 title.textContent = 'Edit Customer';
-                const customer = customers.find(c => c.id === customerId);
+                const customer = window.customers.find(c => c.id === customerId);
                 if (customer) {
-                    document.getElementById('customerName').value = customer.name;
-                    document.getElementById('customerPhone').value = customer.phone;
-                    document.getElementById('customerAddress').value = customer.address;
-                    document.getElementById('acCount').value = customer.acUnits.length;
-                    document.getElementById('acBrand').value = customer.acUnits[0]?.brand || '';
+                    document.getElementById('customerName').value = customer.name || '';
+                    document.getElementById('customerPhone').value = customer.phone || '';
+                    document.getElementById('customerAddress').value = customer.address || '';
+                    document.getElementById('acCount').value = customer.acUnits?.length || 1;
+                    document.getElementById('acBrand').value = customer.acUnits?.[0]?.brand || '';
                     
                     generateACForms();
                     // Fill AC units data
                     setTimeout(() => {
-                        customer.acUnits.forEach((unit, i) => {
-                            if (document.getElementById(`ac_brand_${i}`)) {
-                                document.getElementById(`ac_brand_${i}`).value = unit.brand || '';
-                                document.getElementById(`ac_type_${i}`).value = unit.type || '';
-                                document.getElementById(`ac_capacity_${i}`).value = unit.capacity || '';
-                                document.getElementById(`ac_location_${i}`).value = unit.location || '';
-                            }
-                        });
+                        if (customer.acUnits) {
+                            customer.acUnits.forEach((unit, i) => {
+                                if (document.getElementById(`ac_brand_${i}`)) {
+                                    document.getElementById(`ac_brand_${i}`).value = unit.brand || '';
+                                    document.getElementById(`ac_type_${i}`).value = unit.type || 'Split Wall';
+                                    document.getElementById(`ac_capacity_${i}`).value = unit.capacity || '1 PK';
+                                    document.getElementById(`ac_location_${i}`).value = unit.location || '';
+                                }
+                            });
+                        }
                     }, 100);
                 }
             } else {
                 title.textContent = 'Add New Customer';
                 form.reset();
+                document.getElementById('acCount').value = 1;
                 generateACForms();
             }
             
@@ -1523,6 +1590,9 @@
                                 <option value="Sharp" ${brand === 'Sharp' ? 'selected' : ''}>Sharp</option>
                                 <option value="Mitsubishi" ${brand === 'Mitsubishi' ? 'selected' : ''}>Mitsubishi</option>
                                 <option value="Aux" ${brand === 'Aux' ? 'selected' : ''}>Aux</option>
+                                <option value="TCL" ${brand === 'TCL' ? 'selected' : ''}>TCL</option>
+                                <option value="Gree" ${brand === 'Gree' ? 'selected' : ''}>Gree</option>
+                                <option value="Midea" ${brand === 'Midea' ? 'selected' : ''}>Midea</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1546,6 +1616,7 @@
                                 <option value="1.5 PK">1.5 PK</option>
                                 <option value="2 PK">2 PK</option>
                                 <option value="2.5 PK">2.5 PK</option>
+                                <option value="3 PK">3 PK</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1570,25 +1641,34 @@
             try {
                 showLoading(true);
 
-                const acCount = parseInt(document.getElementById('acCount').value);
+                const acCount = parseInt(document.getElementById('acCount').value) || 1;
                 const acUnits = [];
                 
                 for (let i = 0; i < acCount; i++) {
+                    const brandEl = document.getElementById(`ac_brand_${i}`);
+                    const typeEl = document.getElementById(`ac_type_${i}`);
+                    const capacityEl = document.getElementById(`ac_capacity_${i}`);
+                    const locationEl = document.getElementById(`ac_location_${i}`);
+                    
                     acUnits.push({
-                        brand: document.getElementById(`ac_brand_${i}`)?.value || '',
-                        type: document.getElementById(`ac_type_${i}`)?.value || 'Split Wall',
-                        capacity: document.getElementById(`ac_capacity_${i}`)?.value || '1 PK',
-                        location: document.getElementById(`ac_location_${i}`)?.value || ''
+                        brand: brandEl?.value || '',
+                        type: typeEl?.value || 'Split Wall',
+                        capacity: capacityEl?.value || '1 PK',
+                        location: locationEl?.value || ''
                     });
                 }
                 
                 const customerData = {
-                    name: document.getElementById('customerName').value,
-                    phone: document.getElementById('customerPhone').value,
-                    address: document.getElementById('customerAddress').value,
+                    name: document.getElementById('customerName').value.trim(),
+                    phone: document.getElementById('customerPhone').value.trim(),
+                    address: document.getElementById('customerAddress').value.trim(),
                     acUnits: acUnits,
-                    services: editingCustomerId ? customers.find(c => c.id === editingCustomerId)?.services || [] : []
+                    services: editingCustomerId ? 
+                        (window.customers.find(c => c.id === editingCustomerId)?.services || []) : 
+                        []
                 };
+                
+                console.log('💾 Saving customer data:', customerData);
                 
                 if (editingCustomerId) {
                     await window.firebaseHelpers.updateCustomerInFirebase(editingCustomerId, customerData);
@@ -1657,11 +1737,11 @@
                 showLoading(true);
 
                 const customerId = document.getElementById('serviceCustomerId').value;
-                const customer = customers.find(c => c.id === customerId);
+                const customer = window.customers.find(c => c.id === customerId);
                 
                 if (customer) {
                     const service = {
-                        id: 'SRV' + Date.now(),
+                        id: 'SRV' + Date.now() + Math.random().toString(36).substr(2, 5),
                         date: document.getElementById('serviceDate').value,
                         technician: document.getElementById('serviceTechnician').value,
                         type: document.getElementById('serviceType').value,
@@ -1671,7 +1751,7 @@
                     };
                     
                     if (!customer.services) customer.services = [];
-                    customer.services.unshift(service);
+                    customer.services.unshift(service); // Add to beginning
                     
                     await window.firebaseHelpers.updateCustomerInFirebase(customerId, {
                         name: customer.name,
@@ -1704,7 +1784,7 @@
                 try {
                     showLoading(true);
 
-                    const customer = customers.find(c => c.id === customerId);
+                    const customer = window.customers.find(c => c.id === customerId);
                     if (customer && customer.services) {
                         customer.services = customer.services.filter(s => s.id !== serviceId);
                         
@@ -1732,11 +1812,11 @@
         
         // Get filtered customers based on month filter
         function getFilteredCustomers() {
-            if (!monthFilter) return customers;
+            if (!monthFilter) return window.customers || [];
             
             const [filterYear, filterMonth] = monthFilter.split('-');
             
-            return customers.filter(customer => {
+            return (window.customers || []).filter(customer => {
                 if (!customer.services || customer.services.length === 0) {
                     return false;
                 }
@@ -1758,9 +1838,9 @@
             
             if (searchTerm) {
                 filtered = filtered.filter(c => 
-                    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    c.phone.includes(searchTerm) ||
-                    c.address.toLowerCase().includes(searchTerm.toLowerCase())
+                    c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    c.phone?.includes(searchTerm) ||
+                    c.address?.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
             
@@ -1768,7 +1848,7 @@
             if (monthFilter) {
                 const [filterYear, filterMonth] = monthFilter.split('-');
                 filtered = filtered.map(customer => {
-                    const filteredServices = customer.services.filter(service => {
+                    const filteredServices = (customer.services || []).filter(service => {
                         const serviceDate = new Date(service.date);
                         const serviceYear = serviceDate.getFullYear().toString();
                         const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
@@ -1819,13 +1899,13 @@
                             <div class="customer-main-info">
                                 <div class="customer-identity">
                                     <div class="customer-name">
-                                        ${customer.name}
+                                        ${customer.name || 'No Name'}
                                         <span class="customer-id">#${customer.id.substring(0, 8)}</span>
                                         ${monthFilter ? '<span style="background: var(--accent-blue); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">FILTERED</span>' : ''}
                                     </div>
                                     <div class="customer-contact">
-                                        <span>📱 ${customer.phone}</span>
-                                        <span>📍 ${customer.address}</span>
+                                        <span>📱 ${customer.phone || 'No Phone'}</span>
+                                        <span>📍 ${customer.address || 'No Address'}</span>
                                     </div>
                                 </div>
                                 <div class="customer-actions">
@@ -1842,7 +1922,7 @@
                             </div>
                             <div class="customer-stats">
                                 <div class="customer-stat">
-                                    <div class="customer-stat-value">${customer.acUnits.length}</div>
+                                    <div class="customer-stat-value">${customer.acUnits?.length || 0}</div>
                                     <div class="customer-stat-label">AC Units</div>
                                 </div>
                                 <div class="customer-stat">
@@ -1870,13 +1950,13 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab-units-${customer.id}">
                                     <div class="ac-units-grid">
-                                        ${customer.acUnits.map((unit, i) => `
+                                        ${(customer.acUnits || []).map((unit, i) => `
                                             <div class="ac-unit-card">
                                                 <div class="ac-unit-number">${i + 1}</div>
                                                 <div class="ac-unit-details">
                                                     <strong>${unit.brand || 'Unknown'}</strong><br>
-                                                    Type: ${unit.type}<br>
-                                                    Capacity: ${unit.capacity}<br>
+                                                    Type: ${unit.type || 'Unknown'}<br>
+                                                    Capacity: ${unit.capacity || 'Unknown'}<br>
                                                     ${unit.location ? `Location: ${unit.location}` : ''}
                                                 </div>
                                             </div>
@@ -1901,15 +1981,15 @@
                                                         <div class="service-info">
                                                             <div class="service-info-item">
                                                                 <label>Type:</label>
-                                                                <span>${service.type}</span>
+                                                                <span>${service.type || 'Unknown'}</span>
                                                             </div>
                                                             <div class="service-info-item">
                                                                 <label>Technician:</label>
-                                                                <span>${service.technician}</span>
+                                                                <span>${service.technician || 'Unknown'}</span>
                                                             </div>
                                                             <div class="service-info-item">
                                                                 <label>Payment:</label>
-                                                                <span>${formatCurrency(service.payment)}</span>
+                                                                <span>${formatCurrency(service.payment || 0)}</span>
                                                             </div>
                                                         </div>
                                                         ${service.notes ? `
@@ -1942,12 +2022,15 @@
         // Toggle customer card
         window.toggleCustomerCard = function(customerId) {
             const card = document.getElementById(`customer-${customerId}`);
-            card.classList.toggle('expanded');
+            if (card) {
+                card.classList.toggle('expanded');
+            }
         };
 
         // Switch tab
         window.switchTab = function(customerId, tab) {
             const card = document.getElementById(`customer-${customerId}`);
+            if (!card) return;
             
             // Update tab buttons
             card.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1959,19 +2042,22 @@
             card.querySelectorAll('.tab-pane').forEach(pane => {
                 pane.classList.remove('active');
             });
-            document.getElementById(`tab-${tab}-${customerId}`).classList.add('active');
+            const tabPane = document.getElementById(`tab-${tab}-${customerId}`);
+            if (tabPane) {
+                tabPane.classList.add('active');
+            }
         };
 
         // Update statistics
         function updateStats() {
-            let statsCustomers = customers;
+            let statsCustomers = window.customers || [];
             
             // Apply month filter to statistics if active
             if (monthFilter) {
                 const [filterYear, filterMonth] = monthFilter.split('-');
                 
                 // Only include customers who have services in the filtered month
-                statsCustomers = customers.filter(customer => {
+                statsCustomers = statsCustomers.filter(customer => {
                     if (!customer.services || customer.services.length === 0) {
                         return false;
                     }
@@ -1998,7 +2084,7 @@
                 }));
             }
             
-            const totalAC = statsCustomers.reduce((sum, c) => sum + c.acUnits.length, 0);
+            const totalAC = statsCustomers.reduce((sum, c) => sum + (c.acUnits?.length || 0), 0);
             const totalServices = statsCustomers.reduce((sum, c) => sum + (c.services?.length || 0), 0);
             const totalRevenue = statsCustomers.reduce((sum, c) => 
                 sum + (c.services?.reduce((s, srv) => s + (srv.payment || 0), 0) || 0), 0
@@ -2078,7 +2164,10 @@
 
         // Close modal
         window.closeModal = function(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
             editingCustomerId = null;
             editingServiceId = null;
         };
@@ -2086,10 +2175,12 @@
         // Show/hide loading
         function showLoading(show) {
             const overlay = document.getElementById('loadingOverlay');
-            if (show) {
-                overlay.classList.add('show');
-            } else {
-                overlay.classList.remove('show');
+            if (overlay) {
+                if (show) {
+                    overlay.classList.add('show');
+                } else {
+                    overlay.classList.remove('show');
+                }
             }
         }
 
@@ -2105,6 +2196,7 @@
 
         // Format date
         function formatDate(dateString) {
+            if (!dateString) return 'No Date';
             const date = new Date(dateString);
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
@@ -2127,7 +2219,7 @@
 
         // Export data
         window.exportData = function() {
-            const dataStr = JSON.stringify(customers, null, 2);
+            const dataStr = JSON.stringify(window.customers, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2355,7 +2447,7 @@
                 return;
             }
 
-            if (customers.length > 0 && !confirm('This will add sample data. Continue?')) return;
+            if ((window.customers && window.customers.length > 0) && !confirm('This will add sample data. Continue?')) return;
             
             const sampleData = {
                 name: 'PT. Maju Bersama',
@@ -2404,11 +2496,22 @@
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
+                editingCustomerId = null;
+                editingServiceId = null;
             }
         };
 
         // Initialize app on load
-        initApp();
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
+        // Initialize immediately if DOM is already loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
