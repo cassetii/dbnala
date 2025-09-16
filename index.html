@@ -13,20 +13,20 @@
         }
 
         :root {
-            --primary-dark: #0d1f23;
-            --secondary-dark: #132e35;
-            --medium-dark: #2d4a53;
-            --medium: #69818d;
-            --light: #afb3b7;
-            --medium-alt: #5a636a;
+            --primary-dark: #25477c;
+            --secondary-dark: #1a5695;
+            --medium-dark: #0047ac;
+            --medium: #5a7aa6;
+            --light: #e6fbfc;
+            --medium-alt: #4a6b94;
             
-            --accent-blue: #3b82f6;
+            --accent-blue: #0047ac;
             --accent-green: #10b981;
             --accent-yellow: #f59e0b;
             --accent-red: #ef4444;
             
-            --bg-gradient: linear-gradient(135deg, #0d1f23 0%, #132e35 100%);
-            --card-gradient: linear-gradient(145deg, #132e35, #2d4a53);
+            --bg-gradient: linear-gradient(135deg, #25477c 0%, #1a5695 100%);
+            --card-gradient: linear-gradient(145deg, #1a5695, #0047ac);
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
             --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
@@ -70,9 +70,9 @@
 
         /* Header */
         .header {
-            background: rgba(13, 31, 35, 0.95);
+            background: rgba(37, 71, 124, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -104,7 +104,7 @@
             justify-content: center;
             font-size: 24px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(175, 179, 183, 0.2);
+            border: 1px solid rgba(230, 251, 252, 0.2);
         }
 
         .logo-text h1 {
@@ -167,7 +167,7 @@
 
         .stat-card {
             background: var(--card-gradient);
-            border: 1px solid rgba(175, 179, 183, 0.1);
+            border: 1px solid rgba(230, 251, 252, 0.1);
             border-radius: var(--radius-lg);
             padding: 24px;
             box-shadow: var(--shadow);
@@ -194,7 +194,7 @@
         .stat-icon {
             width: 48px;
             height: 48px;
-            background: rgba(175, 179, 183, 0.1);
+            background: rgba(230, 251, 252, 0.1);
             border-radius: var(--radius);
             display: flex;
             align-items: center;
@@ -264,7 +264,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+            background: linear-gradient(135deg, var(--accent-blue), #003d99);
             color: white;
         }
 
@@ -286,7 +286,7 @@
         .btn-secondary {
             background: var(--medium-dark);
             color: var(--light);
-            border: 1px solid rgba(175, 179, 183, 0.2);
+            border: 1px solid rgba(230, 251, 252, 0.2);
         }
 
         .btn-sm {
@@ -310,7 +310,7 @@
             width: 100%;
             padding: 10px 40px 10px 15px;
             background: var(--primary-dark);
-            border: 1px solid rgba(175, 179, 183, 0.2);
+            border: 1px solid rgba(230, 251, 252, 0.2);
             border-radius: var(--radius);
             color: var(--light);
             font-size: 14px;
@@ -320,7 +320,7 @@
         .search-box input:focus {
             outline: none;
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(0, 71, 172, 0.2);
         }
 
         .search-box input::placeholder {
@@ -374,7 +374,7 @@
 
         .customer-card {
             background: var(--secondary-dark);
-            border: 1px solid rgba(175, 179, 183, 0.1);
+            border: 1px solid rgba(230, 251, 252, 0.1);
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow);
@@ -388,7 +388,7 @@
         .customer-header {
             background: var(--card-gradient);
             padding: 20px;
-            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
             cursor: pointer;
             user-select: none;
         }
@@ -421,7 +421,7 @@
         .customer-id {
             font-size: 11px;
             color: var(--medium);
-            background: rgba(175, 179, 183, 0.1);
+            background: rgba(230, 251, 252, 0.1);
             padding: 2px 8px;
             border-radius: 6px;
         }
@@ -454,7 +454,7 @@
         .customer-stat {
             text-align: center;
             padding: 10px;
-            background: rgba(13, 31, 35, 0.5);
+            background: rgba(37, 71, 124, 0.5);
             border-radius: var(--radius);
         }
 
@@ -483,7 +483,7 @@
         .customer-details {
             display: none;
             background: var(--primary-dark);
-            border-top: 1px solid rgba(175, 179, 183, 0.1);
+            border-top: 1px solid rgba(230, 251, 252, 0.1);
         }
 
         .customer-card.expanded .customer-details {
@@ -493,7 +493,7 @@
         .details-tabs {
             display: flex;
             background: var(--secondary-dark);
-            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
         }
 
         .tab-btn {
@@ -510,7 +510,7 @@
 
         .tab-btn:hover {
             color: var(--light);
-            background: rgba(175, 179, 183, 0.05);
+            background: rgba(230, 251, 252, 0.05);
         }
 
         .tab-btn.active {
@@ -549,7 +549,7 @@
 
         .ac-unit-card {
             background: var(--secondary-dark);
-            border: 1px solid rgba(175, 179, 183, 0.1);
+            border: 1px solid rgba(230, 251, 252, 0.1);
             border-radius: var(--radius);
             padding: 15px;
         }
@@ -613,7 +613,7 @@
         .service-item {
             position: relative;
             background: var(--secondary-dark);
-            border: 1px solid rgba(175, 179, 183, 0.1);
+            border: 1px solid rgba(230, 251, 252, 0.1);
             border-radius: var(--radius);
             padding: 15px;
             margin-bottom: 15px;
@@ -668,7 +668,7 @@
             font-size: 13px;
             color: var(--light);
             padding: 10px;
-            background: rgba(13, 31, 35, 0.5);
+            background: rgba(37, 71, 124, 0.5);
             border-radius: calc(var(--radius) - 4px);
             margin-top: 10px;
         }
@@ -727,7 +727,7 @@
         .modal-header {
             background: var(--card-gradient);
             padding: 20px;
-            border-bottom: 1px solid rgba(175, 179, 183, 0.1);
+            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -743,7 +743,7 @@
             width: 32px;
             height: 32px;
             border: none;
-            background: rgba(175, 179, 183, 0.1);
+            background: rgba(230, 251, 252, 0.1);
             border-radius: var(--radius);
             cursor: pointer;
             color: var(--light);
@@ -781,7 +781,7 @@
             width: 100%;
             padding: 10px 15px;
             background: var(--primary-dark);
-            border: 1px solid rgba(175, 179, 183, 0.2);
+            border: 1px solid rgba(230, 251, 252, 0.2);
             border-radius: var(--radius);
             color: white;
             font-size: 14px;
@@ -793,7 +793,7 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(0, 71, 172, 0.2);
         }
 
         .form-group textarea {
@@ -813,7 +813,7 @@
             justify-content: flex-end;
             margin-top: 25px;
             padding-top: 20px;
-            border-top: 1px solid rgba(175, 179, 183, 0.1);
+            border-top: 1px solid rgba(230, 251, 252, 0.1);
         }
 
         /* Toast */
@@ -881,7 +881,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(13, 31, 35, 0.95);
+            background: rgba(37, 71, 124, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1148,11 +1148,16 @@
                             <label>Technician *</label>
                             <select id="serviceTechnician" required>
                                 <option value="">Select Technician</option>
-                                <option value="Fahrur">Fahrur</option>
-                                <option value="Agus">Agus</option>
-                                <option value="Wahyu">Wahyu</option>
-                                <option value="Agung">Agung</option>
-                                <option value="Dion">Dion</option>
+                                <option value="Beta">Beta</option>
+                                <option value="Charlie">Charlie</option>
+                                <option value="Delta">Delta</option>
+                                <option value="Echo">Echo</option>
+                                <option value="Fanta">Fanta</option>
+                                <option value="Gamma">Gamma</option>
+                                <option value="Hotel">Hotel</option>
+                                <option value="India">India</option>
+                                <option value="Yankee">Yankee</option>
+                                <option value="Zeon">Zeon</option>
                             </select>
                         </div>
                     </div>
@@ -2246,14 +2251,14 @@
                     'Daikin', 'Split Wall', '1 PK', 'Office Room',
                     'LG', 'Cassette', '2 PK', 'Meeting Room',
                     '', '', '', '',
-                    '2025-01-15', 'Fahrur', 'Cuci AC', '500000', 'Routine cleaning service'
+                    '2025-01-15', 'Beta', 'Cuci AC', '500000', 'Routine cleaning service'
                 ],
                 [
                     'Toko ABC', '021-87654321', 'Jl. Perdagangan No. 45, Jakarta',
                     'Samsung', 'Standing', '3 PK', 'Shop Floor',
                     '', '', '', '',
                     '', '', '', '',
-                    '2025-01-20', 'Agus', 'Pengecekan', '200000', 'Monthly inspection'
+                    '2025-01-20', 'Charlie', 'Pengecekan', '200000', 'Monthly inspection'
                 ]
             ];
 
@@ -2462,7 +2467,7 @@
                     {
                         id: 'SRV001',
                         date: '2025-01-15',
-                        technician: 'Fahrur',
+                        technician: 'Beta',
                         type: 'Cuci AC',
                         payment: 850000,
                         notes: 'Monthly routine service for all units. Cleaned filters, checked freon pressure.',
@@ -2471,7 +2476,7 @@
                     {
                         id: 'SRV002',
                         date: '2024-12-15',
-                        technician: 'Agus',
+                        technician: 'Charlie',
                         type: 'Troubleshooting',
                         payment: 1500000,
                         notes: 'Replaced compressor for lobby AC unit. Warranty included.',
