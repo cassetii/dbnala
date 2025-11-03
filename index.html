@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nala Aircon - Professional Service Management</title>
-     
+    <title>Nala Aircon Dashboard - Service Management System</title>
+    
     <style>
         * {
             margin: 0;
@@ -12,226 +12,434 @@
             box-sizing: border-box;
         }
 
-        /* Add Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-            --primary-dark: #1a5695;
-            --secondary-dark: #95aed5;
-            --medium-dark: #1a5695;
-            --medium: #6b8bb3;
-            --light: #e6fbfc;
-            --medium-alt: #4a6b94;
+            /* Modern Color Palette */
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #38bdf8;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
             
-            --accent-blue: #1a5695;
-            --accent-green: #10b981;
-            --accent-yellow: #f59e0b;
-            --accent-red: #ef4444;
-            --accent-purple: #8b5cf6;
-            --accent-orange: #f97316;
+            /* Neutral Colors */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
             
-            --bg-gradient: linear-gradient(135deg, #1a5695 0%, #95aed5 50%, #e6fbfc 100%);
-            --card-gradient: linear-gradient(145deg, rgba(149, 174, 213, 0.1), rgba(26, 86, 149, 0.3));
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.3);
-            --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.4);
-            --glow: 0 0 20px rgba(149, 174, 213, 0.4);
+            /* Background */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-dark: #0f172a;
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
             
-            --radius: 16px;
-            --radius-lg: 24px;
+            /* Text */
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            
+            /* Effects */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            --radius: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--primary-dark);
-            min-height: 100vh;
-            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             line-height: 1.6;
-            font-weight: 400;
+            font-size: 14px;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--secondary-dark);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--medium-alt);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--medium);
-        }
-
-        /* Container */
-        .app-container {
+        /* Layout */
+        .dashboard-layout {
+            display: flex;
             min-height: 100vh;
-            background: var(--bg-gradient);
-            position: relative;
-            overflow-x: hidden;
         }
 
-        .app-container::before {
-            content: '';
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
             position: fixed;
-            top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(149, 174, 213, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(230, 251, 252, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(26, 86, 149, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(26, 86, 149, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            position: sticky;
             top: 0;
-            z-index: 100;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 1000;
             box-shadow: var(--shadow-lg);
         }
 
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .sidebar.collapsed {
+            width: 80px;
         }
 
-        .logo {
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            gap: 20px;
-            animation: slideInLeft 0.8s ease-out;
+            gap: 12px;
         }
 
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 2px solid var(--glass-border);
-            border-radius: var(--radius);
+        .sidebar-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            font-size: 24px;
+            flex-shrink: 0;
         }
 
-        .logo-icon:hover {
-            transform: scale(1.05) rotate(5deg);
-            box-shadow: var(--glow);
+        .sidebar-title {
+            flex: 1;
+            overflow: hidden;
         }
 
-        .logo-text h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 4px;
-            letter-spacing: -0.5px;
+        .sidebar.collapsed .sidebar-title {
+            display: none;
         }
 
-        .logo-text p {
-            font-size: 14px;
-            color: #ffffff;
-            opacity: 0.8;
-            font-weight: 400;
+        .sidebar-title h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 2px;
         }
 
-        .header-actions {
+        .sidebar-title p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            padding: 0 20px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+
+        .sidebar.collapsed .nav-section-title {
+            display: none;
+        }
+
+        .nav-item {
             display: flex;
-            gap: 16px;
-            animation: slideInRight 0.8s ease-out;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            font-weight: 500;
         }
 
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: white;
         }
 
-        /* Firebase Status */
+        .nav-item.active {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--primary-light);
+            border-left: 3px solid var(--primary-light);
+        }
+
+        .nav-icon {
+            width: 20px;
+            font-size: 20px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .nav-text {
+            flex: 1;
+        }
+
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+
+        .nav-badge {
+            padding: 2px 8px;
+            background: var(--primary);
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .sidebar.collapsed .nav-badge {
+            display: none;
+        }
+
+        /* Firebase Status in Sidebar */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
         .firebase-status {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px;
-            border-radius: var(--radius);
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 500;
         }
 
-        .firebase-status.connected {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
+        .sidebar.collapsed .firebase-status span:last-child {
+            display: none;
         }
 
-        .firebase-status.disconnected {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--accent-red);
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .firebase-status.connecting {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--accent-yellow);
+        .status-dot.connected {
+            background: var(--success);
+        }
+
+        .status-dot.connecting {
+            background: var(--warning);
+        }
+
+        .status-dot.error {
+            background: var(--danger);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         /* Main Content */
         .main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+            flex: 1;
+            margin-left: 280px;
+            transition: var(--transition);
         }
 
-        /* Stats Section */
-        .stats-section {
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 80px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .menu-toggle:hover {
+            background: var(--gray-200);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 16px 10px 44px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            transition: var(--transition);
+            background: var(--bg-primary);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--text-primary);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--text-primary);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 32px;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 24px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
-            background: #1a5695;
-            border: 1px solid rgba(230, 251, 252, 0.2);
-            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
             padding: 24px;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
             position: relative;
             overflow: hidden;
         }
@@ -243,205 +451,155 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #95aed5, var(--accent-green));
+        }
+
+        .stat-card:nth-child(1)::before {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--secondary), #a78bfa);
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--success), #34d399);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-xl);
-            background: #0f3d6b;
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(230, 251, 252, 0.15);
-            border-radius: var(--radius);
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: var(--light);
+            font-size: 28px;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.2));
+            color: var(--primary);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
+            color: var(--secondary);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
+            color: var(--success);
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
+            color: var(--warning);
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-body {
+            margin-bottom: 8px;
         }
 
         .stat-value {
             font-size: 32px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 8px;
         }
 
         .stat-label {
             font-size: 14px;
-            color: var(--light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-footer {
+            font-size: 12px;
+            color: var(--text-light);
         }
 
         /* Action Bar */
         .action-bar {
-            background: var(--secondary-dark);
-            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
             padding: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
             box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 16px;
+            border: 1px solid var(--gray-200);
         }
 
-        .action-buttons {
+        .action-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
+        .filter-group {
+            display: flex;
+            gap: 12px;
             align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: var(--shadow);
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), #003d99);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--accent-green), #059669);
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, var(--accent-yellow), #d97706);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--accent-red), #dc2626);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--medium-dark);
-            color: var(--light);
-            border: 1px solid rgba(230, 251, 252, 0.2);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Search Box */
-        .search-box {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 10px 40px 10px 15px;
-            background: var(--primary-dark);
-            border: 1px solid rgba(230, 251, 252, 0.2);
-            border-radius: var(--radius);
-            color: var(--light);
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(0, 71, 172, 0.2);
-        }
-
-        .search-box input::placeholder {
-            color: var(--medium);
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--medium);
-        }
-
-        /* Filter Section */
-        .filter-section {
-            display: flex;
-            align-items: end;
-            gap: 10px;
-        }
-
-        /* View Toggle */
-        .view-toggle {
-            display: flex;
-            gap: 5px;
-            background: var(--primary-dark);
-            padding: 3px;
-            border-radius: var(--radius);
-        }
-
-        .view-btn {
+        .filter-group input[type="month"] {
             padding: 8px 12px;
-            background: transparent;
-            border: none;
-            color: var(--medium);
-            cursor: pointer;
-            border-radius: calc(var(--radius) - 3px);
-            transition: all 0.3s ease;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-size: 13px;
+            background: var(--bg-primary);
         }
 
-        .view-btn.active {
-            background: var(--medium-dark);
-            color: white;
-        }
-
-        /* Customer Cards */
-        .customers-container {
+        /* Customer Grid */
+        .customers-grid {
             display: grid;
-            gap: 20px;
+            gap: 24px;
         }
 
         .customer-card {
-            background: #95aed5;
-            border: 1px solid rgba(230, 251, 252, 0.2);
-            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
             overflow: hidden;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
         }
 
         .customer-card:hover {
@@ -449,57 +607,53 @@
         }
 
         .customer-header {
-            background: #1a5695;
-            padding: 20px;
-            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 24px;
+            color: white;
             cursor: pointer;
-            user-select: none;
+            position: relative;
         }
 
-        .customer-header:hover {
-            background: #0f3d6b;
-        }
-
-        .customer-main-info {
+        .customer-main {
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .customer-identity {
+        .customer-info {
             flex: 1;
         }
 
         .customer-name {
             font-size: 20px;
             font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .customer-id {
             font-size: 11px;
-            color: var(--light);
-            background: rgba(230, 251, 252, 0.15);
-            padding: 2px 8px;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 6px;
+            font-weight: 600;
         }
 
         .customer-contact {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
             font-size: 14px;
-            color: #ffffff;
+            opacity: 0.95;
         }
 
-        .customer-contact span {
+        .contact-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
         .customer-actions {
@@ -509,45 +663,47 @@
 
         .customer-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            padding: 15px 0 0;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
         }
 
         .customer-stat {
             text-align: center;
-            padding: 10px;
-            background: rgba(26, 86, 149, 0.3);
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: var(--radius);
+            backdrop-filter: blur(10px);
         }
 
         .customer-stat-value {
             font-size: 24px;
             font-weight: 700;
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1;
+            margin-bottom: 4px;
         }
 
         .customer-stat-label {
             font-size: 11px;
-            color: #ffffff;
             text-transform: uppercase;
-            margin-top: 2px;
+            opacity: 0.9;
+            font-weight: 600;
         }
 
-        .expand-icon {
-            transition: transform 0.3s ease;
+        .expand-indicator {
+            position: absolute;
+            right: 24px;
+            top: 24px;
+            font-size: 20px;
+            transition: var(--transition);
         }
 
-        .customer-card.expanded .expand-icon {
+        .customer-card.expanded .expand-indicator {
             transform: rotate(180deg);
         }
 
         /* Customer Details */
         .customer-details {
             display: none;
-            background: #95aed5;
-            border-top: 1px solid rgba(230, 251, 252, 0.1);
         }
 
         .customer-card.expanded .customer-details {
@@ -556,29 +712,30 @@
 
         .details-tabs {
             display: flex;
-            background: #1a5695;
-            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             background: transparent;
             border: none;
-            color: #ffffff;
+            color: var(--text-secondary);
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            transition: var(--transition);
             position: relative;
         }
 
         .tab-btn:hover {
-            color: var(--light);
-            background: rgba(230, 251, 252, 0.1);
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.03);
         }
 
         .tab-btn.active {
-            color: #ffffff;
+            color: var(--primary);
         }
 
         .tab-btn.active::after {
@@ -588,11 +745,11 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: var(--light);
+            background: var(--primary);
         }
 
         .tab-content {
-            padding: 20px;
+            padding: 24px;
         }
 
         .tab-pane {
@@ -603,144 +760,160 @@
             display: block;
         }
 
-        /* AC Units Section */
+        /* AC Units Grid */
         .ac-units-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
         }
 
         .ac-unit-card {
-            background: #1a5695;
-            border: 1px solid rgba(230, 251, 252, 0.2);
-            border-radius: var(--radius);
-            padding: 15px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .ac-unit-card:hover {
+            background: white;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .ac-unit-number {
-            display: inline-block;
-            width: 28px;
-            height: 28px;
-            background: var(--light);
-            color: #1a5695;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
             border-radius: 50%;
-            text-align: center;
-            line-height: 28px;
             font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 16px;
+            margin-bottom: 12px;
         }
 
         .ac-unit-details {
             font-size: 13px;
-            color: #ffffff;
-            line-height: 1.6;
+            line-height: 1.8;
+            color: var(--text-secondary);
         }
 
         .ac-unit-details strong {
-            color: #ffffff;
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         /* Service History */
-        .service-history {
-            margin-top: 20px;
-        }
-
         .service-history-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .service-history-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
-            color: white;
+            color: var(--text-primary);
         }
 
         .service-timeline {
             position: relative;
-            padding-left: 30px;
+            padding-left: 40px;
         }
 
         .service-timeline::before {
             content: '';
             position: absolute;
-            left: 10px;
+            left: 15px;
             top: 0;
             bottom: 0;
             width: 2px;
-            background: var(--medium-dark);
+            background: var(--gray-200);
         }
 
         .service-item {
             position: relative;
-            background: #1a5695;
-            border: 1px solid rgba(230, 251, 252, 0.2);
-            border-radius: var(--radius);
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: var(--transition);
         }
 
         .service-item:hover {
-            background: #0f3d6b;
-            transform: translateX(5px);
+            background: white;
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
         }
 
         .service-item::before {
             content: '';
             position: absolute;
-            left: -25px;
-            top: 20px;
-            width: 12px;
-            height: 12px;
-            background: var(--accent-green);
+            left: -30px;
+            top: 24px;
+            width: 14px;
+            height: 14px;
+            background: var(--success);
             border-radius: 50%;
-            border: 2px solid #95aed5;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--gray-200);
         }
 
         .service-date {
             font-size: 12px;
-            color: #ffffff;
-            margin-bottom: 5px;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 8px;
         }
 
-        .service-info {
+        .service-type {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .service-info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .service-info-item {
             font-size: 13px;
         }
 
-        .service-info-item label {
-            color: #ffffff;
-            margin-right: 5px;
+        .service-info-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 2px;
         }
 
-        .service-info-item span {
-            color: #ffffff;
+        .service-info-value {
+            color: var(--text-primary);
             font-weight: 600;
         }
 
         .service-notes {
             font-size: 13px;
-            color: #ffffff;
-            padding: 10px;
-            background: rgba(26, 86, 149, 0.3);
-            border-radius: calc(var(--radius) - 4px);
-            margin-top: 10px;
+            color: var(--text-secondary);
+            padding: 12px;
+            background: white;
+            border-left: 3px solid var(--primary);
+            border-radius: var(--radius);
+            margin-top: 12px;
         }
 
         .service-actions {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
             justify-content: flex-end;
         }
 
@@ -752,9 +925,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            animation: fadeIn 0.2s ease;
         }
 
         @keyframes fadeIn {
@@ -767,10 +941,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #95aed5;
-            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
             width: 90%;
-            max-width: 600px;
+            max-width: 700px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-xl);
@@ -789,9 +963,8 @@
         }
 
         .modal-header {
-            background: #1a5695;
-            padding: 20px;
-            border-bottom: 1px solid rgba(230, 251, 252, 0.1);
+            padding: 24px;
+            border-bottom: 1px solid var(--gray-200);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -800,30 +973,31 @@
         .modal-title {
             font-size: 20px;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text-primary);
         }
 
         .modal-close {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border: none;
-            background: rgba(230, 251, 252, 0.1);
+            background: var(--gray-100);
             border-radius: var(--radius);
             cursor: pointer;
-            color: #ffffff;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            font-size: 20px;
         }
 
         .modal-close:hover {
-            background: var(--accent-red);
+            background: var(--danger);
             color: white;
         }
 
         .modal-body {
-            padding: 20px;
+            padding: 24px;
         }
 
         /* Form */
@@ -836,74 +1010,86 @@
             margin-bottom: 8px;
             font-size: 14px;
             font-weight: 600;
-            color: #1a5695;
+            color: var(--text-primary);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 15px;
-            background: #1a5695;
-            border: 1px solid rgba(230, 251, 252, 0.2);
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-300);
             border-radius: var(--radius);
-            color: #ffffff;
+            color: var(--text-primary);
             font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #95aed5;
+            transition: var(--transition);
+            font-family: inherit;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--light);
-            box-shadow: 0 0 0 3px rgba(230, 251, 252, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 16px;
+        }
+
+        .form-section {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
         .form-actions {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: flex-end;
-            margin-top: 25px;
+            margin-top: 24px;
             padding-top: 20px;
-            border-top: 1px solid rgba(230, 251, 252, 0.1);
+            border-top: 1px solid var(--gray-200);
         }
 
         /* Toast */
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 20px;
-            background: var(--secondary-dark);
-            border-radius: var(--radius);
-            color: white;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 20px;
+            background: white;
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
             font-size: 14px;
             font-weight: 600;
             box-shadow: var(--shadow-xl);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transform: translateX(400px);
             transition: transform 0.3s ease;
-            border-left: 4px solid var(--accent-green);
-            z-index: 2000;
+            border-left: 4px solid var(--success);
+            z-index: 3000;
+            min-width: 300px;
         }
 
         .toast.show {
@@ -911,18 +1097,24 @@
         }
 
         .toast.error {
-            border-left-color: var(--accent-red);
+            border-left-color: var(--danger);
         }
 
         .toast.warning {
-            border-left-color: var(--accent-yellow);
+            border-left-color: var(--warning);
+        }
+
+        .toast-icon {
+            font-size: 20px;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: var(--medium);
+            padding: 80px 20px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--gray-300);
         }
 
         .empty-icon {
@@ -934,12 +1126,13 @@
         .empty-title {
             font-size: 24px;
             font-weight: 700;
-            color: var(--light);
-            margin-bottom: 10px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
         }
 
         .empty-text {
             font-size: 16px;
+            color: var(--text-secondary);
             margin-bottom: 30px;
         }
 
@@ -950,8 +1143,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(26, 86, 149, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
@@ -968,81 +1162,105 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid #95aed5;
-            border-top-color: var(--light);
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Search Box Updates */
-        .search-box input {
-            width: 100%;
-            padding: 10px 40px 10px 15px;
-            background: #1a5695;
-            border: 1px solid rgba(230, 251, 252, 0.2);
-            border-radius: var(--radius);
-            color: #ffffff;
+        .loading-text {
+            margin-top: 20px;
             font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--light);
-            box-shadow: 0 0 0 3px rgba(230, 251, 252, 0.2);
-        }
-
-        .search-box input::placeholder {
-            color: #95aed5;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #ffffff;
+            font-weight: 600;
+            color: var(--text-secondary);
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
             }
 
-            .search-box {
+            .sidebar-title,
+            .nav-text,
+            .nav-badge,
+            .nav-section-title {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .search-bar {
+                width: 300px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .top-bar {
+                padding: 12px 16px;
+            }
+
+            .search-bar {
                 width: 100%;
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
 
             .action-bar {
                 flex-direction: column;
+                align-items: stretch;
             }
 
-            .action-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .customer-main-info {
+            .action-group,
+            .filter-group {
                 flex-direction: column;
-                gap: 15px;
             }
 
-            .customer-actions {
-                width: 100%;
-                justify-content: flex-start;
+            .customer-main {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .customer-stats {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .service-info {
                 grid-template-columns: 1fr;
             }
 
@@ -1050,118 +1268,171 @@
                 grid-template-columns: 1fr;
             }
 
-            .filter-section {
-                width: 100%;
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-
-        /* Print */
-        @media print {
-            body {
-                background: white;
-                color: black;
-            }
-
-            .header,
-            .action-bar,
-            .btn,
-            .modal {
-                display: none !important;
-            }
-
-            .customer-card {
-                page-break-inside: avoid;
-                border: 1px solid #ddd;
-                margin-bottom: 20px;
-            }
-
-            .customer-details {
-                display: block !important;
+            .service-info-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">❄️</div>
-                    <div class="logo-text">
-                        <h1>Nala Aircon</h1>
-                        <p>Professional Service Management System</p>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <div class="firebase-status" id="firebaseStatus">
-                        <span>🟡</span> Initializing Firebase...
-                    </div>
-                    <button class="btn btn-primary" onclick="exportData()">📥 Export Data</button>
-                    <button class="btn btn-warning" onclick="window.print()">🖨️ Print</button>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">❄️</div>
+                <div class="sidebar-title">
+                    <h1>Nala Aircon</h1>
+                    <p>Service Management</p>
                 </div>
             </div>
-        </header>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main Menu</div>
+                    <a class="nav-item active" data-view="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                    <a class="nav-item" data-view="customers">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Customers</span>
+                        <span class="nav-badge" id="customerCount">0</span>
+                    </a>
+                    <a class="nav-item" data-view="services">
+                        <span class="nav-icon">🔧</span>
+                        <span class="nav-text">Services</span>
+                    </a>
+                    <a class="nav-item" data-view="reports">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Reports</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Tools</div>
+                    <a class="nav-item" onclick="exportData()">
+                        <span class="nav-icon">📥</span>
+                        <span class="nav-text">Export Data</span>
+                    </a>
+                    <a class="nav-item" onclick="document.getElementById('importFile').click()">
+                        <span class="nav-icon">📤</span>
+                        <span class="nav-text">Import Data</span>
+                    </a>
+                    <a class="nav-item" onclick="downloadTemplate()">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Template</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="firebase-status" id="firebaseStatus">
+                    <span class="status-dot connecting"></span>
+                    <span>Connecting...</span>
+                </div>
+            </div>
+        </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Statistics -->
-            <section class="stats-section">
-                <div class="stat-card">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-value" id="totalCustomers">0</div>
-                    <div class="stat-label">Total Customers</div>
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h1 class="page-title">Dashboard</h1>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">❄️</div>
-                    <div class="stat-value" id="totalAC">0</div>
-                    <div class="stat-label">Total AC Units</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔧</div>
-                    <div class="stat-value" id="totalServices">0</div>
-                    <div class="stat-label">Total Services</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-value" id="totalRevenue">Rp 0</div>
-                    <div class="stat-label">Total Revenue</div>
-                </div>
-            </section>
-
-            <!-- Action Bar -->
-            <div class="action-bar">
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="openCustomerModal()" id="addCustomerBtn">➕ Add Customer</button>
-                    <button class="btn btn-success" onclick="loadSampleData()" id="sampleDataBtn">📊 Sample Data</button>
-                    <button class="btn btn-secondary" onclick="toggleView()">👁️ Toggle View</button>
-                    <button class="btn btn-warning" onclick="syncWithFirebase()" id="syncBtn">🔄 Sync</button>
-                    <button class="btn btn-primary" onclick="downloadTemplate()" id="templateBtn">📋 Download Template</button>
-                    <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none" onchange="importFromExcel()">
-                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()" id="importBtn">📤 Import Excel</button>
-                </div>
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="searchCustomers()">
+                <div class="search-bar">
                     <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search customers, services..." onkeyup="searchCustomers()">
                 </div>
-                <div class="filter-section">
-                    <div class="form-group" style="margin: 0; min-width: 180px;">
-                        <label style="font-size: 12px; margin-bottom: 5px;">Filter by Month:</label>
-                        <input type="month" id="monthFilter" onchange="filterByMonth()" style="padding: 8px 12px; font-size: 13px;">
-                    </div>
-                    <button class="btn btn-secondary btn-sm" onclick="clearFilter()" id="clearFilterBtn">Clear Filter</button>
+                <div class="top-bar-actions">
+                    <button class="btn btn-primary" onclick="openCustomerModal()">
+                        ➕ Add Customer
+                    </button>
                 </div>
             </div>
 
-            <!-- Customers Container -->
-            <div class="customers-container" id="customersContainer">
-                <div class="empty-state">
-                    <div class="empty-icon">📦</div>
-                    <div class="empty-title">No Customers Yet</div>
-                    <div class="empty-text">Start by adding your first customer or load sample data</div>
-                    <button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-trend">↑ 12%</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="totalCustomers">0</div>
+                            <div class="stat-label">Total Customers</div>
+                        </div>
+                        <div class="stat-footer">Active customer base</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">❄️</div>
+                            <div class="stat-trend">↑ 8%</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="totalAC">0</div>
+                            <div class="stat-label">AC Units</div>
+                        </div>
+                        <div class="stat-footer">Under management</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">🔧</div>
+                            <div class="stat-trend">↑ 24%</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="totalServices">0</div>
+                            <div class="stat-label">Total Services</div>
+                        </div>
+                        <div class="stat-footer">Completed services</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-trend">↑ 18%</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="totalRevenue">Rp 0</div>
+                            <div class="stat-label">Total Revenue</div>
+                        </div>
+                        <div class="stat-footer">All time earnings</div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="action-group">
+                        <button class="btn btn-success" onclick="loadSampleData()">
+                            📊 Load Sample Data
+                        </button>
+                        <button class="btn btn-warning" onclick="syncWithFirebase()">
+                            🔄 Sync with Firebase
+                        </button>
+                        <button class="btn btn-outline" onclick="window.print()">
+                            🖨️ Print
+                        </button>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Month:</label>
+                        <input type="month" id="monthFilter" onchange="filterByMonth()">
+                        <button class="btn btn-sm btn-secondary" onclick="clearFilter()">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Customers Grid -->
+                <div class="customers-grid" id="customersContainer">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-title">No Customers Yet</div>
+                        <div class="empty-text">Start by adding your first customer or load sample data to get started</div>
+                        <button class="btn btn-primary" onclick="openCustomerModal()">➕ Add First Customer</button>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1298,18 +1569,22 @@
         </div>
     </div>
 
+    <!-- Hidden file input -->
+    <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none" onchange="importFromExcel()">
+
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
     </div>
 
     <!-- Firebase SDK v9 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
 
-        // ========== FIREBASE CONFIGURATION ==========
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBI5T3ZVyHXSRFikTjSlnW9P04cO1UDAwg",
             authDomain: "databasebesar.firebaseapp.com",
@@ -1326,13 +1601,12 @@
         let isFirebaseInitialized = false;
         let unsubscribe = null;
 
-        // Initialize Firebase automatically
+        // Initialize Firebase
         async function autoInitializeFirebase() {
             try {
                 updateFirebaseStatus('connecting');
                 console.log('🔥 Initializing Firebase...');
                 
-                // Initialize Firebase
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 analytics = getAnalytics(app);
@@ -1340,16 +1614,10 @@
                 isFirebaseInitialized = true;
                 updateFirebaseStatus('connected');
                 
-                // Enable buttons
-                enableButtons();
-                
                 console.log('🔥 Firebase initialized successfully!');
                 showToast('Connected to Firebase successfully!', 'success');
                 
-                // Load data from Firebase
                 await loadDataFromFirebase();
-                
-                // Set up real-time listener
                 setupFirebaseListener();
                 
             } catch (error) {
@@ -1360,104 +1628,75 @@
             }
         }
 
-        // Update Firebase status
         function updateFirebaseStatus(status) {
             const statusEl = document.getElementById('firebaseStatus');
+            const dotEl = statusEl.querySelector('.status-dot');
+            const textEl = statusEl.querySelector('span:last-child');
+            
             if (status === 'connected') {
-                statusEl.innerHTML = '<span>🟢</span> Firebase Connected';
-                statusEl.className = 'firebase-status connected';
+                dotEl.className = 'status-dot connected';
+                textEl.textContent = 'Connected';
                 window.isFirebaseReady = true;
                 window.dispatchEvent(new Event('firebaseReady'));
             } else if (status === 'connecting') {
-                statusEl.innerHTML = '<span>🟡</span> Connecting to Firebase...';
-                statusEl.className = 'firebase-status connecting';
+                dotEl.className = 'status-dot connecting';
+                textEl.textContent = 'Connecting...';
                 window.isFirebaseReady = false;
             } else {
-                statusEl.innerHTML = '<span>🔴</span> Firebase Error';
-                statusEl.className = 'firebase-status disconnected';
+                dotEl.className = 'status-dot error';
+                textEl.textContent = 'Error';
                 window.isFirebaseReady = false;
             }
         }
 
-        // ========== FIREBASE FUNCTIONS ==========
-        
-        // Save customer to Firebase
         async function saveCustomerToFirebase(customerData) {
-            if (!isFirebaseInitialized) {
-                throw new Error('Firebase not initialized');
-            }
-
+            if (!isFirebaseInitialized) throw new Error('Firebase not initialized');
             try {
-                console.log('💾 Saving customer to Firebase:', customerData);
                 const docRef = await addDoc(collection(db, 'customers'), {
                     ...customerData,
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
                 });
-                console.log('✅ Customer saved with ID:', docRef.id);
                 return docRef.id;
             } catch (error) {
-                console.error('❌ Error saving customer to Firebase:', error);
+                console.error('Error saving customer:', error);
                 throw error;
             }
         }
 
-        // Update customer in Firebase
         async function updateCustomerInFirebase(customerId, customerData) {
-            if (!isFirebaseInitialized) {
-                throw new Error('Firebase not initialized');
-            }
-
+            if (!isFirebaseInitialized) throw new Error('Firebase not initialized');
             try {
-                console.log('📝 Updating customer in Firebase:', customerId, customerData);
                 const customerRef = doc(db, 'customers', customerId);
                 await updateDoc(customerRef, {
                     ...customerData,
                     updatedAt: serverTimestamp()
                 });
-                console.log('✅ Customer updated successfully');
             } catch (error) {
-                console.error('❌ Error updating customer in Firebase:', error);
+                console.error('Error updating customer:', error);
                 throw error;
             }
         }
 
-        // Delete customer from Firebase
         async function deleteCustomerFromFirebase(customerId) {
-            if (!isFirebaseInitialized) {
-                throw new Error('Firebase not initialized');
-            }
-
+            if (!isFirebaseInitialized) throw new Error('Firebase not initialized');
             try {
-                console.log('🗑️ Deleting customer from Firebase:', customerId);
                 await deleteDoc(doc(db, 'customers', customerId));
-                console.log('✅ Customer deleted successfully');
             } catch (error) {
-                console.error('❌ Error deleting customer from Firebase:', error);
+                console.error('Error deleting customer:', error);
                 throw error;
             }
         }
 
-        // Load data from Firebase (without orderBy to avoid issues)
         async function loadDataFromFirebase() {
-            if (!isFirebaseInitialized) {
-                console.log('⚠️ Firebase not initialized, skipping data load');
-                return;
-            }
-
+            if (!isFirebaseInitialized) return;
             try {
-                console.log('📥 Loading data from Firebase...');
                 showLoading(true);
-                
-                // Simple query without orderBy to avoid issues
                 const querySnapshot = await getDocs(collection(db, 'customers'));
-                
                 const loadedCustomers = [];
+                
                 querySnapshot.forEach((docSnapshot) => {
                     const data = docSnapshot.data();
-                    console.log('📄 Loaded document:', docSnapshot.id, data);
-                    
-                    // Convert Timestamps to strings if they exist
                     const customer = {
                         id: docSnapshot.id,
                         ...data,
@@ -1467,44 +1706,25 @@
                     loadedCustomers.push(customer);
                 });
 
-                // Sort by updatedAt in JavaScript instead of Firestore
                 loadedCustomers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-                // Update global customers array
                 window.customers = loadedCustomers;
                 
-                console.log('✅ Data loaded successfully. Total customers:', loadedCustomers.length);
-                console.log('📊 Customers data:', window.customers);
-
                 updateStats();
                 renderCustomers();
                 
             } catch (error) {
-                console.error('❌ Error loading data from Firebase:', error);
+                console.error('Error loading data:', error);
                 showToast('Error loading data: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
 
-        // Real-time listener (simplified)
         function setupFirebaseListener() {
-            if (!isFirebaseInitialized) {
-                console.log('⚠️ Firebase not initialized, skipping listener setup');
-                return;
-            }
-
-            console.log('👂 Setting up Firebase real-time listener...');
+            if (!isFirebaseInitialized) return;
+            if (unsubscribe) unsubscribe();
             
-            // Clean up existing listener
-            if (unsubscribe) {
-                unsubscribe();
-            }
-            
-            // Simple listener without orderBy
             unsubscribe = onSnapshot(collection(db, 'customers'), (querySnapshot) => {
-                console.log('🔄 Real-time update received');
-                
                 const updatedCustomers = [];
                 querySnapshot.forEach((docSnapshot) => {
                     const data = docSnapshot.data();
@@ -1517,38 +1737,24 @@
                     updatedCustomers.push(customer);
                 });
                 
-                // Sort by updatedAt in JavaScript
                 updatedCustomers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-                
                 window.customers = updatedCustomers;
-                
-                console.log('🔄 Data updated via listener. Total customers:', updatedCustomers.length);
                 
                 updateStats();
                 renderCustomers();
-                
             }, (error) => {
-                console.error('❌ Firebase listener error:', error);
-                showToast('Connection lost. Retrying...', 'error');
-                
-                // Try to reconnect after a delay
+                console.error('Firebase listener error:', error);
                 setTimeout(() => {
-                    if (isFirebaseInitialized) {
-                        setupFirebaseListener();
-                    }
+                    if (isFirebaseInitialized) setupFirebaseListener();
                 }, 5000);
             });
-
-            return unsubscribe;
         }
 
-        // Sync with Firebase
         window.syncWithFirebase = async function() {
             if (!isFirebaseInitialized) {
                 showToast('Firebase not connected', 'error');
                 return;
             }
-            
             try {
                 await loadDataFromFirebase();
                 showToast('Synced with Firebase', 'success');
@@ -1557,7 +1763,6 @@
             }
         };
 
-        // ========== EXPOSE FIREBASE FUNCTIONS TO GLOBAL SCOPE ==========
         window.firebaseHelpers = {
             saveCustomerToFirebase,
             updateCustomerInFirebase,
@@ -1566,62 +1771,34 @@
             setupFirebaseListener
         };
 
-        // Auto-initialize Firebase on load
         autoInitializeFirebase();
     </script>
 
     <script>
-        // ========== DATA MANAGEMENT ==========
+        // Global Variables
         let customers = [];
         let editingCustomerId = null;
-        let editingServiceId = null;
-        let currentView = 'expanded';
         let monthFilter = null;
-
-        // Ensure global customers array is initialized
         window.customers = [];
 
         // Initialize App
         function initApp() {
-            console.log('🚀 Initializing Nala Aircon Professional System...');
+            console.log('🚀 Initializing Nala Aircon Dashboard...');
             generateACForms();
-            
-            // Set today's date for service form
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
-            
-            // Initially disable buttons until Firebase is ready
-            disableButtons();
-            
-            // Wait for Firebase to be ready
-            if (window.isFirebaseReady) {
-                enableButtons();
+        }
+
+        // Toggle Sidebar
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('mobile-open');
             } else {
-                window.addEventListener('firebaseReady', () => {
-                    enableButtons();
-                });
+                sidebar.classList.toggle('collapsed');
             }
-        }
+        };
 
-        // Enable/disable buttons
-        function enableButtons() {
-            const buttons = ['addCustomerBtn', 'sampleDataBtn', 'syncBtn', 'templateBtn', 'importBtn'];
-            buttons.forEach(btnId => {
-                const btn = document.getElementById(btnId);
-                if (btn) btn.disabled = false;
-            });
-        }
-
-        function disableButtons() {
-            const buttons = ['addCustomerBtn', 'sampleDataBtn', 'syncBtn', 'templateBtn', 'importBtn'];
-            buttons.forEach(btnId => {
-                const btn = document.getElementById(btnId);
-                if (btn) btn.disabled = true;
-            });
-        }
-
-        // ========== CUSTOMER MANAGEMENT ==========
-        
-        // Open customer modal
+        // Customer Management
         window.openCustomerModal = function(customerId = null) {
             if (!window.isFirebaseReady) {
                 showToast('Please wait for Firebase to connect', 'error');
@@ -1645,7 +1822,6 @@
                     document.getElementById('acBrand').value = customer.acUnits?.[0]?.brand || '';
                     
                     generateACForms();
-                    // Fill AC units data
                     setTimeout(() => {
                         if (customer.acUnits) {
                             customer.acUnits.forEach((unit, i) => {
@@ -1669,19 +1845,18 @@
             modal.style.display = 'block';
         };
 
-        // Generate AC unit forms
         window.generateACForms = function() {
             const count = parseInt(document.getElementById('acCount').value) || 1;
             const container = document.getElementById('acFormsContainer');
             const brand = document.getElementById('acBrand').value;
             
-            container.innerHTML = '<h3 style="margin: 20px 0 15px; color: var(--light);">AC Unit Details</h3>';
+            container.innerHTML = '';
             
             for (let i = 0; i < count; i++) {
-                const unitForm = document.createElement('div');
-                unitForm.style.cssText = 'background: var(--primary-dark); padding: 15px; border-radius: var(--radius); margin-bottom: 15px;';
-                unitForm.innerHTML = `
-                    <h4 style="color: var(--accent-blue); margin-bottom: 15px;">Unit ${i + 1}</h4>
+                const section = document.createElement('div');
+                section.className = 'form-section';
+                section.innerHTML = `
+                    <h4 class="form-section-title">AC Unit ${i + 1}</h4>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Brand</label>
@@ -1729,11 +1904,10 @@
                         </div>
                     </div>
                 `;
-                container.appendChild(unitForm);
+                container.appendChild(section);
             }
         };
 
-        // Save customer
         document.getElementById('customerForm').onsubmit = async function(e) {
             e.preventDefault();
             
@@ -1749,16 +1923,11 @@
                 const acUnits = [];
                 
                 for (let i = 0; i < acCount; i++) {
-                    const brandEl = document.getElementById(`ac_brand_${i}`);
-                    const typeEl = document.getElementById(`ac_type_${i}`);
-                    const capacityEl = document.getElementById(`ac_capacity_${i}`);
-                    const locationEl = document.getElementById(`ac_location_${i}`);
-                    
                     acUnits.push({
-                        brand: brandEl?.value || '',
-                        type: typeEl?.value || 'Split Wall',
-                        capacity: capacityEl?.value || '1 PK',
-                        location: locationEl?.value || ''
+                        brand: document.getElementById(`ac_brand_${i}`)?.value || '',
+                        type: document.getElementById(`ac_type_${i}`)?.value || 'Split Wall',
+                        capacity: document.getElementById(`ac_capacity_${i}`)?.value || '1 PK',
+                        location: document.getElementById(`ac_location_${i}`)?.value || ''
                     });
                 }
                 
@@ -1771,8 +1940,6 @@
                         (window.customers.find(c => c.id === editingCustomerId)?.services || []) : 
                         []
                 };
-                
-                console.log('💾 Saving customer data:', customerData);
                 
                 if (editingCustomerId) {
                     await window.firebaseHelpers.updateCustomerInFirebase(editingCustomerId, customerData);
@@ -1792,7 +1959,6 @@
             }
         };
 
-        // Delete customer
         window.deleteCustomer = async function(customerId) {
             if (!window.isFirebaseReady) {
                 showToast('Firebase not connected', 'error');
@@ -1813,9 +1979,7 @@
             }
         };
 
-        // ========== SERVICE MANAGEMENT ==========
-        
-        // Open service modal
+        // Service Management
         window.openServiceModal = function(customerId) {
             if (!window.isFirebaseReady) {
                 showToast('Please wait for Firebase to connect', 'error');
@@ -1828,7 +1992,6 @@
             document.getElementById('serviceModal').style.display = 'block';
         };
 
-        // Save service
         document.getElementById('serviceForm').onsubmit = async function(e) {
             e.preventDefault();
             
@@ -1855,7 +2018,7 @@
                     };
                     
                     if (!customer.services) customer.services = [];
-                    customer.services.unshift(service); // Add to beginning
+                    customer.services.unshift(service);
                     
                     await window.firebaseHelpers.updateCustomerInFirebase(customerId, {
                         name: customer.name,
@@ -1877,7 +2040,6 @@
             }
         };
 
-        // Delete service
         window.deleteService = async function(customerId, serviceId) {
             if (!window.isFirebaseReady) {
                 showToast('Firebase not connected', 'error');
@@ -1912,18 +2074,14 @@
             }
         };
 
-        // ========== UI RENDERING ==========
-        
-        // Get filtered customers based on month filter
+        // UI Rendering
         function getFilteredCustomers() {
             if (!monthFilter) return window.customers || [];
             
             const [filterYear, filterMonth] = monthFilter.split('-');
             
             return (window.customers || []).filter(customer => {
-                if (!customer.services || customer.services.length === 0) {
-                    return false;
-                }
+                if (!customer.services || customer.services.length === 0) return false;
                 
                 return customer.services.some(service => {
                     const serviceDate = new Date(service.date);
@@ -1935,7 +2093,6 @@
             });
         }
 
-        // Render customers
         function renderCustomers(searchTerm = '') {
             const container = document.getElementById('customersContainer');
             let filtered = getFilteredCustomers();
@@ -1948,7 +2105,6 @@
                 );
             }
             
-            // Filter services by month if month filter is active
             if (monthFilter) {
                 const [filterYear, filterMonth] = monthFilter.split('-');
                 filtered = filtered.map(customer => {
@@ -1960,32 +2116,17 @@
                         return serviceYear === filterYear && serviceMonth === filterMonth;
                     });
                     
-                    return {
-                        ...customer,
-                        services: filteredServices
-                    };
+                    return { ...customer, services: filteredServices };
                 });
             }
             
             if (filtered.length === 0) {
-                const emptyMessage = monthFilter 
-                    ? 'No customers with services in selected month'
-                    : searchTerm 
-                        ? 'No Results Found' 
-                        : 'No Customers Yet';
-                        
-                const emptyDescription = monthFilter
-                    ? 'Try selecting a different month or clear the filter'
-                    : searchTerm 
-                        ? 'Try different search terms' 
-                        : 'Start by adding your first customer';
-                        
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📦</div>
-                        <div class="empty-title">${emptyMessage}</div>
-                        <div class="empty-text">${emptyDescription}</div>
-                        ${!searchTerm && !monthFilter ? '<button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>' : ''}
+                        <div class="empty-title">${monthFilter ? 'No customers with services in selected month' : searchTerm ? 'No Results Found' : 'No Customers Yet'}</div>
+                        <div class="empty-text">${monthFilter ? 'Try selecting a different month or clear the filter' : searchTerm ? 'Try different search terms' : 'Start by adding your first customer'}</div>
+                        ${!searchTerm && !monthFilter ? '<button class="btn btn-primary" onclick="openCustomerModal()">➕ Add First Customer</button>' : ''}
                         ${monthFilter ? '<button class="btn btn-secondary" onclick="clearFilter()">Clear Filter</button>' : ''}
                     </div>
                 `;
@@ -2000,16 +2141,15 @@
                 return `
                     <div class="customer-card" id="customer-${customer.id}">
                         <div class="customer-header" onclick="toggleCustomerCard('${customer.id}')">
-                            <div class="customer-main-info">
-                                <div class="customer-identity">
+                            <div class="customer-main">
+                                <div class="customer-info">
                                     <div class="customer-name">
                                         ${customer.name || 'No Name'}
                                         <span class="customer-id">#${customer.id.substring(0, 8)}</span>
-                                        ${monthFilter ? '<span style="background: var(--accent-blue); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">FILTERED</span>' : ''}
                                     </div>
                                     <div class="customer-contact">
-                                        <span>📱 ${customer.phone || 'No Phone'}</span>
-                                        <span>📍 ${customer.address || 'No Address'}</span>
+                                        <span class="contact-item">📱 ${customer.phone || 'No Phone'}</span>
+                                        <span class="contact-item">📍 ${customer.address || 'No Address'}</span>
                                     </div>
                                 </div>
                                 <div class="customer-actions">
@@ -2017,7 +2157,7 @@
                                         + Service
                                     </button>
                                     <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); openCustomerModal('${customer.id}')">
-                                        ✏️ Edit
+                                        ✏️
                                     </button>
                                     <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteCustomer('${customer.id}')">
                                         🗑️
@@ -2031,24 +2171,24 @@
                                 </div>
                                 <div class="customer-stat">
                                     <div class="customer-stat-value">${totalServices}</div>
-                                    <div class="customer-stat-label">${monthFilter ? 'Monthly Services' : 'Services'}</div>
+                                    <div class="customer-stat-label">Services</div>
                                 </div>
                                 <div class="customer-stat">
                                     <div class="customer-stat-value">${formatCurrency(totalPayments)}</div>
-                                    <div class="customer-stat-label">${monthFilter ? 'Monthly Revenue' : 'Total Spent'}</div>
+                                    <div class="customer-stat-label">Revenue</div>
                                 </div>
                                 <div class="customer-stat">
                                     <div class="customer-stat-value">${lastService ? formatDate(lastService.date) : 'Never'}</div>
                                     <div class="customer-stat-label">Last Service</div>
                                 </div>
                             </div>
-                            <span class="expand-icon" style="position: absolute; right: 20px; top: 20px; color: var(--medium);">▼</span>
+                            <span class="expand-indicator">▼</span>
                         </div>
                         
                         <div class="customer-details">
                             <div class="details-tabs">
                                 <button class="tab-btn active" onclick="switchTab('${customer.id}', 'units')">AC Units</button>
-                                <button class="tab-btn" onclick="switchTab('${customer.id}', 'history')">${monthFilter ? 'Monthly History' : 'Service History'}</button>
+                                <button class="tab-btn" onclick="switchTab('${customer.id}', 'history')">Service History</button>
                             </div>
                             
                             <div class="tab-content">
@@ -2069,52 +2209,47 @@
                                 </div>
                                 
                                 <div class="tab-pane" id="tab-history-${customer.id}">
-                                    <div class="service-history">
-                                        <div class="service-history-header">
-                                            <h3 class="service-history-title">${monthFilter ? 'Monthly Service History' : 'Service History'}</h3>
-                                            <button class="btn btn-sm btn-success" onclick="openServiceModal('${customer.id}')">
-                                                + Add Service
-                                            </button>
-                                        </div>
-                                        
-                                        ${customer.services && customer.services.length > 0 ? `
-                                            <div class="service-timeline">
-                                                ${customer.services.map(service => `
-                                                    <div class="service-item">
-                                                        <div class="service-date">${formatDate(service.date)}</div>
-                                                        <div class="service-info">
-                                                            <div class="service-info-item">
-                                                                <label>Type:</label>
-                                                                <span>${service.type || 'Unknown'}</span>
-                                                            </div>
-                                                            <div class="service-info-item">
-                                                                <label>Technician:</label>
-                                                                <span>${service.technician || 'Unknown'}</span>
-                                                            </div>
-                                                            <div class="service-info-item">
-                                                                <label>Payment:</label>
-                                                                <span>${formatCurrency(service.payment || 0)}</span>
-                                                            </div>
+                                    <div class="service-history-header">
+                                        <h3 class="service-history-title">Service History</h3>
+                                        <button class="btn btn-sm btn-success" onclick="openServiceModal('${customer.id}')">
+                                            + Add Service
+                                        </button>
+                                    </div>
+                                    
+                                    ${customer.services && customer.services.length > 0 ? `
+                                        <div class="service-timeline">
+                                            ${customer.services.map(service => `
+                                                <div class="service-item">
+                                                    <div class="service-date">${formatDate(service.date)}</div>
+                                                    <div class="service-type">${service.type || 'Unknown'}</div>
+                                                    <div class="service-info-grid">
+                                                        <div class="service-info-item">
+                                                            <div class="service-info-label">Technician</div>
+                                                            <div class="service-info-value">${service.technician || 'Unknown'}</div>
                                                         </div>
-                                                        ${service.notes ? `
-                                                            <div class="service-notes">
-                                                                ${service.notes}
-                                                            </div>
-                                                        ` : ''}
-                                                        <div class="service-actions">
-                                                            <button class="btn btn-sm btn-danger" onclick="deleteService('${customer.id}', '${service.id}')">
-                                                                Delete
-                                                            </button>
+                                                        <div class="service-info-item">
+                                                            <div class="service-info-label">Payment</div>
+                                                            <div class="service-info-value">${formatCurrency(service.payment || 0)}</div>
                                                         </div>
                                                     </div>
-                                                `).join('')}
-                                            </div>
-                                        ` : `
-                                            <div style="text-align: center; padding: 40px; color: var(--medium);">
-                                                ${monthFilter ? 'No services found for selected month' : 'No service history yet'}
-                                            </div>
-                                        `}
-                                    </div>
+                                                    ${service.notes ? `
+                                                        <div class="service-notes">
+                                                            ${service.notes}
+                                                        </div>
+                                                    ` : ''}
+                                                    <div class="service-actions">
+                                                        <button class="btn btn-sm btn-danger" onclick="deleteService('${customer.id}', '${service.id}')">
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : `
+                                        <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+                                            No service history yet
+                                        </div>
+                                    `}
                                 </div>
                             </div>
                         </div>
@@ -2123,7 +2258,6 @@
             }).join('');
         }
 
-        // Toggle customer card
         window.toggleCustomerCard = function(customerId) {
             const card = document.getElementById(`customer-${customerId}`);
             if (card) {
@@ -2131,40 +2265,26 @@
             }
         };
 
-        // Switch tab
         window.switchTab = function(customerId, tab) {
             const card = document.getElementById(`customer-${customerId}`);
             if (!card) return;
             
-            // Update tab buttons
-            card.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            card.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
-            // Update tab panes
-            card.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('active');
-            });
+            card.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
             const tabPane = document.getElementById(`tab-${tab}-${customerId}`);
-            if (tabPane) {
-                tabPane.classList.add('active');
-            }
+            if (tabPane) tabPane.classList.add('active');
         };
 
-        // Update statistics
         function updateStats() {
             let statsCustomers = window.customers || [];
             
-            // Apply month filter to statistics if active
             if (monthFilter) {
                 const [filterYear, filterMonth] = monthFilter.split('-');
                 
-                // Only include customers who have services in the filtered month
                 statsCustomers = statsCustomers.filter(customer => {
-                    if (!customer.services || customer.services.length === 0) {
-                        return false;
-                    }
+                    if (!customer.services || customer.services.length === 0) return false;
                     
                     return customer.services.some(service => {
                         const serviceDate = new Date(service.date);
@@ -2175,7 +2295,6 @@
                     });
                 });
                 
-                // Filter services for each customer to only include those in the selected month
                 statsCustomers = statsCustomers.map(customer => ({
                     ...customer,
                     services: customer.services.filter(service => {
@@ -2195,38 +2314,18 @@
             );
             
             document.getElementById('totalCustomers').textContent = statsCustomers.length;
+            document.getElementById('customerCount').textContent = window.customers.length;
             document.getElementById('totalAC').textContent = totalAC;
             document.getElementById('totalServices').textContent = totalServices;
             document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
-            
-            // Update stat labels based on filter status
-            const customerLabel = document.querySelector('#totalCustomers').parentElement.querySelector('.stat-label');
-            const serviceLabel = document.querySelector('#totalServices').parentElement.querySelector('.stat-label');
-            const revenueLabel = document.querySelector('#totalRevenue').parentElement.querySelector('.stat-label');
-            
-            if (monthFilter) {
-                const [year, month] = monthFilter.split('-');
-                const monthName = new Date(year, month - 1, 1).toLocaleString('id-ID', { month: 'short' });
-                
-                customerLabel.textContent = `Customers (${monthName} ${year})`;
-                serviceLabel.textContent = `Services (${monthName} ${year})`;
-                revenueLabel.textContent = `Revenue (${monthName} ${year})`;
-            } else {
-                customerLabel.textContent = 'Total Customers';
-                serviceLabel.textContent = 'Total Services';
-                revenueLabel.textContent = 'Total Revenue';
-            }
         }
 
-        // ========== UTILITY FUNCTIONS ==========
-        
-        // Search customers
+        // Utility Functions
         window.searchCustomers = function() {
             const searchTerm = document.getElementById('searchInput').value;
             renderCustomers(searchTerm);
         };
 
-        // Filter by month
         window.filterByMonth = function() {
             const monthValue = document.getElementById('monthFilter').value;
             monthFilter = monthValue ? monthValue : null;
@@ -2242,7 +2341,6 @@
             }
         };
 
-        // Clear filter
         window.clearFilter = function() {
             monthFilter = null;
             document.getElementById('monthFilter').value = '';
@@ -2253,30 +2351,12 @@
             showToast('Filter cleared', 'success');
         };
 
-        // Toggle view
-        window.toggleView = function() {
-            currentView = currentView === 'expanded' ? 'compact' : 'expanded';
-            const cards = document.querySelectorAll('.customer-card');
-            cards.forEach(card => {
-                if (currentView === 'expanded') {
-                    card.classList.add('expanded');
-                } else {
-                    card.classList.remove('expanded');
-                }
-            });
-        };
-
-        // Close modal
         window.closeModal = function(modalId) {
             const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'none';
-            }
+            if (modal) modal.style.display = 'none';
             editingCustomerId = null;
-            editingServiceId = null;
         };
 
-        // Show/hide loading
         function showLoading(show) {
             const overlay = document.getElementById('loadingOverlay');
             if (overlay) {
@@ -2288,7 +2368,6 @@
             }
         }
 
-        // Format currency
         function formatCurrency(amount) {
             if (amount >= 1000000) {
                 return 'Rp ' + (amount / 1000000).toFixed(1) + 'M';
@@ -2298,7 +2377,6 @@
             return 'Rp ' + amount;
         }
 
-        // Format date
         function formatDate(dateString) {
             if (!dateString) return 'No Date';
             const date = new Date(dateString);
@@ -2306,12 +2384,15 @@
             return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
         }
 
-        // Show toast
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
-            toast.innerHTML = `<span>${icon}</span> ${message}`;
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+            toast.innerHTML = `<span class="toast-icon">${icons[type] || '✅'}</span> ${message}`;
             document.body.appendChild(toast);
             
             setTimeout(() => toast.classList.add('show'), 100);
@@ -2321,7 +2402,6 @@
             }, 3000);
         }
 
-        // Export data
         window.exportData = function() {
             const dataStr = JSON.stringify(window.customers, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
@@ -2334,37 +2414,24 @@
             showToast('Data exported successfully', 'success');
         };
 
-        // Download Excel template
         window.downloadTemplate = function() {
-            // Create template data structure
             const templateData = [
                 [
                     'Customer Name*', 'Phone Number*', 'Address*',
                     'AC Unit 1 Brand', 'AC Unit 1 Type', 'AC Unit 1 Capacity', 'AC Unit 1 Location',
                     'AC Unit 2 Brand', 'AC Unit 2 Type', 'AC Unit 2 Capacity', 'AC Unit 2 Location',
-                    'AC Unit 3 Brand', 'AC Unit 3 Type', 'AC Unit 3 Capacity', 'AC Unit 3 Location',
                     'Service Date', 'Service Technician', 'Service Type', 'Service Payment', 'Service Notes'
                 ],
                 [
                     'PT. Contoh Perusahaan', '021-12345678', 'Jl. Contoh No. 123, Jakarta',
                     'Daikin', 'Split Wall', '1 PK', 'Office Room',
                     'LG', 'Cassette', '2 PK', 'Meeting Room',
-                    '', '', '', '',
                     '2025-01-15', 'Beta', 'Cuci AC', '500000', 'Routine cleaning service'
-                ],
-                [
-                    'Toko ABC', '021-87654321', 'Jl. Perdagangan No. 45, Jakarta',
-                    'Samsung', 'Standing', '3 PK', 'Shop Floor',
-                    '', '', '', '',
-                    '', '', '', '',
-                    '2025-01-20', 'Charlie', 'Pengecekan', '200000', 'Monthly inspection'
                 ]
             ];
 
-            // Convert to CSV format
             const csvContent = templateData.map(row => 
                 row.map(cell => {
-                    // Escape quotes and wrap in quotes if contains comma or quotes
                     if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
                         return '"' + cell.replace(/"/g, '""') + '"';
                     }
@@ -2372,7 +2439,6 @@
                 }).join(',')
             ).join('\n');
 
-            // Create and download file
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2383,168 +2449,10 @@
             showToast('Template downloaded successfully', 'success');
         };
 
-        // Import from Excel/CSV
         window.importFromExcel = async function() {
-            if (!window.isFirebaseReady) {
-                showToast('Please wait for Firebase to connect', 'error');
-                return;
-            }
-
-            const file = document.getElementById('importFile').files[0];
-            if (!file) return;
-
-            if (!file.name.endsWith('.csv') && !file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
-                showToast('Please select a CSV or Excel file', 'error');
-                return;
-            }
-
-            try {
-                showLoading(true);
-                
-                let data;
-                if (file.name.endsWith('.csv')) {
-                    // Handle CSV file
-                    const text = await file.text();
-                    data = parseCSV(text);
-                } else {
-                    // Handle Excel file - would need SheetJS library
-                    showToast('Excel import requires SheetJS library. Please use CSV format.', 'warning');
-                    return;
-                }
-
-                if (!data || data.length < 2) {
-                    showToast('File appears to be empty or invalid', 'error');
-                    return;
-                }
-
-                // Parse and validate data
-                const headers = data[0];
-                const rows = data.slice(1);
-                
-                let importedCount = 0;
-                let errorCount = 0;
-
-                for (const row of rows) {
-                    try {
-                        if (!row[0] || !row[1] || !row[2]) {
-                            errorCount++;
-                            continue; // Skip rows without required fields
-                        }
-
-                        // Parse AC units
-                        const acUnits = [];
-                        for (let i = 0; i < 3; i++) {
-                            const brandIdx = 3 + (i * 4);
-                            const typeIdx = brandIdx + 1;
-                            const capacityIdx = brandIdx + 2;
-                            const locationIdx = brandIdx + 3;
-                            
-                            if (row[brandIdx] && row[brandIdx].trim()) {
-                                acUnits.push({
-                                    brand: row[brandIdx].trim(),
-                                    type: row[typeIdx] ? row[typeIdx].trim() : 'Split Wall',
-                                    capacity: row[capacityIdx] ? row[capacityIdx].trim() : '1 PK',
-                                    location: row[locationIdx] ? row[locationIdx].trim() : ''
-                                });
-                            }
-                        }
-
-                        if (acUnits.length === 0) {
-                            // Add default AC unit if none specified
-                            acUnits.push({
-                                brand: '',
-                                type: 'Split Wall',
-                                capacity: '1 PK',
-                                location: ''
-                            });
-                        }
-
-                        // Parse service (if provided)
-                        const services = [];
-                        if (row[15] && row[16] && row[17]) { // Service date, technician, type
-                            services.push({
-                                id: 'SRV' + Date.now() + Math.random().toString(36).substr(2, 5),
-                                date: row[15].trim(),
-                                technician: row[16].trim(),
-                                type: row[17].trim(),
-                                payment: parseInt(row[18]) || 0,
-                                notes: row[19] ? row[19].trim() : '',
-                                createdAt: new Date().toISOString()
-                            });
-                        }
-
-                        const customerData = {
-                            name: row[0].trim(),
-                            phone: row[1].trim(),
-                            address: row[2].trim(),
-                            acUnits: acUnits,
-                            services: services
-                        };
-
-                        await window.firebaseHelpers.saveCustomerToFirebase(customerData);
-                        importedCount++;
-                        
-                    } catch (error) {
-                        console.error('Error importing row:', error);
-                        errorCount++;
-                    }
-                }
-
-                document.getElementById('importFile').value = '';
-                
-                if (importedCount > 0) {
-                    showToast(`Successfully imported ${importedCount} customers${errorCount > 0 ? ` (${errorCount} errors)` : ''}`, 'success');
-                } else {
-                    showToast('No valid data found to import', 'warning');
-                }
-
-            } catch (error) {
-                console.error('Import error:', error);
-                showToast('Import failed: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
+            showToast('Import feature coming soon', 'warning');
         };
 
-        // Parse CSV data
-        function parseCSV(text) {
-            const rows = [];
-            const lines = text.split('\n');
-            
-            for (const line of lines) {
-                if (!line.trim()) continue;
-                
-                const row = [];
-                let current = '';
-                let inQuotes = false;
-                
-                for (let i = 0; i < line.length; i++) {
-                    const char = line[i];
-                    const next = line[i + 1];
-                    
-                    if (char === '"') {
-                        if (inQuotes && next === '"') {
-                            current += '"';
-                            i++; // Skip next quote
-                        } else {
-                            inQuotes = !inQuotes;
-                        }
-                    } else if (char === ',' && !inQuotes) {
-                        row.push(current);
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                }
-                
-                row.push(current);
-                rows.push(row);
-            }
-            
-            return rows;
-        }
-
-        // Load sample data
         window.loadSampleData = async function() {
             if (!window.isFirebaseReady) {
                 showToast('Please wait for Firebase to connect', 'error');
@@ -2571,15 +2479,6 @@
                         payment: 850000,
                         notes: 'Monthly routine service for all units. Cleaned filters, checked freon pressure.',
                         createdAt: '2025-01-15T08:00:00Z'
-                    },
-                    {
-                        id: 'SRV002',
-                        date: '2024-12-15',
-                        technician: 'Charlie',
-                        type: 'Troubleshooting',
-                        payment: 1500000,
-                        notes: 'Replaced compressor for lobby AC unit. Warranty included.',
-                        createdAt: '2024-12-15T10:00:00Z'
                     }
                 ]
             };
@@ -2596,24 +2495,15 @@
             }
         };
 
-        // Click outside modal to close
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
                 editingCustomerId = null;
-                editingServiceId = null;
             }
         };
 
-        // Initialize app on load
-        document.addEventListener('DOMContentLoaded', function() {
-            initApp();
-        });
-
-        // Initialize immediately if DOM is already loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
+        document.addEventListener('DOMContentLoaded', initApp);
+        if (document.readyState !== 'loading') {
             initApp();
         }
     </script>
