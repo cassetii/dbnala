@@ -3,1280 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nala Aircon Dashboard - Service Management System</title>
-    
+    <title>Nala Aircon Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
+        
         :root {
-            /* Modern Color Palette */
-            --primary: #0ea5e9;
-            --primary-dark: #0284c7;
-            --primary-light: #38bdf8;
-            --secondary: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #06b6d4;
-            
-            /* Neutral Colors */
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            
-            /* Background */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-dark: #0f172a;
-            --sidebar-bg: #1e293b;
-            --sidebar-hover: #334155;
-            
-            /* Text */
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-light: #94a3b8;
-            
-            /* Effects */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            
-            --radius: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #0ea5e9; --primary-dark: #0284c7; --success: #10b981; --warning: #f59e0b;
+            --danger: #ef4444; --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+            --gray-300: #d1d5db; --text-primary: #1e293b; --text-secondary: #64748b;
+            --bg-primary: #ffffff; --sidebar-bg: #1e293b; --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1); --radius: 8px; --radius-lg: 12px;
         }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
-        /* Layout */
-        .dashboard-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
+        
+        body { font-family: 'Inter', sans-serif; background: var(--gray-50); color: var(--text-primary); line-height: 1.6; font-size: 14px; }
+        .dashboard-layout { display: flex; min-height: 100vh; }
+        
         /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--sidebar-bg);
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            transition: var(--transition);
-            z-index: 1000;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-logo {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .sidebar-title {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .sidebar.collapsed .sidebar-title {
-            display: none;
-        }
-
-        .sidebar-title h1 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-
-        .sidebar-title p {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .sidebar-nav {
-            padding: 20px 0;
-        }
-
-        .nav-section {
-            margin-bottom: 24px;
-        }
-
-        .nav-section-title {
-            padding: 0 20px 8px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.6;
-        }
-
-        .sidebar.collapsed .nav-section-title {
-            display: none;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: var(--transition);
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .nav-item:hover {
-            background: var(--sidebar-hover);
-            color: white;
-        }
-
-        .nav-item.active {
-            background: rgba(14, 165, 233, 0.2);
-            color: var(--primary-light);
-            border-left: 3px solid var(--primary-light);
-        }
-
-        .nav-icon {
-            width: 20px;
-            font-size: 20px;
-            flex-shrink: 0;
-            text-align: center;
-        }
-
-        .nav-text {
-            flex: 1;
-        }
-
-        .sidebar.collapsed .nav-text {
-            display: none;
-        }
-
-        .nav-badge {
-            padding: 2px 8px;
-            background: var(--primary);
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .sidebar.collapsed .nav-badge {
-            display: none;
-        }
-
-        /* Firebase Status in Sidebar */
-        .sidebar-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 16px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .firebase-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .sidebar.collapsed .firebase-status span:last-child {
-            display: none;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-dot.connected {
-            background: var(--success);
-        }
-
-        .status-dot.connecting {
-            background: var(--warning);
-        }
-
-        .status-dot.error {
-            background: var(--danger);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
+        .sidebar { width: 280px; background: var(--sidebar-bg); color: white; position: fixed; left: 0; top: 0; height: 100vh; overflow-y: auto; z-index: 1000; box-shadow: var(--shadow-lg); }
+        .sidebar.collapsed { width: 80px; }
+        .sidebar-header { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
+        .sidebar-logo { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), #38bdf8); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .sidebar-title { flex: 1; }
+        .sidebar.collapsed .sidebar-title { display: none; }
+        .sidebar-title h1 { font-size: 20px; font-weight: 700; }
+        .sidebar-title p { font-size: 12px; opacity: 0.7; }
+        
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: rgba(255,255,255,0.8); cursor: pointer; font-weight: 500; transition: all 0.3s; }
+        .nav-item:hover { background: #334155; color: white; }
+        .nav-item.active { background: rgba(14,165,233,0.2); color: #38bdf8; border-left: 3px solid #38bdf8; }
+        .nav-icon { width: 20px; font-size: 20px; text-align: center; }
+        .nav-text { flex: 1; }
+        .sidebar.collapsed .nav-text { display: none; }
+        
+        .sidebar-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+        .firebase-status { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.connected { background: var(--success); animation: pulse 2s ease-in-out infinite; }
+        .status-dot.connecting { background: var(--warning); animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
         /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            transition: var(--transition);
-        }
-
-        .sidebar.collapsed ~ .main-content {
-            margin-left: 80px;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--gray-200);
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .menu-toggle {
-            width: 40px;
-            height: 40px;
-            border: none;
-            background: var(--gray-100);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--text-primary);
-            transition: var(--transition);
-        }
-
-        .menu-toggle:hover {
-            background: var(--gray-200);
-        }
-
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .search-bar {
-            position: relative;
-            width: 400px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px 16px 10px 44px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-lg);
-            font-size: 14px;
-            transition: var(--transition);
-            background: var(--bg-primary);
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 18px;
-        }
-
-        .top-bar-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
+        .main-content { flex: 1; margin-left: 280px; }
+        .sidebar.collapsed ~ .main-content { margin-left: 80px; }
+        
+        .top-bar { background: var(--bg-primary); border-bottom: 1px solid var(--gray-200); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .top-bar-left { display: flex; align-items: center; gap: 16px; }
+        .menu-toggle { width: 40px; height: 40px; border: none; background: var(--gray-100); border-radius: var(--radius); cursor: pointer; font-size: 20px; color: var(--text-primary); }
+        .page-title { font-size: 24px; font-weight: 700; }
+        
+        .search-bar { position: relative; width: 400px; }
+        .search-bar input { width: 100%; padding: 10px 16px 10px 44px; border: 1px solid var(--gray-300); border-radius: var(--radius-lg); font-size: 14px; }
+        .search-bar input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+        
         /* Buttons */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--gray-200);
-            color: var(--text-primary);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--gray-300);
-            color: var(--text-primary);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-
-        .btn-icon {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        .btn { padding: 10px 20px; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow); transition: all 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: var(--gray-200); color: var(--text-primary); }
+        .btn-sm { padding: 6px 12px; font-size: 13px; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        
         /* Content Area */
-        .content-area {
-            padding: 32px;
-        }
-
-        /* Dashboard Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid var(--gray-200);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-        }
-
-        .stat-card:nth-child(1)::before {
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-        }
-
-        .stat-card:nth-child(2)::before {
-            background: linear-gradient(90deg, var(--secondary), #a78bfa);
-        }
-
-        .stat-card:nth-child(3)::before {
-            background: linear-gradient(90deg, var(--success), #34d399);
-        }
-
-        .stat-card:nth-child(4)::before {
-            background: linear-gradient(90deg, var(--warning), #fbbf24);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 16px;
-        }
-
-        .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-
-        .stat-card:nth-child(1) .stat-icon {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.2));
-            color: var(--primary);
-        }
-
-        .stat-card:nth-child(2) .stat-icon {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
-            color: var(--secondary);
-        }
-
-        .stat-card:nth-child(3) .stat-icon {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
-            color: var(--success);
-        }
-
-        .stat-card:nth-child(4) .stat-icon {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
-            color: var(--warning);
-        }
-
-        .stat-trend {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .stat-body {
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .stat-footer {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
+        .content-area { padding: 32px; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card { background: var(--bg-primary); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--gray-200); position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--primary), #38bdf8); }
+        .stat-card:nth-child(2)::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+        .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--success), #34d399); }
+        .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        
+        .stat-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
+        .stat-icon { width: 56px; height: 56px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .stat-card:nth-child(1) .stat-icon { background: rgba(14,165,233,0.1); color: var(--primary); }
+        .stat-card:nth-child(2) .stat-icon { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+        .stat-card:nth-child(3) .stat-icon { background: rgba(16,185,129,0.1); color: var(--success); }
+        .stat-card:nth-child(4) .stat-icon { background: rgba(245,158,11,0.1); color: var(--warning); }
+        .stat-value { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+        .stat-label { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+        
         /* Action Bar */
-        .action-bar {
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            border: 1px solid var(--gray-200);
-        }
-
-        .action-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .filter-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .filter-group input[type="month"] {
-            padding: 8px 12px;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-            font-size: 13px;
-            background: var(--bg-primary);
-        }
-
-        /* Customer Grid */
-        .customers-grid {
-            display: grid;
-            gap: 24px;
-        }
-
-        .customer-card {
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid var(--gray-200);
-        }
-
-        .customer-card:hover {
-            box-shadow: var(--shadow-lg);
-        }
-
-        .customer-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 24px;
-            color: white;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .customer-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 20px;
-        }
-
-        .customer-info {
-            flex: 1;
-        }
-
-        .customer-name {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .customer-id {
-            font-size: 11px;
-            padding: 4px 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        .customer-contact {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            font-size: 14px;
-            opacity: 0.95;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .customer-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .customer-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .customer-stat {
-            text-align: center;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius);
-            backdrop-filter: blur(10px);
-        }
-
-        .customer-stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .customer-stat-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            opacity: 0.9;
-            font-weight: 600;
-        }
-
-        .expand-indicator {
-            position: absolute;
-            right: 24px;
-            top: 24px;
-            font-size: 20px;
-            transition: var(--transition);
-        }
-
-        .customer-card.expanded .expand-indicator {
-            transform: rotate(180deg);
-        }
-
-        /* Customer Details */
-        .customer-details {
-            display: none;
-        }
-
-        .customer-card.expanded .customer-details {
-            display: block;
-        }
-
-        .details-tabs {
-            display: flex;
-            background: var(--gray-100);
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 16px;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .tab-btn:hover {
-            color: var(--text-primary);
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-        }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary);
-        }
-
-        .tab-content {
-            padding: 24px;
-        }
-
-        .tab-pane {
-            display: none;
-        }
-
-        .tab-pane.active {
-            display: block;
-        }
-
-        /* AC Units Grid */
-        .ac-units-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        .ac-unit-card {
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            transition: var(--transition);
-        }
-
-        .ac-unit-card:hover {
-            background: white;
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .ac-unit-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 12px;
-        }
-
-        .ac-unit-details {
-            font-size: 13px;
-            line-height: 1.8;
-            color: var(--text-secondary);
-        }
-
-        .ac-unit-details strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
+        .action-bar { background: var(--bg-primary); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; border: 1px solid var(--gray-200); }
+        .action-group, .filter-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        
+        /* Alert */
+        .alert { padding: 12px 16px; border-radius: var(--radius); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; }
+        .alert-warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #92400e; }
+        
+        /* Customer Cards */
+        .customers-grid { display: grid; gap: 24px; }
+        .customer-card { background: var(--bg-primary); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--gray-200); }
+        .customer-card.duplicate { border: 2px solid var(--warning); }
+        .customer-header { background: linear-gradient(135deg, var(--primary), #0284c7); padding: 24px; color: white; cursor: pointer; position: relative; }
+        .customer-main { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; }
+        .customer-info { flex: 1; }
+        .customer-name { font-size: 20px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .customer-id { font-size: 11px; padding: 4px 8px; background: rgba(255,255,255,0.2); border-radius: 6px; font-weight: 600; }
+        .duplicate-badge { font-size: 11px; padding: 4px 8px; background: var(--warning); color: white; border-radius: 6px; font-weight: 600; }
+        .customer-contact { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; }
+        .customer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .customer-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .customer-stat { text-align: center; padding: 12px; background: rgba(255,255,255,0.1); border-radius: var(--radius); }
+        .customer-stat-value { font-size: 24px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+        .customer-stat-label { font-size: 11px; text-transform: uppercase; font-weight: 600; }
+        
+        .expand-indicator { position: absolute; right: 24px; top: 24px; font-size: 20px; transition: transform 0.3s; }
+        .customer-card.expanded .expand-indicator { transform: rotate(180deg); }
+        
+        .customer-details { display: none; }
+        .customer-card.expanded .customer-details { display: block; }
+        
+        /* Tabs */
+        .details-tabs { display: flex; background: var(--gray-100); border-bottom: 1px solid var(--gray-200); }
+        .tab-btn { flex: 1; padding: 16px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; position: relative; }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--primary); }
+        .tab-content { padding: 24px; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        
+        /* AC Units */
+        .ac-units-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+        .ac-unit-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; }
+        .ac-unit-number { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; font-weight: 700; margin-bottom: 12px; }
+        
         /* Service History */
-        .service-history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .service-history-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .service-timeline {
-            position: relative;
-            padding-left: 40px;
-        }
-
-        .service-timeline::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--gray-200);
-        }
-
-        .service-item {
-            position: relative;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            margin-bottom: 16px;
-            transition: var(--transition);
-        }
-
-        .service-item:hover {
-            background: white;
-            box-shadow: var(--shadow-md);
-            transform: translateX(4px);
-        }
-
-        .service-item::before {
-            content: '';
-            position: absolute;
-            left: -30px;
-            top: 24px;
-            width: 14px;
-            height: 14px;
-            background: var(--success);
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--gray-200);
-        }
-
-        .service-date {
-            font-size: 12px;
-            color: var(--text-light);
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .service-type {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .service-info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .service-info-item {
-            font-size: 13px;
-        }
-
-        .service-info-label {
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 2px;
-        }
-
-        .service-info-value {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .service-notes {
-            font-size: 13px;
-            color: var(--text-secondary);
-            padding: 12px;
-            background: white;
-            border-left: 3px solid var(--primary);
-            border-radius: var(--radius);
-            margin-top: 12px;
-        }
-
-        .service-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            justify-content: flex-end;
-        }
-
+        .service-timeline { position: relative; padding-left: 40px; }
+        .service-timeline::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: var(--gray-200); }
+        .service-item { position: relative; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+        .service-item::before { content: ''; position: absolute; left: -30px; top: 24px; width: 14px; height: 14px; background: var(--success); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px var(--gray-200); }
+        .service-type { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+        .service-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        
         /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-xl);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -40%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
-
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: var(--gray-100);
-            border-radius: var(--radius);
-            cursor: pointer;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            font-size: 20px;
-        }
-
-        .modal-close:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); z-index: 2000; }
+        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-primary); border-radius: var(--radius-lg); width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+        .modal-header { padding: 24px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 20px; font-weight: 700; }
+        .modal-close { width: 36px; height: 36px; border: none; background: var(--gray-100); border-radius: var(--radius); cursor: pointer; font-size: 20px; }
+        .modal-close:hover { background: var(--danger); color: white; }
+        .modal-body { padding: 24px; }
+        
         /* Form */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-primary);
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .form-section {
-            background: var(--gray-50);
-            padding: 20px;
-            border-radius: var(--radius-lg);
-            margin-bottom: 20px;
-            border: 1px solid var(--gray-200);
-        }
-
-        .form-section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-200);
-        }
-
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 14px; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-section { background: var(--gray-50); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 20px; border: 1px solid var(--gray-200); }
+        .form-section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--gray-200); }
+        
         /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            padding: 16px 20px;
-            background: white;
-            border-radius: var(--radius-lg);
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: var(--shadow-xl);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            border-left: 4px solid var(--success);
-            z-index: 3000;
-            min-width: 300px;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.error {
-            border-left-color: var(--danger);
-        }
-
-        .toast.warning {
-            border-left-color: var(--warning);
-        }
-
-        .toast-icon {
-            font-size: 20px;
-        }
-
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 20px; background: white; border-radius: var(--radius-lg); font-size: 14px; font-weight: 600; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.3s; border-left: 4px solid var(--success); z-index: 3000; min-width: 300px; }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        
         /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            border: 2px dashed var(--gray-300);
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .empty-text {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-
+        .empty-state { text-align: center; padding: 80px 20px; background: var(--bg-primary); border-radius: var(--radius-lg); border: 2px dashed var(--gray-300); }
+        .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
+        .empty-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+        .empty-text { font-size: 16px; color: var(--text-secondary); margin-bottom: 30px; }
+        
         /* Loading */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .loading-overlay.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--gray-200);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            margin-top: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .loading-overlay.show { opacity: 1; pointer-events: all; }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
         /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .sidebar-title,
-            .nav-text,
-            .nav-badge,
-            .nav-section-title {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-
-            .search-bar {
-                width: 300px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .top-bar {
-                padding: 12px 16px;
-            }
-
-            .search-bar {
-                width: 100%;
-                order: 3;
-                flex-basis: 100%;
-            }
-
-            .page-title {
-                font-size: 20px;
-            }
-
-            .content-area {
-                padding: 16px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .action-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .action-group,
-            .filter-group {
-                flex-direction: column;
-            }
-
-            .customer-main {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .customer-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .ac-units-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .service-info-grid {
-                grid-template-columns: 1fr;
-            }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .search-bar { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .customer-stats { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="dashboard-layout">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">❄️</div>
@@ -1285,46 +204,11 @@
                     <p>Service Management</p>
                 </div>
             </div>
-
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <div class="nav-section-title">Main Menu</div>
-                    <a class="nav-item active" data-view="dashboard">
-                        <span class="nav-icon">📊</span>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                    <a class="nav-item" data-view="customers">
-                        <span class="nav-icon">👥</span>
-                        <span class="nav-text">Customers</span>
-                        <span class="nav-badge" id="customerCount">0</span>
-                    </a>
-                    <a class="nav-item" data-view="services">
-                        <span class="nav-icon">🔧</span>
-                        <span class="nav-text">Services</span>
-                    </a>
-                    <a class="nav-item" data-view="reports">
-                        <span class="nav-icon">📈</span>
-                        <span class="nav-text">Reports</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Tools</div>
-                    <a class="nav-item" onclick="exportData()">
-                        <span class="nav-icon">📥</span>
-                        <span class="nav-text">Export Data</span>
-                    </a>
-                    <a class="nav-item" onclick="document.getElementById('importFile').click()">
-                        <span class="nav-icon">📤</span>
-                        <span class="nav-text">Import Data</span>
-                    </a>
-                    <a class="nav-item" onclick="downloadTemplate()">
-                        <span class="nav-icon">📋</span>
-                        <span class="nav-text">Template</span>
-                    </a>
-                </div>
+            <nav class="sidebar-nav" style="padding: 20px 0;">
+                <a class="nav-item active"><span class="nav-icon">📊</span><span class="nav-text">Dashboard</span></a>
+                <a class="nav-item"><span class="nav-icon">📥</span><span class="nav-text" onclick="exportData()">Export Data</span></a>
+                <a class="nav-item"><span class="nav-icon">📋</span><span class="nav-text" onclick="downloadTemplate()">Template</span></a>
             </nav>
-
             <div class="sidebar-footer">
                 <div class="firebase-status" id="firebaseStatus">
                     <span class="status-dot connecting"></span>
@@ -1333,9 +217,7 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Bar -->
             <div class="top-bar">
                 <div class="top-bar-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
@@ -1343,80 +225,41 @@
                 </div>
                 <div class="search-bar">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" placeholder="Search customers, services..." onkeyup="searchCustomers()">
+                    <input type="text" id="searchInput" placeholder="Search customers..." onkeyup="searchCustomers()">
                 </div>
-                <div class="top-bar-actions">
-                    <button class="btn btn-primary" onclick="openCustomerModal()">
-                        ➕ Add Customer
-                    </button>
-                </div>
+                <button class="btn btn-primary" onclick="openCustomerModal()">➕ Add Customer</button>
             </div>
 
-            <!-- Content Area -->
             <div class="content-area">
-                <!-- Dashboard Stats -->
+                <div id="duplicateAlert" style="display: none;"></div>
+
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">👥</div>
-                            <div class="stat-trend">↑ 12%</div>
-                        </div>
-                        <div class="stat-body">
-                            <div class="stat-value" id="totalCustomers">0</div>
-                            <div class="stat-label">Total Customers</div>
-                        </div>
-                        <div class="stat-footer">Active customer base</div>
+                        <div class="stat-header"><div class="stat-icon">👥</div></div>
+                        <div class="stat-value" id="totalCustomers">0</div>
+                        <div class="stat-label">Total Customers</div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">❄️</div>
-                            <div class="stat-trend">↑ 8%</div>
-                        </div>
-                        <div class="stat-body">
-                            <div class="stat-value" id="totalAC">0</div>
-                            <div class="stat-label">AC Units</div>
-                        </div>
-                        <div class="stat-footer">Under management</div>
+                        <div class="stat-header"><div class="stat-icon">❄️</div></div>
+                        <div class="stat-value" id="totalAC">0</div>
+                        <div class="stat-label">AC Units</div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">🔧</div>
-                            <div class="stat-trend">↑ 24%</div>
-                        </div>
-                        <div class="stat-body">
-                            <div class="stat-value" id="totalServices">0</div>
-                            <div class="stat-label">Total Services</div>
-                        </div>
-                        <div class="stat-footer">Completed services</div>
+                        <div class="stat-header"><div class="stat-icon">🔧</div></div>
+                        <div class="stat-value" id="totalServices">0</div>
+                        <div class="stat-label">Total Services</div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">💰</div>
-                            <div class="stat-trend">↑ 18%</div>
-                        </div>
-                        <div class="stat-body">
-                            <div class="stat-value" id="totalRevenue">Rp 0</div>
-                            <div class="stat-label">Total Revenue</div>
-                        </div>
-                        <div class="stat-footer">All time earnings</div>
+                        <div class="stat-header"><div class="stat-icon">💰</div></div>
+                        <div class="stat-value" id="totalRevenue">Rp 0</div>
+                        <div class="stat-label">Total Revenue</div>
                     </div>
                 </div>
 
-                <!-- Action Bar -->
                 <div class="action-bar">
                     <div class="action-group">
-                        <button class="btn btn-success" onclick="loadSampleData()">
-                            📊 Load Sample Data
-                        </button>
-                        <button class="btn btn-warning" onclick="syncWithFirebase()">
-                            🔄 Sync with Firebase
-                        </button>
-                        <button class="btn btn-outline" onclick="window.print()">
-                            🖨️ Print
-                        </button>
+                        <button class="btn btn-success" onclick="loadSampleData()">📊 Sample Data</button>
+                        <button class="btn btn-warning" onclick="syncWithFirebase()">🔄 Sync</button>
                     </div>
                     <div class="filter-group">
                         <label>Filter by Month:</label>
@@ -1425,13 +268,12 @@
                     </div>
                 </div>
 
-                <!-- Customers Grid -->
                 <div class="customers-grid" id="customersContainer">
                     <div class="empty-state">
                         <div class="empty-icon">📦</div>
                         <div class="empty-title">No Customers Yet</div>
-                        <div class="empty-text">Start by adding your first customer or load sample data to get started</div>
-                        <button class="btn btn-primary" onclick="openCustomerModal()">➕ Add First Customer</button>
+                        <div class="empty-text">Start by adding your first customer</div>
+                        <button class="btn btn-primary" onclick="openCustomerModal()">Add First Customer</button>
                     </div>
                 </div>
             </div>
@@ -1450,19 +292,17 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Customer Name *</label>
-                            <input type="text" id="customerName" required placeholder="Enter customer name">
+                            <input type="text" id="customerName" required>
                         </div>
                         <div class="form-group">
                             <label>Phone Number *</label>
-                            <input type="tel" id="customerPhone" required placeholder="Enter phone number">
+                            <input type="tel" id="customerPhone" required>
                         </div>
                     </div>
-                    
                     <div class="form-group">
                         <label>Address *</label>
-                        <textarea id="customerAddress" required placeholder="Enter complete address"></textarea>
+                        <textarea id="customerAddress" required></textarea>
                     </div>
-                    
                     <div class="form-row">
                         <div class="form-group">
                             <label>Number of AC Units *</label>
@@ -1476,19 +316,13 @@
                                 <option value="LG">LG</option>
                                 <option value="Samsung">Samsung</option>
                                 <option value="Panasonic">Panasonic</option>
-                                <option value="Polytron">Polytron</option>
-                                <option value="TCL">TCL</option>
                                 <option value="Sharp">Sharp</option>
                                 <option value="Mitsubishi">Mitsubishi</option>
-                                <option value="Gree">Gree</option>
-                                <option value="Midea">Midea</option>
                                 <option value="Aux">Aux</option>
                             </select>
                         </div>
                     </div>
-
                     <div id="acFormsContainer"></div>
-                    
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="closeModal('customerModal')">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Customer</button>
@@ -1508,7 +342,6 @@
             <div class="modal-body">
                 <form id="serviceForm">
                     <input type="hidden" id="serviceCustomerId">
-                    
                     <div class="form-row">
                         <div class="form-group">
                             <label>Service Date *</label>
@@ -1521,17 +354,9 @@
                                 <option value="Beta">Beta</option>
                                 <option value="Charlie">Charlie</option>
                                 <option value="Delta">Delta</option>
-                                <option value="Echo">Echo</option>
-                                <option value="Fanta">Fanta</option>
-                                <option value="Gamma">Gamma</option>
-                                <option value="Hotel">Hotel</option>
-                                <option value="India">India</option>
-                                <option value="Yankee">Yankee</option>
-                                <option value="Zeon">Zeon</option>
                             </select>
                         </div>
                     </div>
-                    
                     <div class="form-row">
                         <div class="form-group">
                             <label>Service Type *</label>
@@ -1541,25 +366,18 @@
                                 <option value="Pengecekan">Pengecekan</option>
                                 <option value="Troubleshooting">Troubleshooting</option>
                                 <option value="Pasang AC">Pasang AC</option>
-                                <option value="Bongkar Pasang AC">Bongkar Pasang AC</option>
                                 <option value="Freon">Freon Refill</option>
-                                <option value="Kapasitor">Pergantian Kapasitor</option>
-                                <option value="Overload">Overload</option>
-                                <option value="Kebocoran Freon">Kebocoran Freon</option>
-                                <option value="Overhaul">Overhaul</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Payment (Rp) *</label>
-                            <input type="number" id="servicePayment" min="0" required placeholder="Enter amount">
+                            <input type="number" id="servicePayment" min="0" required>
                         </div>
                     </div>
-                    
                     <div class="form-group">
                         <label>Service Notes</label>
-                        <textarea id="serviceNotes" placeholder="Enter service details, parts replaced, issues found, etc."></textarea>
+                        <textarea id="serviceNotes"></textarea>
                     </div>
-                    
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="closeModal('serviceModal')">Cancel</button>
                         <button type="submit" class="btn btn-success">Save Service</button>
@@ -1569,122 +387,54 @@
         </div>
     </div>
 
-    <!-- Hidden file input -->
-    <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none" onchange="importFromExcel()">
-
-    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <div class="loading-text">Loading...</div>
+        <div style="margin-top: 20px; font-weight: 600;">Loading...</div>
     </div>
 
-    <!-- Firebase SDK v9 -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBI5T3ZVyHXSRFikTjSlnW9P04cO1UDAwg",
             authDomain: "databasebesar.firebaseapp.com",
             projectId: "databasebesar",
             storageBucket: "databasebesar.firebasestorage.app",
             messagingSenderId: "253231829334",
-            appId: "1:253231829334:web:e46fd18ef04b83d6c546f7",
-            measurementId: "G-7387ZN5BJG"
+            appId: "1:253231829334:web:e46fd18ef04b83d6c546f7"
         };
 
-        let app = null;
-        let db = null;
-        let analytics = null;
-        let isFirebaseInitialized = false;
-        let unsubscribe = null;
+        let app, db, isFirebaseInitialized = false, unsubscribe;
 
-        // Initialize Firebase
         async function autoInitializeFirebase() {
             try {
                 updateFirebaseStatus('connecting');
-                console.log('🔥 Initializing Firebase...');
-                
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
-                analytics = getAnalytics(app);
-                
                 isFirebaseInitialized = true;
                 updateFirebaseStatus('connected');
-                
-                console.log('🔥 Firebase initialized successfully!');
-                showToast('Connected to Firebase successfully!', 'success');
-                
+                showToast('Connected to Firebase!', 'success');
                 await loadDataFromFirebase();
                 setupFirebaseListener();
-                
             } catch (error) {
-                console.error('Firebase initialization error:', error);
+                console.error('Firebase error:', error);
                 updateFirebaseStatus('error');
-                showToast('Failed to connect to Firebase: ' + error.message, 'error');
-                isFirebaseInitialized = false;
+                showToast('Firebase connection failed', 'error');
             }
         }
 
         function updateFirebaseStatus(status) {
-            const statusEl = document.getElementById('firebaseStatus');
-            const dotEl = statusEl.querySelector('.status-dot');
-            const textEl = statusEl.querySelector('span:last-child');
-            
+            const el = document.getElementById('firebaseStatus');
+            const dot = el.querySelector('.status-dot');
+            const text = el.querySelector('span:last-child');
             if (status === 'connected') {
-                dotEl.className = 'status-dot connected';
-                textEl.textContent = 'Connected';
+                dot.className = 'status-dot connected';
+                text.textContent = 'Connected';
                 window.isFirebaseReady = true;
-                window.dispatchEvent(new Event('firebaseReady'));
             } else if (status === 'connecting') {
-                dotEl.className = 'status-dot connecting';
-                textEl.textContent = 'Connecting...';
-                window.isFirebaseReady = false;
-            } else {
-                dotEl.className = 'status-dot error';
-                textEl.textContent = 'Error';
-                window.isFirebaseReady = false;
-            }
-        }
-
-        async function saveCustomerToFirebase(customerData) {
-            if (!isFirebaseInitialized) throw new Error('Firebase not initialized');
-            try {
-                const docRef = await addDoc(collection(db, 'customers'), {
-                    ...customerData,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
-                });
-                return docRef.id;
-            } catch (error) {
-                console.error('Error saving customer:', error);
-                throw error;
-            }
-        }
-
-        async function updateCustomerInFirebase(customerId, customerData) {
-            if (!isFirebaseInitialized) throw new Error('Firebase not initialized');
-            try {
-                const customerRef = doc(db, 'customers', customerId);
-                await updateDoc(customerRef, {
-                    ...customerData,
-                    updatedAt: serverTimestamp()
-                });
-            } catch (error) {
-                console.error('Error updating customer:', error);
-                throw error;
-            }
-        }
-
-        async function deleteCustomerFromFirebase(customerId) {
-            if (!isFirebaseInitialized) throw new Error('Firebase not initialized');
-            try {
-                await deleteDoc(doc(db, 'customers', customerId));
-            } catch (error) {
-                console.error('Error deleting customer:', error);
-                throw error;
+                dot.className = 'status-dot connecting';
+                text.textContent = 'Connecting...';
             }
         }
 
@@ -1692,147 +442,164 @@
             if (!isFirebaseInitialized) return;
             try {
                 showLoading(true);
-                const querySnapshot = await getDocs(collection(db, 'customers'));
-                const loadedCustomers = [];
-                
-                querySnapshot.forEach((docSnapshot) => {
-                    const data = docSnapshot.data();
-                    const customer = {
-                        id: docSnapshot.id,
+                const snapshot = await getDocs(collection(db, 'customers'));
+                const loaded = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    loaded.push({
+                        id: doc.id,
                         ...data,
-                        createdAt: data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate().toISOString() : data.createdAt) : new Date().toISOString(),
-                        updatedAt: data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt) : new Date().toISOString()
-                    };
-                    loadedCustomers.push(customer);
+                        createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+                        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                    });
                 });
-
-                loadedCustomers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-                window.customers = loadedCustomers;
-                
+                loaded.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                window.customers = loaded;
                 updateStats();
                 renderCustomers();
-                
+                checkDuplicates();
             } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Error loading data: ' + error.message, 'error');
+                console.error('Load error:', error);
+                showToast('Error loading data', 'error');
             } finally {
                 showLoading(false);
             }
         }
 
         function setupFirebaseListener() {
-            if (!isFirebaseInitialized) return;
-            if (unsubscribe) unsubscribe();
-            
-            unsubscribe = onSnapshot(collection(db, 'customers'), (querySnapshot) => {
-                const updatedCustomers = [];
-                querySnapshot.forEach((docSnapshot) => {
-                    const data = docSnapshot.data();
-                    const customer = {
-                        id: docSnapshot.id,
+            if (!isFirebaseInitialized || unsubscribe) return;
+            unsubscribe = onSnapshot(collection(db, 'customers'), snapshot => {
+                const updated = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    updated.push({
+                        id: doc.id,
                         ...data,
-                        createdAt: data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate().toISOString() : data.createdAt) : new Date().toISOString(),
-                        updatedAt: data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt) : new Date().toISOString()
-                    };
-                    updatedCustomers.push(customer);
+                        createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+                        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                    });
                 });
-                
-                updatedCustomers.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-                window.customers = updatedCustomers;
-                
+                updated.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                window.customers = updated;
                 updateStats();
                 renderCustomers();
-            }, (error) => {
-                console.error('Firebase listener error:', error);
-                setTimeout(() => {
-                    if (isFirebaseInitialized) setupFirebaseListener();
-                }, 5000);
+                checkDuplicates();
             });
         }
 
-        window.syncWithFirebase = async function() {
+        window.firebaseHelpers = {
+            saveCustomerToFirebase: async (data) => {
+                if (!isFirebaseInitialized) throw new Error('Firebase not ready');
+                const ref = await addDoc(collection(db, 'customers'), {
+                    ...data,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                return ref.id;
+            },
+            updateCustomerInFirebase: async (id, data) => {
+                if (!isFirebaseInitialized) throw new Error('Firebase not ready');
+                await updateDoc(doc(db, 'customers', id), { ...data, updatedAt: serverTimestamp() });
+            },
+            deleteCustomerFromFirebase: async (id) => {
+                if (!isFirebaseInitialized) throw new Error('Firebase not ready');
+                await deleteDoc(doc(db, 'customers', id));
+            }
+        };
+
+        window.syncWithFirebase = async () => {
             if (!isFirebaseInitialized) {
                 showToast('Firebase not connected', 'error');
                 return;
             }
-            try {
-                await loadDataFromFirebase();
-                showToast('Synced with Firebase', 'success');
-            } catch (error) {
-                showToast('Sync failed: ' + error.message, 'error');
-            }
-        };
-
-        window.firebaseHelpers = {
-            saveCustomerToFirebase,
-            updateCustomerInFirebase,
-            deleteCustomerFromFirebase,
-            loadDataFromFirebase,
-            setupFirebaseListener
+            await loadDataFromFirebase();
+            showToast('Synced!', 'success');
         };
 
         autoInitializeFirebase();
     </script>
 
     <script>
-        // Global Variables
-        let customers = [];
-        let editingCustomerId = null;
-        let monthFilter = null;
+        let customers = [], editingCustomerId = null, monthFilter = null;
         window.customers = [];
 
-        // Initialize App
         function initApp() {
-            console.log('🚀 Initializing Nala Aircon Dashboard...');
             generateACForms();
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
         }
 
-        // Toggle Sidebar
-        window.toggleSidebar = function() {
-            const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-open');
-            } else {
-                sidebar.classList.toggle('collapsed');
-            }
+        window.toggleSidebar = () => {
+            document.getElementById('sidebar').classList.toggle(window.innerWidth <= 768 ? 'mobile-open' : 'collapsed');
         };
 
-        // Customer Management
-        window.openCustomerModal = function(customerId = null) {
-            if (!window.isFirebaseReady) {
-                showToast('Please wait for Firebase to connect', 'error');
-                return;
+        function checkDuplicates() {
+            const seen = {}, dups = [];
+            window.customers.forEach(c => {
+                const key = `${c.name?.toLowerCase()}-${c.phone}`;
+                if (seen[key]) dups.push({ c1: seen[key], c2: c });
+                else seen[key] = c;
+            });
+            const alert = document.getElementById('duplicateAlert');
+            if (dups.length > 0) {
+                alert.style.display = 'block';
+                alert.className = 'alert alert-warning';
+                alert.innerHTML = `<span>⚠️</span><div><strong>Data Ganda!</strong><br>Ditemukan ${dups.length} customer dengan nama/nomor sama.</div>`;
+                dups.forEach(d => {
+                    document.getElementById(`customer-${d.c1.id}`)?.classList.add('duplicate');
+                    document.getElementById(`customer-${d.c2.id}`)?.classList.add('duplicate');
+                });
+            } else {
+                alert.style.display = 'none';
             }
+        }
 
+        window.sendWhatsAppReminder = (id) => {
+            const c = window.customers.find(x => x.id === id);
+            if (!c) return;
+            const last = c.services?.[0];
+            let msg = `Halo ${c.name},\n\nKami dari Nala Aircon ingin mengingatkan Anda untuk perawatan AC.\n\n`;
+            if (last) {
+                msg += `Terakhir service: ${formatDateIndo(last.date)} (${last.type}).\n\n`;
+            }
+            msg += `Hubungi kami untuk jadwal service.\n\nTerima kasih,\nNala Aircon Team`;
+            let phone = c.phone.replace(/\D/g, '');
+            if (!phone.startsWith('62')) phone = phone.startsWith('0') ? '62' + phone.substring(1) : '62' + phone;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            showToast('Opening WhatsApp...', 'success');
+        };
+
+        function formatDateIndo(d) {
+            if (!d) return 'Tidak ada';
+            const date = new Date(d);
+            const m = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            return `${date.getDate()} ${m[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        window.openCustomerModal = (id = null) => {
+            if (!window.isFirebaseReady) return showToast('Wait for Firebase', 'error');
             const modal = document.getElementById('customerModal');
             const form = document.getElementById('customerForm');
             const title = document.getElementById('modalTitle');
-            
-            editingCustomerId = customerId;
-            
-            if (customerId) {
+            editingCustomerId = id;
+            if (id) {
                 title.textContent = 'Edit Customer';
-                const customer = window.customers.find(c => c.id === customerId);
-                if (customer) {
-                    document.getElementById('customerName').value = customer.name || '';
-                    document.getElementById('customerPhone').value = customer.phone || '';
-                    document.getElementById('customerAddress').value = customer.address || '';
-                    document.getElementById('acCount').value = customer.acUnits?.length || 1;
-                    document.getElementById('acBrand').value = customer.acUnits?.[0]?.brand || '';
-                    
+                const c = window.customers.find(x => x.id === id);
+                if (c) {
+                    document.getElementById('customerName').value = c.name || '';
+                    document.getElementById('customerPhone').value = c.phone || '';
+                    document.getElementById('customerAddress').value = c.address || '';
+                    document.getElementById('acCount').value = c.acUnits?.length || 1;
+                    document.getElementById('acBrand').value = c.acUnits?.[0]?.brand || '';
                     generateACForms();
                     setTimeout(() => {
-                        if (customer.acUnits) {
-                            customer.acUnits.forEach((unit, i) => {
-                                if (document.getElementById(`ac_brand_${i}`)) {
-                                    document.getElementById(`ac_brand_${i}`).value = unit.brand || '';
-                                    document.getElementById(`ac_type_${i}`).value = unit.type || 'Split Wall';
-                                    document.getElementById(`ac_capacity_${i}`).value = unit.capacity || '1 PK';
-                                    document.getElementById(`ac_location_${i}`).value = unit.location || '';
-                                }
-                            });
-                        }
+                        c.acUnits?.forEach((u, i) => {
+                            if (document.getElementById(`ac_brand_${i}`)) {
+                                document.getElementById(`ac_brand_${i}`).value = u.brand || '';
+                                document.getElementById(`ac_type_${i}`).value = u.type || 'Split Wall';
+                                document.getElementById(`ac_capacity_${i}`).value = u.capacity || '1 PK';
+                                document.getElementById(`ac_location_${i}`).value = u.location || '';
+                            }
+                        });
                     }, 100);
                 }
             } else {
@@ -1841,47 +608,37 @@
                 document.getElementById('acCount').value = 1;
                 generateACForms();
             }
-            
             modal.style.display = 'block';
         };
 
-        window.generateACForms = function() {
+        window.generateACForms = () => {
             const count = parseInt(document.getElementById('acCount').value) || 1;
             const container = document.getElementById('acFormsContainer');
             const brand = document.getElementById('acBrand').value;
-            
             container.innerHTML = '';
-            
             for (let i = 0; i < count; i++) {
-                const section = document.createElement('div');
-                section.className = 'form-section';
-                section.innerHTML = `
+                const sec = document.createElement('div');
+                sec.className = 'form-section';
+                sec.innerHTML = `
                     <h4 class="form-section-title">AC Unit ${i + 1}</h4>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Brand</label>
                             <select id="ac_brand_${i}">
                                 <option value="">Select Brand</option>
-                                <option value="Daikin" ${brand === 'Daikin' ? 'selected' : ''}>Daikin</option>
-                                <option value="LG" ${brand === 'LG' ? 'selected' : ''}>LG</option>
-                                <option value="Samsung" ${brand === 'Samsung' ? 'selected' : ''}>Samsung</option>
-                                <option value="Panasonic" ${brand === 'Panasonic' ? 'selected' : ''}>Panasonic</option>
-                                <option value="Sharp" ${brand === 'Sharp' ? 'selected' : ''}>Sharp</option>
-                                <option value="Mitsubishi" ${brand === 'Mitsubishi' ? 'selected' : ''}>Mitsubishi</option>
-                                <option value="Aux" ${brand === 'Aux' ? 'selected' : ''}>Aux</option>
-                                <option value="TCL" ${brand === 'TCL' ? 'selected' : ''}>TCL</option>
-                                <option value="Gree" ${brand === 'Gree' ? 'selected' : ''}>Gree</option>
-                                <option value="Midea" ${brand === 'Midea' ? 'selected' : ''}>Midea</option>
+                                <option ${brand==='Daikin'?'selected':''} value="Daikin">Daikin</option>
+                                <option ${brand==='LG'?'selected':''} value="LG">LG</option>
+                                <option ${brand==='Samsung'?'selected':''} value="Samsung">Samsung</option>
+                                <option ${brand==='Panasonic'?'selected':''} value="Panasonic">Panasonic</option>
+                                <option ${brand==='Sharp'?'selected':''} value="Sharp">Sharp</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Type</label>
                             <select id="ac_type_${i}">
                                 <option value="Split Wall">Split Wall</option>
-                                <option value="Split Duct">Split Duct</option>
                                 <option value="Cassette">Cassette</option>
                                 <option value="Standing">Standing</option>
-                                <option value="Window">Window</option>
                             </select>
                         </div>
                     </div>
@@ -1890,11 +647,9 @@
                             <label>Capacity</label>
                             <select id="ac_capacity_${i}">
                                 <option value="0.5 PK">0.5 PK</option>
-                                <option value="0.75 PK">0.75 PK</option>
                                 <option value="1 PK" selected>1 PK</option>
                                 <option value="1.5 PK">1.5 PK</option>
                                 <option value="2 PK">2 PK</option>
-                                <option value="2.5 PK">2.5 PK</option>
                                 <option value="3 PK">3 PK</option>
                             </select>
                         </div>
@@ -1904,111 +659,79 @@
                         </div>
                     </div>
                 `;
-                container.appendChild(section);
+                container.appendChild(sec);
             }
         };
 
-        document.getElementById('customerForm').onsubmit = async function(e) {
+        document.getElementById('customerForm').onsubmit = async (e) => {
             e.preventDefault();
-            
-            if (!window.isFirebaseReady) {
-                showToast('Firebase not connected', 'error');
-                return;
-            }
-
+            if (!window.isFirebaseReady) return showToast('Firebase not ready', 'error');
             try {
                 showLoading(true);
-
-                const acCount = parseInt(document.getElementById('acCount').value) || 1;
-                const acUnits = [];
-                
-                for (let i = 0; i < acCount; i++) {
-                    acUnits.push({
+                const count = parseInt(document.getElementById('acCount').value) || 1;
+                const units = [];
+                for (let i = 0; i < count; i++) {
+                    units.push({
                         brand: document.getElementById(`ac_brand_${i}`)?.value || '',
                         type: document.getElementById(`ac_type_${i}`)?.value || 'Split Wall',
                         capacity: document.getElementById(`ac_capacity_${i}`)?.value || '1 PK',
                         location: document.getElementById(`ac_location_${i}`)?.value || ''
                     });
                 }
-                
-                const customerData = {
+                const data = {
                     name: document.getElementById('customerName').value.trim(),
                     phone: document.getElementById('customerPhone').value.trim(),
                     address: document.getElementById('customerAddress').value.trim(),
-                    acUnits: acUnits,
-                    services: editingCustomerId ? 
-                        (window.customers.find(c => c.id === editingCustomerId)?.services || []) : 
-                        []
+                    acUnits: units,
+                    services: editingCustomerId ? (window.customers.find(c => c.id === editingCustomerId)?.services || []) : []
                 };
-                
                 if (editingCustomerId) {
-                    await window.firebaseHelpers.updateCustomerInFirebase(editingCustomerId, customerData);
-                    showToast('Customer updated successfully', 'success');
+                    await window.firebaseHelpers.updateCustomerInFirebase(editingCustomerId, data);
+                    showToast('Customer updated!', 'success');
                 } else {
-                    await window.firebaseHelpers.saveCustomerToFirebase(customerData);
-                    showToast('Customer added successfully', 'success');
+                    await window.firebaseHelpers.saveCustomerToFirebase(data);
+                    showToast('Customer added!', 'success');
                 }
-                
                 closeModal('customerModal');
-                
-            } catch (error) {
-                console.error('Error saving customer:', error);
-                showToast('Error saving customer: ' + error.message, 'error');
+            } catch (err) {
+                console.error(err);
+                showToast('Error: ' + err.message, 'error');
             } finally {
                 showLoading(false);
             }
         };
 
-        window.deleteCustomer = async function(customerId) {
-            if (!window.isFirebaseReady) {
-                showToast('Firebase not connected', 'error');
-                return;
-            }
-
-            if (confirm('Are you sure you want to delete this customer? All service history will be lost.')) {
-                try {
-                    showLoading(true);
-                    await window.firebaseHelpers.deleteCustomerFromFirebase(customerId);
-                    showToast('Customer deleted', 'success');
-                } catch (error) {
-                    console.error('Error deleting customer:', error);
-                    showToast('Error deleting customer: ' + error.message, 'error');
-                } finally {
-                    showLoading(false);
-                }
+        window.deleteCustomer = async (id) => {
+            if (!window.isFirebaseReady || !confirm('Delete this customer?')) return;
+            try {
+                showLoading(true);
+                await window.firebaseHelpers.deleteCustomerFromFirebase(id);
+                showToast('Customer deleted', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                showLoading(false);
             }
         };
 
-        // Service Management
-        window.openServiceModal = function(customerId) {
-            if (!window.isFirebaseReady) {
-                showToast('Please wait for Firebase to connect', 'error');
-                return;
-            }
-
-            document.getElementById('serviceCustomerId').value = customerId;
+        window.openServiceModal = (id) => {
+            if (!window.isFirebaseReady) return showToast('Wait for Firebase', 'error');
+            document.getElementById('serviceCustomerId').value = id;
             document.getElementById('serviceForm').reset();
             document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('serviceModal').style.display = 'block';
         };
 
-        document.getElementById('serviceForm').onsubmit = async function(e) {
+        document.getElementById('serviceForm').onsubmit = async (e) => {
             e.preventDefault();
-            
-            if (!window.isFirebaseReady) {
-                showToast('Firebase not connected', 'error');
-                return;
-            }
-
+            if (!window.isFirebaseReady) return showToast('Firebase not ready', 'error');
             try {
                 showLoading(true);
-
-                const customerId = document.getElementById('serviceCustomerId').value;
-                const customer = window.customers.find(c => c.id === customerId);
-                
-                if (customer) {
-                    const service = {
-                        id: 'SRV' + Date.now() + Math.random().toString(36).substr(2, 5),
+                const id = document.getElementById('serviceCustomerId').value;
+                const c = window.customers.find(x => x.id === id);
+                if (c) {
+                    const srv = {
+                        id: 'SRV' + Date.now(),
                         date: document.getElementById('serviceDate').value,
                         technician: document.getElementById('serviceTechnician').value,
                         type: document.getElementById('serviceType').value,
@@ -2016,240 +739,185 @@
                         notes: document.getElementById('serviceNotes').value,
                         createdAt: new Date().toISOString()
                     };
-                    
-                    if (!customer.services) customer.services = [];
-                    customer.services.unshift(service);
-                    
-                    await window.firebaseHelpers.updateCustomerInFirebase(customerId, {
-                        name: customer.name,
-                        phone: customer.phone,
-                        address: customer.address,
-                        acUnits: customer.acUnits,
-                        services: customer.services
+                    if (!c.services) c.services = [];
+                    c.services.unshift(srv);
+                    await window.firebaseHelpers.updateCustomerInFirebase(id, {
+                        name: c.name, phone: c.phone, address: c.address,
+                        acUnits: c.acUnits, services: c.services
                     });
-                    
                     closeModal('serviceModal');
-                    showToast('Service record added', 'success');
+                    showToast('Service added!', 'success');
                 }
-                
-            } catch (error) {
-                console.error('Error saving service:', error);
-                showToast('Error saving service: ' + error.message, 'error');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
             } finally {
                 showLoading(false);
             }
         };
 
-        window.deleteService = async function(customerId, serviceId) {
-            if (!window.isFirebaseReady) {
-                showToast('Firebase not connected', 'error');
-                return;
-            }
-
-            if (confirm('Delete this service record?')) {
-                try {
-                    showLoading(true);
-
-                    const customer = window.customers.find(c => c.id === customerId);
-                    if (customer && customer.services) {
-                        customer.services = customer.services.filter(s => s.id !== serviceId);
-                        
-                        await window.firebaseHelpers.updateCustomerInFirebase(customerId, {
-                            name: customer.name,
-                            phone: customer.phone,
-                            address: customer.address,
-                            acUnits: customer.acUnits,
-                            services: customer.services
-                        });
-                        
-                        showToast('Service deleted', 'success');
-                    }
-                    
-                } catch (error) {
-                    console.error('Error deleting service:', error);
-                    showToast('Error deleting service: ' + error.message, 'error');
-                } finally {
-                    showLoading(false);
+        window.deleteService = async (cid, sid) => {
+            if (!window.isFirebaseReady || !confirm('Delete service?')) return;
+            try {
+                showLoading(true);
+                const c = window.customers.find(x => x.id === cid);
+                if (c?.services) {
+                    c.services = c.services.filter(s => s.id !== sid);
+                    await window.firebaseHelpers.updateCustomerInFirebase(cid, {
+                        name: c.name, phone: c.phone, address: c.address,
+                        acUnits: c.acUnits, services: c.services
+                    });
+                    showToast('Service deleted', 'success');
                 }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                showLoading(false);
             }
         };
 
-        // UI Rendering
         function getFilteredCustomers() {
             if (!monthFilter) return window.customers || [];
-            
-            const [filterYear, filterMonth] = monthFilter.split('-');
-            
-            return (window.customers || []).filter(customer => {
-                if (!customer.services || customer.services.length === 0) return false;
-                
-                return customer.services.some(service => {
-                    const serviceDate = new Date(service.date);
-                    const serviceYear = serviceDate.getFullYear().toString();
-                    const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
-                    
-                    return serviceYear === filterYear && serviceMonth === filterMonth;
+            const [y, m] = monthFilter.split('-');
+            return (window.customers || []).filter(c => {
+                if (!c.services?.length) return false;
+                return c.services.some(s => {
+                    const d = new Date(s.date);
+                    return d.getFullYear().toString() === y && (d.getMonth() + 1).toString().padStart(2, '0') === m;
                 });
             });
         }
 
-        function renderCustomers(searchTerm = '') {
+        function renderCustomers(search = '') {
             const container = document.getElementById('customersContainer');
             let filtered = getFilteredCustomers();
-            
-            if (searchTerm) {
-                filtered = filtered.filter(c => 
-                    c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    c.phone?.includes(searchTerm) ||
-                    c.address?.toLowerCase().includes(searchTerm.toLowerCase())
+            if (search) {
+                filtered = filtered.filter(c =>
+                    c.name?.toLowerCase().includes(search.toLowerCase()) ||
+                    c.phone?.includes(search) ||
+                    c.address?.toLowerCase().includes(search.toLowerCase())
                 );
             }
-            
             if (monthFilter) {
-                const [filterYear, filterMonth] = monthFilter.split('-');
-                filtered = filtered.map(customer => {
-                    const filteredServices = (customer.services || []).filter(service => {
-                        const serviceDate = new Date(service.date);
-                        const serviceYear = serviceDate.getFullYear().toString();
-                        const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
-                        
-                        return serviceYear === filterYear && serviceMonth === filterMonth;
-                    });
-                    
-                    return { ...customer, services: filteredServices };
-                });
+                const [y, m] = monthFilter.split('-');
+                filtered = filtered.map(c => ({
+                    ...c,
+                    services: (c.services || []).filter(s => {
+                        const d = new Date(s.date);
+                        return d.getFullYear().toString() === y && (d.getMonth() + 1).toString().padStart(2, '0') === m;
+                    })
+                }));
             }
-            
-            if (filtered.length === 0) {
+            if (!filtered.length) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📦</div>
-                        <div class="empty-title">${monthFilter ? 'No customers with services in selected month' : searchTerm ? 'No Results Found' : 'No Customers Yet'}</div>
-                        <div class="empty-text">${monthFilter ? 'Try selecting a different month or clear the filter' : searchTerm ? 'Try different search terms' : 'Start by adding your first customer'}</div>
-                        ${!searchTerm && !monthFilter ? '<button class="btn btn-primary" onclick="openCustomerModal()">➕ Add First Customer</button>' : ''}
-                        ${monthFilter ? '<button class="btn btn-secondary" onclick="clearFilter()">Clear Filter</button>' : ''}
+                        <div class="empty-title">No Customers</div>
+                        <div class="empty-text">${search || monthFilter ? 'Try different filters' : 'Add your first customer'}</div>
+                        ${!search && !monthFilter ? '<button class="btn btn-primary" onclick="openCustomerModal()">Add Customer</button>' : ''}
                     </div>
                 `;
                 return;
             }
-            
-            container.innerHTML = filtered.map(customer => {
-                const totalServices = customer.services?.length || 0;
-                const totalPayments = customer.services?.reduce((sum, s) => sum + (s.payment || 0), 0) || 0;
-                const lastService = customer.services?.[0];
-                
+            const dupIds = new Set();
+            const seen = {};
+            filtered.forEach(c => {
+                const k = `${c.name?.toLowerCase()}-${c.phone}`;
+                if (seen[k]) {
+                    dupIds.add(c.id);
+                    dupIds.add(seen[k].id);
+                } else seen[k] = c;
+            });
+            container.innerHTML = filtered.map(c => {
+                const total = c.services?.length || 0;
+                const pay = c.services?.reduce((s, x) => s + (x.payment || 0), 0) || 0;
+                const last = c.services?.[0];
+                const dup = dupIds.has(c.id);
                 return `
-                    <div class="customer-card" id="customer-${customer.id}">
-                        <div class="customer-header" onclick="toggleCustomerCard('${customer.id}')">
+                    <div class="customer-card ${dup ? 'duplicate' : ''}" id="customer-${c.id}">
+                        <div class="customer-header" onclick="toggleCustomerCard('${c.id}')">
                             <div class="customer-main">
                                 <div class="customer-info">
                                     <div class="customer-name">
-                                        ${customer.name || 'No Name'}
-                                        <span class="customer-id">#${customer.id.substring(0, 8)}</span>
+                                        ${c.name || 'No Name'}
+                                        <span class="customer-id">#${c.id.substring(0, 8)}</span>
+                                        ${dup ? '<span class="duplicate-badge">⚠️ DUPLICATE</span>' : ''}
                                     </div>
                                     <div class="customer-contact">
-                                        <span class="contact-item">📱 ${customer.phone || 'No Phone'}</span>
-                                        <span class="contact-item">📍 ${customer.address || 'No Address'}</span>
+                                        <span>📱 ${c.phone || '-'}</span>
+                                        <span>📍 ${c.address || '-'}</span>
                                     </div>
                                 </div>
                                 <div class="customer-actions">
-                                    <button class="btn btn-sm btn-success" onclick="event.stopPropagation(); openServiceModal('${customer.id}')">
-                                        + Service
-                                    </button>
-                                    <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); openCustomerModal('${customer.id}')">
-                                        ✏️
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteCustomer('${customer.id}')">
-                                        🗑️
-                                    </button>
+                                    <button class="btn btn-sm btn-whatsapp" onclick="event.stopPropagation(); sendWhatsAppReminder('${c.id}')">💬 Reminder</button>
+                                    <button class="btn btn-sm btn-success" onclick="event.stopPropagation(); openServiceModal('${c.id}')">+ Service</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); openCustomerModal('${c.id}')">✏️</button>
+                                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteCustomer('${c.id}')">🗑️</button>
                                 </div>
                             </div>
                             <div class="customer-stats">
                                 <div class="customer-stat">
-                                    <div class="customer-stat-value">${customer.acUnits?.length || 0}</div>
+                                    <div class="customer-stat-value">${c.acUnits?.length || 0}</div>
                                     <div class="customer-stat-label">AC Units</div>
                                 </div>
                                 <div class="customer-stat">
-                                    <div class="customer-stat-value">${totalServices}</div>
+                                    <div class="customer-stat-value">${total}</div>
                                     <div class="customer-stat-label">Services</div>
                                 </div>
                                 <div class="customer-stat">
-                                    <div class="customer-stat-value">${formatCurrency(totalPayments)}</div>
+                                    <div class="customer-stat-value">${formatCurrency(pay)}</div>
                                     <div class="customer-stat-label">Revenue</div>
                                 </div>
                                 <div class="customer-stat">
-                                    <div class="customer-stat-value">${lastService ? formatDate(lastService.date) : 'Never'}</div>
+                                    <div class="customer-stat-value">${last ? formatDate(last.date) : 'Never'}</div>
                                     <div class="customer-stat-label">Last Service</div>
                                 </div>
                             </div>
                             <span class="expand-indicator">▼</span>
                         </div>
-                        
                         <div class="customer-details">
                             <div class="details-tabs">
-                                <button class="tab-btn active" onclick="switchTab('${customer.id}', 'units')">AC Units</button>
-                                <button class="tab-btn" onclick="switchTab('${customer.id}', 'history')">Service History</button>
+                                <button class="tab-btn active" onclick="switchTab('${c.id}', 'units')">AC Units</button>
+                                <button class="tab-btn" onclick="switchTab('${c.id}', 'history')">Service History</button>
                             </div>
-                            
                             <div class="tab-content">
-                                <div class="tab-pane active" id="tab-units-${customer.id}">
+                                <div class="tab-pane active" id="tab-units-${c.id}">
                                     <div class="ac-units-grid">
-                                        ${(customer.acUnits || []).map((unit, i) => `
+                                        ${(c.acUnits || []).map((u, i) => `
                                             <div class="ac-unit-card">
                                                 <div class="ac-unit-number">${i + 1}</div>
-                                                <div class="ac-unit-details">
-                                                    <strong>${unit.brand || 'Unknown'}</strong><br>
-                                                    Type: ${unit.type || 'Unknown'}<br>
-                                                    Capacity: ${unit.capacity || 'Unknown'}<br>
-                                                    ${unit.location ? `Location: ${unit.location}` : ''}
+                                                <div style="font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
+                                                    <strong>${u.brand || 'Unknown'}</strong><br>
+                                                    Type: ${u.type || '-'}<br>
+                                                    Capacity: ${u.capacity || '-'}<br>
+                                                    ${u.location ? `Location: ${u.location}` : ''}
                                                 </div>
                                             </div>
                                         `).join('')}
                                     </div>
                                 </div>
-                                
-                                <div class="tab-pane" id="tab-history-${customer.id}">
-                                    <div class="service-history-header">
-                                        <h3 class="service-history-title">Service History</h3>
-                                        <button class="btn btn-sm btn-success" onclick="openServiceModal('${customer.id}')">
-                                            + Add Service
-                                        </button>
+                                <div class="tab-pane" id="tab-history-${c.id}">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                        <h3 style="font-size: 18px; font-weight: 700;">Service History</h3>
+                                        <button class="btn btn-sm btn-success" onclick="openServiceModal('${c.id}')">+ Add Service</button>
                                     </div>
-                                    
-                                    ${customer.services && customer.services.length > 0 ? `
+                                    ${c.services?.length ? `
                                         <div class="service-timeline">
-                                            ${customer.services.map(service => `
+                                            ${c.services.map(s => `
                                                 <div class="service-item">
-                                                    <div class="service-date">${formatDate(service.date)}</div>
-                                                    <div class="service-type">${service.type || 'Unknown'}</div>
+                                                    <div style="font-size: 12px; color: var(--text-light); font-weight: 600; margin-bottom: 8px;">${formatDate(s.date)}</div>
+                                                    <div class="service-type">${s.type || 'Unknown'}</div>
                                                     <div class="service-info-grid">
-                                                        <div class="service-info-item">
-                                                            <div class="service-info-label">Technician</div>
-                                                            <div class="service-info-value">${service.technician || 'Unknown'}</div>
-                                                        </div>
-                                                        <div class="service-info-item">
-                                                            <div class="service-info-label">Payment</div>
-                                                            <div class="service-info-value">${formatCurrency(service.payment || 0)}</div>
-                                                        </div>
+                                                        <div><div style="color: var(--text-secondary); font-size: 13px;">Technician</div><div style="font-weight: 600;">${s.technician || '-'}</div></div>
+                                                        <div><div style="color: var(--text-secondary); font-size: 13px;">Payment</div><div style="font-weight: 600;">${formatCurrency(s.payment || 0)}</div></div>
                                                     </div>
-                                                    ${service.notes ? `
-                                                        <div class="service-notes">
-                                                            ${service.notes}
-                                                        </div>
-                                                    ` : ''}
-                                                    <div class="service-actions">
-                                                        <button class="btn btn-sm btn-danger" onclick="deleteService('${customer.id}', '${service.id}')">
-                                                            Delete
-                                                        </button>
+                                                    ${s.notes ? `<div style="font-size: 13px; padding: 12px; background: white; border-left: 3px solid var(--primary); border-radius: var(--radius); margin-top: 12px;">${s.notes}</div>` : ''}
+                                                    <div style="display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end;">
+                                                        <button class="btn btn-sm btn-danger" onclick="deleteService('${c.id}', '${s.id}')">Delete</button>
                                                     </div>
                                                 </div>
                                             `).join('')}
                                         </div>
-                                    ` : `
-                                        <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
-                                            No service history yet
-                                        </div>
-                                    `}
+                                    ` : '<div style="text-align: center; padding: 60px; color: var(--text-secondary);">No service history</div>'}
                                 </div>
                             </div>
                         </div>
@@ -2258,143 +926,86 @@
             }).join('');
         }
 
-        window.toggleCustomerCard = function(customerId) {
-            const card = document.getElementById(`customer-${customerId}`);
-            if (card) {
-                card.classList.toggle('expanded');
-            }
-        };
+        window.toggleCustomerCard = (id) => document.getElementById(`customer-${id}`)?.classList.toggle('expanded');
 
-        window.switchTab = function(customerId, tab) {
-            const card = document.getElementById(`customer-${customerId}`);
+        window.switchTab = (id, tab) => {
+            const card = document.getElementById(`customer-${id}`);
             if (!card) return;
-            
-            card.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            
-            card.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-            const tabPane = document.getElementById(`tab-${tab}-${customerId}`);
-            if (tabPane) tabPane.classList.add('active');
+            card.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(`tab-${tab}-${id}`)?.classList.add('active');
         };
 
         function updateStats() {
-            let statsCustomers = window.customers || [];
-            
+            let stats = window.customers || [];
             if (monthFilter) {
-                const [filterYear, filterMonth] = monthFilter.split('-');
-                
-                statsCustomers = statsCustomers.filter(customer => {
-                    if (!customer.services || customer.services.length === 0) return false;
-                    
-                    return customer.services.some(service => {
-                        const serviceDate = new Date(service.date);
-                        const serviceYear = serviceDate.getFullYear().toString();
-                        const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
-                        
-                        return serviceYear === filterYear && serviceMonth === filterMonth;
-                    });
-                });
-                
-                statsCustomers = statsCustomers.map(customer => ({
-                    ...customer,
-                    services: customer.services.filter(service => {
-                        const serviceDate = new Date(service.date);
-                        const serviceYear = serviceDate.getFullYear().toString();
-                        const serviceMonth = (serviceDate.getMonth() + 1).toString().padStart(2, '0');
-                        
-                        return serviceYear === filterYear && serviceMonth === filterMonth;
+                const [y, m] = monthFilter.split('-');
+                stats = stats.filter(c => c.services?.some(s => {
+                    const d = new Date(s.date);
+                    return d.getFullYear().toString() === y && (d.getMonth() + 1).toString().padStart(2, '0') === m;
+                })).map(c => ({
+                    ...c,
+                    services: c.services.filter(s => {
+                        const d = new Date(s.date);
+                        return d.getFullYear().toString() === y && (d.getMonth() + 1).toString().padStart(2, '0') === m;
                     })
                 }));
             }
-            
-            const totalAC = statsCustomers.reduce((sum, c) => sum + (c.acUnits?.length || 0), 0);
-            const totalServices = statsCustomers.reduce((sum, c) => sum + (c.services?.length || 0), 0);
-            const totalRevenue = statsCustomers.reduce((sum, c) => 
-                sum + (c.services?.reduce((s, srv) => s + (srv.payment || 0), 0) || 0), 0
-            );
-            
-            document.getElementById('totalCustomers').textContent = statsCustomers.length;
-            document.getElementById('customerCount').textContent = window.customers.length;
-            document.getElementById('totalAC').textContent = totalAC;
-            document.getElementById('totalServices').textContent = totalServices;
-            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            const ac = stats.reduce((s, c) => s + (c.acUnits?.length || 0), 0);
+            const srv = stats.reduce((s, c) => s + (c.services?.length || 0), 0);
+            const rev = stats.reduce((s, c) => s + (c.services?.reduce((x, y) => x + (y.payment || 0), 0) || 0), 0);
+            document.getElementById('totalCustomers').textContent = stats.length;
+            document.getElementById('totalAC').textContent = ac;
+            document.getElementById('totalServices').textContent = srv;
+            document.getElementById('totalRevenue').textContent = formatCurrency(rev);
         }
 
-        // Utility Functions
-        window.searchCustomers = function() {
-            const searchTerm = document.getElementById('searchInput').value;
-            renderCustomers(searchTerm);
-        };
+        window.searchCustomers = () => renderCustomers(document.getElementById('searchInput').value);
 
-        window.filterByMonth = function() {
-            const monthValue = document.getElementById('monthFilter').value;
-            monthFilter = monthValue ? monthValue : null;
-            
-            const searchTerm = document.getElementById('searchInput').value;
-            renderCustomers(searchTerm);
+        window.filterByMonth = () => {
+            monthFilter = document.getElementById('monthFilter').value || null;
+            renderCustomers(document.getElementById('searchInput').value);
             updateStats();
-            
-            if (monthFilter) {
-                const [year, month] = monthFilter.split('-');
-                const monthName = new Date(year, month - 1, 1).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-                showToast(`Filter applied for ${monthName}`, 'success');
-            }
+            if (monthFilter) showToast('Filter applied', 'success');
         };
 
-        window.clearFilter = function() {
+        window.clearFilter = () => {
             monthFilter = null;
             document.getElementById('monthFilter').value = '';
-            
-            const searchTerm = document.getElementById('searchInput').value;
-            renderCustomers(searchTerm);
+            renderCustomers(document.getElementById('searchInput').value);
             updateStats();
             showToast('Filter cleared', 'success');
         };
 
-        window.closeModal = function(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) modal.style.display = 'none';
+        window.closeModal = (id) => {
+            document.getElementById(id).style.display = 'none';
             editingCustomerId = null;
         };
 
         function showLoading(show) {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) {
-                if (show) {
-                    overlay.classList.add('show');
-                } else {
-                    overlay.classList.remove('show');
-                }
-            }
+            document.getElementById('loadingOverlay').classList.toggle('show', show);
         }
 
-        function formatCurrency(amount) {
-            if (amount >= 1000000) {
-                return 'Rp ' + (amount / 1000000).toFixed(1) + 'M';
-            } else if (amount >= 1000) {
-                return 'Rp ' + (amount / 1000).toFixed(0) + 'K';
-            }
-            return 'Rp ' + amount;
+        function formatCurrency(amt) {
+            if (amt >= 1000000) return 'Rp ' + (amt / 1000000).toFixed(1) + 'M';
+            if (amt >= 1000) return 'Rp ' + (amt / 1000).toFixed(0) + 'K';
+            return 'Rp ' + amt.toLocaleString('id-ID');
         }
 
-        function formatDate(dateString) {
-            if (!dateString) return 'No Date';
-            const date = new Date(dateString);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        function formatDate(d) {
+            if (!d) return '-';
+            const date = new Date(d);
+            const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            return `${date.getDate()} ${m[date.getMonth()]} ${date.getFullYear()}`;
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icons = {
-                success: '✅',
-                error: '❌',
-                warning: '⚠️'
-            };
-            toast.innerHTML = `<span class="toast-icon">${icons[type] || '✅'}</span> ${message}`;
+            const icons = { success: '✅', error: '❌', warning: '⚠️' };
+            toast.innerHTML = `<span style="font-size: 20px;">${icons[type]}</span> ${msg}`;
             document.body.appendChild(toast);
-            
             setTimeout(() => toast.classList.add('show'), 100);
             setTimeout(() => {
                 toast.classList.remove('show');
@@ -2402,110 +1013,68 @@
             }, 3000);
         }
 
-        window.exportData = function() {
-            const dataStr = JSON.stringify(window.customers, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+        window.exportData = () => {
+            const blob = new Blob([JSON.stringify(window.customers, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `nala-aircon-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.href = URL.createObjectURL(blob);
+            a.download = `nala-backup-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
-            URL.revokeObjectURL(url);
-            showToast('Data exported successfully', 'success');
+            showToast('Data exported!', 'success');
         };
 
-        window.downloadTemplate = function() {
-            const templateData = [
-                [
-                    'Customer Name*', 'Phone Number*', 'Address*',
-                    'AC Unit 1 Brand', 'AC Unit 1 Type', 'AC Unit 1 Capacity', 'AC Unit 1 Location',
-                    'AC Unit 2 Brand', 'AC Unit 2 Type', 'AC Unit 2 Capacity', 'AC Unit 2 Location',
-                    'Service Date', 'Service Technician', 'Service Type', 'Service Payment', 'Service Notes'
-                ],
-                [
-                    'PT. Contoh Perusahaan', '021-12345678', 'Jl. Contoh No. 123, Jakarta',
-                    'Daikin', 'Split Wall', '1 PK', 'Office Room',
-                    'LG', 'Cassette', '2 PK', 'Meeting Room',
-                    '2025-01-15', 'Beta', 'Cuci AC', '500000', 'Routine cleaning service'
-                ]
+        window.downloadTemplate = () => {
+            const data = [
+                ['Name*', 'Phone*', 'Address*', 'AC1 Brand', 'AC1 Type', 'AC1 Capacity', 'AC1 Location'],
+                ['PT. Contoh', '021-12345678', 'Jl. Contoh 123', 'Daikin', 'Split Wall', '1 PK', 'Office']
             ];
-
-            const csvContent = templateData.map(row => 
-                row.map(cell => {
-                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
-                        return '"' + cell.replace(/"/g, '""') + '"';
-                    }
-                    return cell;
-                }).join(',')
-            ).join('\n');
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
+            const csv = data.map(r => r.map(c => typeof c === 'string' && c.includes(',') ? `"${c}"` : c).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `nala-aircon-import-template.csv`;
+            a.href = URL.createObjectURL(blob);
+            a.download = 'nala-template.csv';
             a.click();
-            URL.revokeObjectURL(url);
-            showToast('Template downloaded successfully', 'success');
+            showToast('Template downloaded!', 'success');
         };
 
-        window.importFromExcel = async function() {
-            showToast('Import feature coming soon', 'warning');
-        };
-
-        window.loadSampleData = async function() {
-            if (!window.isFirebaseReady) {
-                showToast('Please wait for Firebase to connect', 'error');
-                return;
-            }
-
-            if ((window.customers && window.customers.length > 0) && !confirm('This will add sample data. Continue?')) return;
-            
-            const sampleData = {
-                name: 'PT. Maju Bersama',
-                phone: '021-5551234',
-                address: 'Gedung Menara Bisnis Lt. 15, Jl. TB Simatupang, Jakarta',
-                acUnits: [
-                    { brand: 'Daikin', type: 'Cassette', capacity: '2 PK', location: 'Meeting Room' },
-                    { brand: 'Daikin', type: 'Split Wall', capacity: '1.5 PK', location: 'Director Room' },
-                    { brand: 'Mitsubishi', type: 'Standing', capacity: '3 PK', location: 'Lobby' }
-                ],
-                services: [
-                    {
+        window.loadSampleData = async () => {
+            if (!window.isFirebaseReady || (window.customers.length && !confirm('Add sample data?'))) return;
+            try {
+                showLoading(true);
+                await window.firebaseHelpers.saveCustomerToFirebase({
+                    name: 'PT. Maju Bersama',
+                    phone: '021-5551234',
+                    address: 'Gedung Menara Lt. 15, Jl. TB Simatupang, Jakarta',
+                    acUnits: [
+                        { brand: 'Daikin', type: 'Cassette', capacity: '2 PK', location: 'Meeting Room' },
+                        { brand: 'Mitsubishi', type: 'Standing', capacity: '3 PK', location: 'Lobby' }
+                    ],
+                    services: [{
                         id: 'SRV001',
                         date: '2025-01-15',
                         technician: 'Beta',
                         type: 'Cuci AC',
                         payment: 850000,
-                        notes: 'Monthly routine service for all units. Cleaned filters, checked freon pressure.',
+                        notes: 'Monthly routine service',
                         createdAt: '2025-01-15T08:00:00Z'
-                    }
-                ]
-            };
-            
-            try {
-                showLoading(true);
-                await window.firebaseHelpers.saveCustomerToFirebase(sampleData);
-                showToast('Sample data loaded successfully', 'success');
-            } catch (error) {
-                console.error('Error loading sample data:', error);
-                showToast('Error loading sample data: ' + error.message, 'error');
+                    }]
+                });
+                showToast('Sample data loaded!', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
             } finally {
                 showLoading(false);
             }
         };
 
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+        window.onclick = (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
                 editingCustomerId = null;
             }
         };
 
         document.addEventListener('DOMContentLoaded', initApp);
-        if (document.readyState !== 'loading') {
-            initApp();
-        }
+        if (document.readyState !== 'loading') initApp();
     </script>
 </body>
 </html>
